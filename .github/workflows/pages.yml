@@ -3,7 +3,7 @@ name: Build and deploy Gymnasium demo
 on:
   push:
     branches: [main]
-    paths: ["demo/**", "tests/**", ".github/workflows/pages.yml"]
+    paths: ["demo/**", "tests/**", "docs/**", "README.md", ".github/workflows/pages.yml"]
   pull_request:
     branches: [main]
     paths: ["demo/**", "tests/**", ".github/workflows/pages.yml"]
