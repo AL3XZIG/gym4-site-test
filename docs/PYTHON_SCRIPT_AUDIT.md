@@ -1,74 +1,24 @@
-# Аудит Python-генераторов
+# Python prototype audit (historical)
 
-Проверены исходники в корне репозитория.
+The original Qwen Python files are retained in the repository as historical prototypes. They were useful for producing early visual iterations, but a Python-generated HTML pipeline is not part of the current demo architecture.
 
-## Сводка
+## Current decision
 
-| Файл | Назначение | Решение |
-|---|---|---|
-| Qwen_python_20261115_gmudnwc0f.py | Первая генерация, 759 строк / около 65 KB | Сохранить как историю |
-| Qwen_python_20261115_nl6toqetl.py | Вторая генерация, 674 строки / около 75 KB | Использовать как основу после исправлений |
-| Qwen_html_20261115_55p2060qq.html | Ранний одностраничный прототип | Сохранить как ранний эскиз |
+The GitHub Pages demo is plain static web content:
 
-## Первая итерация: gmudnwc0f.py
+- `demo/*.html` — independently editable pages.
+- `demo/assets/css/style.css` — shared stylesheet.
+- `demo/assets/js/app.js` — browser-side interaction.
+- `demo/assets/favicon.svg` — favicon.
 
-Плюсы:
-- Отдельные HTML-страницы и общие CSS/JS assets.
-- Нет сторонних Python-пакетов или npm-сборки.
-- Есть адаптивная навигация, доступность, фильтр новостей и дизайн-система.
+There is no Python site generator, runtime backend, npm build, or generated `site/` directory. GitHub Actions verifies the expected files and publishes `demo/` directly.
 
-Недостатки:
-- Вывод жёстко задан в gym4-project; нет CLI или конфигурации.
-- Форма собирает имя, e-mail, тему и сообщение и сохраняет всё в localStorage. Это не отправка на сервер, но пользователь может принять её за настоящую форму.
-- Нет автоматических проверок результата и локальных ссылок.
-- Контент, шаблон, CSS и JS объединены в одном большом Python-файле.
+## Historical observations
 
-## Вторая итерация: nl6toqetl.py
+The earlier prototype scripts combined page content, shared shell, CSS/JS generation and build/deploy configuration in large Python string templates. This made ordinary content edits harder for a school administrator and obscured the actual HTML/CSS deliverables. The scripts also included demo-form persistence and unverified school contact/content claims in earlier iterations.
 
-Улучшения:
-- Индикатор прокрутки, анимации появления, reduced motion, фильтрация и сортировка новостей.
-- Часть новостей явно помечена как демонстрационная.
-- Добавлены manifest, robots.txt, favicon и 404.
-- В inbox значения экранируются перед вставкой в HTML.
+The current static implementation intentionally removes that generator dependency. Each HTML file can be opened and edited directly in any text editor. Shared appearance belongs in the CSS file; browser behavior belongs in the JS file.
 
-Критические дефекты:
-1. **Синтаксическая ошибка:** исходник заканчивается незакрытой тройной строкой README. Python не сможет выполнить генератор.
-2. **Workflow в неверном месте:** генератор создаёт OUT/.github/workflows/deploy.yml внутри папки результата. GitHub ищет workflow в .github/workflows корня репозитория.
-3. **Неверная публикация:** исходный workflow загружает path: ., то есть не изолированный каталог собранного сайта.
-4. **Отсутствующий asset:** HTML ссылается на assets/og.png, но генератор не создаёт этот файл.
-5. **Локальное хранение персональных данных:** gym4-messages сохраняет имя, e-mail и текст обращения в localStorage. Для публичной демки такой inbox не нужен.
-6. **Непроверенные сведения:** ФИО, контакты, статистика, статусные формулировки, расписания и новости нельзя считать подтверждёнными только потому, что они записаны в макете.
+## Future production system
 
-Дополнительно:
-- В исходнике есть неиспользуемые импорты; оставить только необходимые.
-- Большие HTML/CSS/JS литералы затрудняют поддержку. Следующий этап — вынести шаблоны, стили и скрипты в отдельные файлы.
-- При использовании str.format редакторский контент нужно HTML-экранировать. Не подставлять туда недоверенный пользовательский текст.
-- Google Fonts создают сетевую зависимость; fallback-шрифты есть, но офлайн-вид может отличаться.
-
-## Изменения в demo/build_demo.py
-
-- Вторая итерация перенесена в demo/build_demo.py; оригиналы сохранены.
-- Результат сборки изолирован в demo/site/.
-- Workflow вынесен в корневой .github/workflows/pages.yml; публикуется только demo/site/.
-- Демо-форма не сохраняет и не передаёт пользовательский ввод.
-- Убраны неподтверждённые рекламные заявления на главной и добавлено явное предупреждение.
-- Исправлена незакрытая строка README; удалена ссылка на отсутствующий og.png.
-- Добавлены автоматические проверки HTML и локальных ссылок.
-
-## Ручная проверка перед показом
-
-Сверить телефоны, адреса, e-mail, ФИО, графики, ссылки и образовательные сведения. Проверить визуально Chromium/Firefox на телефоне и ПК, контраст, клавиатурную навигацию, reduced motion и права на фотографии/логотипы.
-
-
-## Текущая структура демоверсии после переработки
-
-Генератор теперь разделяет структуру страниц и статические ресурсы:
-
-- `demo/build_demo.py` — собирает HTML-страницы, навигацию, служебные файлы и копирует assets в каталог сборки.
-- `demo/assets/css/style.css` — единая таблица стилей.
-- `demo/assets/js/app.js` — меню, настройки доступности, анимации и безопасная демонстрация формы.
-- `demo/site/` — результат сборки; создаётся автоматически и не коммитится.
-
-Подготовлены отдельные страницы: главная, сведения об образовательной организации, родителям, ученикам, новости, приём, контакты, дизайн-система и 404. На внутренних страницах вместо непроверенных школьных фактов стоят явные редакционные заглушки. Контакты и нормативные сведения не должны переноситься из старых генераций без проверки.
-
-Генератор стал существенно короче: стили и JavaScript вынесены из Python в отдельные файлы. Следующий этап — вынести тексты/структуру разделов в JSON/YAML или отдельный модуль данных, чтобы редактор мог менять контент без редактирования HTML-строк в генераторе.
+For a real editorial workflow with login, roles, document uploads and server-side forms, use the separate production proposal in `ARCHITECTURE.md`. That future backend is not required to run or publish this static demo.
