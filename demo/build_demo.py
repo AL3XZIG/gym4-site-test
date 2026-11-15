@@ -35,7 +35,7 @@ SHELL = '''<!doctype html>
   <span class="topbar-name">ДЕМОНСТРАЦИОННАЯ ВЕРСИЯ · не официальный сайт · сведения требуют проверки</span>
   <div class="topbar-actions">
     <button id="a11yBtn" class="topbar-btn" aria-expanded="false" aria-controls="a11yPanel">👁 Версия для слабовидящих</button>
-    <a class="topbar-btn" href="https://pos.gosuslugi.ru/form" target="_blank" rel="noopener">💬 Решаем вместе</a>
+    <a class="topbar-btn" href="contacts.html">💬 Обратная связь · демо</a>
   </div>
 </div></div>
 <div id="a11yPanel" class="a11y-panel" hidden>
@@ -63,7 +63,7 @@ SHELL = '''<!doctype html>
   <div><p class="footer-logo">Гимназия №4</p><p>Демонстрационный макет информационного сайта образовательной организации.</p><p class="footer-demo">Неофициальная демонстрация интерфейса. Фактические сведения требуют проверки и согласования.</p></div>
   <div><p class="footer-title">Разделы</p><a href="sveden.html">Сведения об ОУ</a><a href="parents.html">Родителям</a><a href="students.html">Ученикам</a><a href="news.html">Новости</a><a href="priem.html">Приём</a><a href="styleguide.html">Дизайн-система</a></div>
   <div><p class="footer-title">Контактная информация</p><p>Адрес, телефон, электронная почта и часы работы будут внесены после проверки администрацией.</p><a href="contacts.html">Открыть раздел контактов</a></div>
-</div><div class="container footer-bottom"><span>© 2013–<span id="year"></span> МБОУ «Гимназия №4»</span><span>GitHub Pages demo · HTML / CSS / JS</span></div></footer>
+</div><div class="container footer-bottom"><span>© <span id="year"></span> Демонстрационный макет</span><span>GitHub Pages demo · HTML / CSS / JS</span></div></footer>
 <button id="toTop" class="to-top" aria-label="Наверх">↑</button>
 <div class="cookie" id="cookie" hidden><span>Демо-версия использует локальное хранилище только для настроек доступности. Формы ничего не отправляют.</span><button id="cookieOk" class="btn btn-small btn-gold">Принять</button></div>
 <div id="toast" class="toast" role="status" aria-live="polite"><span id="toastText"></span><button id="toastAction" class="toast-action" hidden></button></div>
