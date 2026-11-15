@@ -5,8 +5,8 @@ OUT = Path(__file__).resolve().parent / "site"
 for d in ["assets/css", "assets/js"]:
     (OUT / d).mkdir(parents=True, exist_ok=True)
 
-NAV = [("index.html","Главная"),("sveden.html","Сведения об ОУ"),("parents.html","Родителям"),
-       ("students.html","Ученикам"),("news.html","Новости"),("contacts.html","Контакты")]
+NAV = [("index.html","Главная"),("sveden.html","Сведения"),("parents.html","Родителям"),
+       ("students.html","Ученикам"),("news.html","Новости"),("priem.html","Приём"),("contacts.html","Контакты")]
 
 SHELL = '''<!doctype html>
 <html lang="ru">
@@ -61,10 +61,10 @@ SHELL = '''<!doctype html>
 <footer><div class="container footer-grid">
   <div><p class="footer-logo">Гимназия №4</p><p>Демонстрационный макет информационного сайта образовательной организации.</p><p class="footer-demo">Неофициальная демонстрация интерфейса. Фактические сведения требуют проверки и согласования.</p></div>
   <div><p class="footer-title">Разделы</p><a href="sveden.html">Сведения об ОУ</a><a href="parents.html">Родителям</a><a href="students.html">Ученикам</a><a href="news.html">Новости</a><a href="priem.html">Приём</a><a href="styleguide.html">Дизайн-система</a></div>
-  <div><p class="footer-title">Контакты</p><p>414024, г. Астрахань,<br>ул. Б. Хмельницкого, 16, корп. 1</p><a href="tel:+78512500567">(8512) 50-05-67</a><a href="mailto:gimn4@obr.astrobl.ru">gimn4@obr.astrobl.ru</a></div>
+  <div><p class="footer-title">Контактная информация</p><p>Адрес, телефон, электронная почта и часы работы будут внесены после проверки администрацией.</p><a href="contacts.html">Открыть раздел контактов</a></div>
 </div><div class="container footer-bottom"><span>© 2013–<span id="year"></span> МБОУ «Гимназия №4»</span><span>GitHub Pages demo · HTML / CSS / JS</span></div></footer>
 <button id="toTop" class="to-top" aria-label="Наверх">↑</button>
-<div class="cookie" id="cookie" hidden><span>Мы используем cookie и локальное хранилище для настроек доступности и демо-формы.</span><button id="cookieOk" class="btn btn-small btn-gold">Принять</button></div>
+<div class="cookie" id="cookie" hidden><span>Демо-версия использует локальное хранилище только для настроек доступности. Формы ничего не отправляют.</span><button id="cookieOk" class="btn btn-small btn-gold">Принять</button></div>
 <div id="toast" class="toast" role="status" aria-live="polite"><span id="toastText"></span><button id="toastAction" class="toast-action" hidden></button></div>
 <script src="assets/js/app.js"></script>
 </body>
@@ -81,7 +81,8 @@ def page(fname, title, desc, body):
     nav = "".join('<a href="' + f + '"' + (' class="active" aria-current="page"' if f == fname else '') + '>' + t + '</a>' for f, t in NAV)
     (OUT / fname).write_text(SHELL.format(title=title, desc=desc, nav=nav, body=body, page=fname.replace(".html", "")), encoding="utf-8")
 
-CSS = ''':root{
+CSS = '''.placeholder-card{border-style:dashed;background:linear-gradient(145deg,#fffdf8,#f7f0e2)}.placeholder-owner{font-size:.78rem!important;color:#8a641b!important;border-top:1px solid var(--line);padding-top:10px;margin-top:14px}.content-section{margin:30px 0 48px}.table-wrap{overflow-x:auto}.table-wrap table{min-width:560px}.table-wrap .placeholder-owner{margin-bottom:0}
+:root{
 --ink:#182742;--ink-2:#22355c;--paper:#f5efe3;--surface:#fffcf5;--overlay:#fffdf8;--scrim:rgba(16,29,53,.55);
 --line:#e2d6bf;--text:#20293a;--muted:#68718a;--cool:#eef3fb;
 --gold:#c9962e;--gold-2:#e8b54a;--blue:#2f6fd0;--electric:#3d8bff;--green:#2e8f66;--red:#c8442e;--amber:#d99a26;
@@ -433,180 +434,152 @@ $$("[data-copy]").forEach(b=>b.onclick=()=>copy(b.dataset.copy));
 (OUT / "assets/js/app.js").write_text(JS, encoding="utf-8")
 (OUT / "assets/favicon.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#182742"/><path d="M10 50h44" stroke="#e8b54a" stroke-width="3" stroke-linecap="round"/><text x="32" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="38" font-weight="700" fill="#e8b54a">4</text></svg>', encoding="utf-8")
 
-# ---------------- ГЛАВНАЯ ----------------
-page("index.html", "Главная", "Демонстрационный редизайн сайта гимназии №4 Астрахани: новости, разделы для родителей и учеников, приём и контакты.", '''
-<section class="hero" data-mood="gold">
-  <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
-  <svg class="seal" data-parallax="0.18" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="sealPath" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/></defs><g class="seal-rot"><circle cx="60" cy="60" r="56" fill="none" stroke="#e8b54a" stroke-opacity=".45"/><circle cx="60" cy="60" r="34" fill="none" stroke="#e8b54a" stroke-opacity=".25"/><text><textPath href="#sealPath">ГИМНАЗИЯ №4 • АСТРАХАНЬ • ЮНЕСКО • 1964 • </textPath></text></g><text class="seal-num" x="60" y="75" text-anchor="middle" fill="#e8b54a">4</text></svg>
-  <div class="container">
-    <p class="kicker">Демонстрационный макет</p>
-    <h1>Гимназия №4 — <em>информационный сайт</em></h1>
-    <p class="lead">Макет современной структуры сайта: разделы для родителей и учеников, сведения об организации, новости, контакты и приём.</p>
-    <div class="hero-actions"><a class="btn btn-gold" href="priem.html#first">Приём в 1 класс</a><a class="btn btn-ghost" href="sveden.html">Сведения об ОУ</a><a class="btn btn-ghost" href="contacts.html#feedback">Задать вопрос</a></div>
-    <p class="hero-note">Макет навигации и компонентов. Все сведения о школе должны быть подтверждены администрацией.</p>
-    <div class="stats"><div class="stat"><b>8</b><span>демо-страниц</span></div><div class="stat"><b>1</b><span>единая дизайн-система</span></div><div class="stat"><b>0</b><span>серверных запросов демо</span></div><div class="stat"><b>100%</b><span>статическая демонстрация</span></div></div>
-  </div>
-</section>
-<div class="ticker" aria-label="Возможности демоверсии"><div class="ticker-track"><span>Адаптивная вёрстка</span><span>Доступность</span><span>Навигация по разделам</span><span>Поиск по демо-новостям</span><span>Дизайн-система</span><span aria-hidden="true">Адаптивная вёрстка</span><span aria-hidden="true">Доступность</span><span aria-hidden="true">Навигация по разделам</span><span aria-hidden="true">Поиск по демо-новостям</span><span aria-hidden="true">Дизайн-система</span></div></div>
+# ---------------- СТРАНИЦЫ ДЕМОНСТРАЦИИ ----------------
+def placeholder(title, description="Материал будет добавлен после проверки и согласования администрацией гимназии."):
+    return (
+        '<section class="card placeholder-card">'
+        '<span class="badge badge-gold">ЗАГЛУШКА ДЛЯ ЗАПОЛНЕНИЯ</span>'
+        '<h3>' + title + '</h3><p>' + description + '</p>'
+        '<p class="placeholder-owner">Ответственный: назначается администрацией · Статус: ожидает заполнения</p>'
+        '</section>'
+    )
+
+def section(title, intro, items):
+    cards = ''.join(placeholder(name, desc) for name, desc in items)
+    return '<section class="content-section"><h2>' + title + '</h2><p class="lead">' + intro + '</p><div class="grid">' + cards + '</div></section>'
+
+def table_placeholder(title, columns, rows=3):
+    head = ''.join('<th>' + c + '</th>' for c in columns)
+    body = ''.join('<tr>' + ''.join('<td><span class="badge badge-gold">Заполнить</span></td>' for _ in columns) + '</tr>' for _ in range(rows))
+    return '<section class="content-section"><h2>' + title + '</h2><div class="card table-wrap"><table><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table><p class="placeholder-owner">Таблица-шаблон. Данные не являются фактическими.</p></div></section>'
+
+def layout(title, intro, content, kicker="Информационный раздел"):
+    return hero(title, intro, kicker) + '<main id="main" class="container">' + '<div class="note note-info"><b>Демонстрационный макет.</b> Содержимое ниже — структура будущего раздела, а не официальная информация. Перед публикацией требуется проверка и заполнение.</div>' + content + '</main>'
+
+# Главная: демонстрационная витрина разделов, без вымышленных новостей и реквизитов.
+home = '''<section class="hero" data-mood="gold"><div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div><div class="container">
+<p class="kicker">Демонстрационный макет сайта</p>
+<h1>Гимназия №4 — <em>информационный портал</em></h1>
+<p class="lead">Современная структура школьного сайта: сведения об образовательной организации, информация для родителей и учеников, новости, документы и приём.</p>
+<div class="hero-actions"><a class="btn btn-gold" href="sveden.html">Сведения о гимназии</a><a class="btn btn-ghost" href="priem.html">Раздел приёма</a></div>
+<p class="hero-note">Это не официальный сайт. Все поля, отмеченные как заглушки, предназначены для заполнения и согласования.</p>
+<div class="stats"><div class="stat"><b>01</b><span>Проверенные сведения</span></div><div class="stat"><b>02</b><span>Новости и объявления</span></div><div class="stat"><b>03</b><span>Документы и материалы</span></div><div class="stat"><b>04</b><span>Информация для семей</span></div></div>
+</div></section>
+<div class="ticker"><div class="ticker-track"><span><b>ДЕМО</b> · Макет интерфейса</span><span><b>РАЗДЕЛЫ</b> · Навигация работает</span><span><b>КОНТЕНТ</b> · Требует заполнения</span><span><b>БЕЗОПАСНОСТЬ</b> · Формы ничего не отправляют</span><span><b>ДЕМО</b> · Макет интерфейса</span><span><b>РАЗДЕЛЫ</b> · Навигация работает</span><span><b>КОНТЕНТ</b> · Требует заполнения</span><span><b>БЕЗОПАСНОСТЬ</b> · Формы ничего не отправляют</span></div></div>
 <main id="main" class="container">
-  <section class="cards overlap">
-    <a class="card" href="parents.html#food"><span class="ico">🍎</span><b>Ежедневное меню</b><span>Горячее питание и здоровый рацион</span></a>
-    <a class="card" href="students.html#gia"><span class="ico">📝</span><b>ГИА-9 и ГИА-11</b><span>Регламенты, расписание, подготовка</span></a>
-    <a class="card" href="students.html#clubs"><span class="ico">⚽</span><b>Кружки и секции</b><span>Спорт, театр, музыка и шахматы</span></a>
-    <a class="card" href="students.html#essay"><span class="ico">✍️</span><b>Итоговое сочинение</b><span>Сроки, темы и материалы</span></a>
-    <a class="card" href="students.html#help"><span class="ico">🛡️</span><b>Телефон доверия</b><span>Помощь и психологическая поддержка</span></a>
-    <a class="card" href="parents.html#faq"><span class="ico">❓</span><b>Частые вопросы</b><span>Ответы для родителей и учеников</span></a>
-  </section>
-  <h2>Новости</h2>
-  <section class="news">
-    <a class="card" href="news.html"><time>Демо · 12 ноября 2026</time><b>Школьный этап ВсОШ</b><span>Приглашаем учеников 4–11 классов. Победители проходят на муниципальный этап.</span></a>
-    <a class="card" href="news.html"><time>Демо · 8 ноября 2026</time><b>«Орлята России»: новый сезон</b><span>Гимназия — флагманская школа федерального проекта.</span></a>
-    <a class="card" href="news.html"><time>Демо · 5 ноября 2026</time><b>Английский театр</b><span>Студия открыла новый сезон для 5–8 классов.</span></a>
-  </section>
-  <p style="margin-top:16px"><a class="btn btn-line btn-small" href="news.html">Все новости →</a></p>
-  <h2 data-mood="blue">Официальная информация</h2>
-  <div class="chips"><a href="sveden.html#basic">Основные сведения</a><a href="sveden.html#docs">Документы</a><a href="sveden.html#edu">Образование</a><a href="sveden.html#staff">Руководство и педсостав</a><a href="sveden.html#objects">Материальное обеспечение</a><a href="sveden.html#budget">Финансы</a><a href="sveden.html#vacant">Вакантные места</a><a href="sveden.html#intl">ЮНЕСКО</a></div>
-  <h2 data-mood="green">Почему выбирают гимназию</h2>
-  <div class="grid">
-    <section class="card"><span class="ico">🇬🇧</span><h3>Сильный английский</h3><p>Углублённое изучение языка, спецкурсы перевода и зарубежной литературы, английский театр и Cambridge English.</p></section>
-    <section class="card"><span class="ico">🏛️</span><h3>Традиции с 1964 года</h3><p>Гимназия создана в 1996 году на базе школы №46. Выпускники поступают в ведущие вузы страны.</p></section>
-    <section class="card"><span class="ico">🌊</span><h3>Комфортная среда</h3><p>Бассейн, два спортзала, четыре спортплощадки, два компьютерных класса, библиотечно-информационный центр.</p></section>
-  </div>
-  <h2 data-mood="gold">История в датах</h2>
-  <div class="history"><div class="history-pin"><p class="serif">1964</p><p>Отсчёт истории гимназии начинается с открытия школы №46 с углублённым изучением английского языка.</p></div>
-  <ol class="timeline"><li><b>1964</b><span>Основана средняя общеобразовательная школа №46 с углублённым изучением английского языка.</span></li><li><b>1996</b><span>На базе школы №46 создана гимназия №4.</span></li><li><b>2010</b><span>Учреждение переименовано в МБОУ г. Астрахани «Гимназия №4».</span></li><li><b>2014–2020</b><span>Звания «Учреждение — лидер образования XXI века» и дипломант всероссийского конкурса «Познание и творчество».</span></li><li><b>2023</b><span>Гимназия определена флагманской школой программы «Орлята России».</span></li><li><b>2024</b><span>Вхождение в 100 лучших образовательных учреждений Российской Федерации.</span></li></ol></div>
-</main>
-''')
+<div class="note note-info"><b>Для просмотра:</b> выберите любой раздел. Внутренние страницы уже имеют общую шапку, навигацию, хлебные крошки, подвал и места для будущего контента.</div>
+<h2>Разделы сайта</h2>
+<div class="grid">
+<a class="card" href="sveden.html"><span class="ico">🏫</span><h3>Сведения об образовательной организации</h3><p>Основные сведения, структура, документы, образование, руководство, педагогический состав и материальная база.</p><span class="badge badge-gold">Открыть раздел →</span></a>
+<a class="card" href="parents.html"><span class="ico">👨‍👩‍👧</span><h3>Родителям</h3><p>Памятки, питание, безопасность, школьная жизнь, порядок обращений и полезные материалы.</p><span class="badge badge-gold">Открыть раздел →</span></a>
+<a class="card" href="students.html"><span class="ico">🎓</span><h3>Ученикам</h3><p>Расписание, олимпиады, конкурсы, внеурочная деятельность, библиотека и ученическое самоуправление.</p><span class="badge badge-gold">Открыть раздел →</span></a>
+<a class="card" href="news.html"><span class="ico">📰</span><h3>Новости и объявления</h3><p>Лента публикаций с датой, категорией, кратким описанием и ссылкой на полный материал.</p><span class="badge badge-gold">Открыть раздел →</span></a>
+<a class="card" href="priem.html"><span class="ico">📝</span><h3>Приём в гимназию</h3><p>Порядок приёма, сроки, перечни документов, вакантные места и ответы на вопросы.</p><span class="badge badge-gold">Открыть раздел →</span></a>
+<a class="card" href="contacts.html"><span class="ico">📍</span><h3>Контакты</h3><p>Адрес, схема проезда, телефоны, электронная почта, часы работы и способы связи.</p><span class="badge badge-gold">Открыть раздел →</span></a>
+</div>
+<h2>Что предусмотрено в макете</h2>
+<div class="grid">
+<section class="card"><span class="ico">♿</span><h3>Доступность</h3><p>Настройка размера шрифта, контрастные схемы, клавиатурный фокус и поддержка reduced motion.</p></section>
+<section class="card"><span class="ico">📱</span><h3>Адаптивность</h3><p>Макет перестраивается под мобильные телефоны, планшеты и широкие экраны.</p></section>
+<section class="card"><span class="ico">🛠️</span><h3>Передача администратору</h3><p>Разделы подготовлены к наполнению. Архитектура будущей серверной версии описана отдельно.</p></section>
+</div>
+</main>'''
+page("index.html", "Главная", "Демонстрационный макет информационного сайта гимназии.", home)
 
-# ---------------- СВЕДЕНИЯ ----------------
-page("sveden.html", "Сведения об ОУ", "Официальные сведения, документы, образование, руководство и материальная база гимназии.",
-hero("Сведения об образовательной организации", "Структура раздела соответствует требованиям к официальным сайтам образовательных организаций.", "Официальный раздел") + '''
-<main id="main" class="container"><div class="with-aside">
-  <nav class="aside-nav" aria-label="Подразделы"><p>Подразделы</p><a href="#basic">Основные сведения</a><a href="#struct">Структура</a><a href="#docs">Документы</a><a href="#edu">Образование</a><a href="#standards">Стандарты</a><a href="#staff">Руководство</a><a href="#objects">Оснащение</a><a href="#paid">Платные услуги</a><a href="#budget">Финансы</a><a href="#vacant">Вакантные места</a><a href="#grants">Поддержка</a><a href="#intl">ЮНЕСКО</a><a href="#food">Питание</a></nav>
-  <div>
-  <div class="note note-info">Документы ведут на действующие страницы оригинального сайта, чтобы сохранить первоисточники. Содержимое можно редактировать прямо в HTML-файле.</div>
-  <div class="grid">
-    <section class="card" id="basic"><span class="ico">📌</span><h3>Основные сведения</h3><table class="kv"><tr><td>Полное наименование</td><td>МБОУ г. Астрахани «Гимназия №4»</td></tr><tr><td>Дата создания</td><td>1996 г. на базе школы №46 (основана в 1964 г.)</td></tr><tr><td>Учредитель</td><td>МО «Городской округ город Астрахань»</td></tr><tr><td>Адрес</td><td>414024, г. Астрахань, ул. Б. Хмельницкого, 16, корп. 1</td></tr><tr><td>Режим работы</td><td>пн–сб 07:30–18:30, выходной — воскресенье</td></tr><tr><td>Лицензия</td><td>№ Л035-01261-30/00372950 от 05.11.2015</td></tr><tr><td>Аккредитация</td><td>№ А007-01261-30/01134763 от 27.11.2015</td></tr></table></section>
-    <section class="card" id="struct"><span class="ico">🏛️</span><h3>Структура и органы управления</h3><p>Филиалов и структурных подразделений нет. Управление — по Уставу: общее собрание работников, педагогический совет, управляющий совет.</p><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/struct/">Подробнее</a></section>
-    <section class="card" id="docs"><span class="ico">📄</span><h3>Документы</h3><ul><li>Устав гимназии</li><li>Лицензия и аккредитация</li><li>Локальные нормативные акты</li><li>Публичный доклад и самообследование</li></ul><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/document/">Открыть документы</a></section>
-    <section class="card" id="edu"><span class="ico">🎓</span><h3>Образование</h3><ul><li>Начальное общее: 1–4 классы</li><li>Основное общее: 5–9 классы</li><li>Среднее общее: 10–11 классы</li><li>Углублённый английский и спецкурсы перевода</li><li>≈1450 обучающихся, 73 педагога</li></ul><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/education/">Образовательные программы</a></section>
-    <section class="card" id="standards"><span class="ico">📚</span><h3>Образовательные стандарты</h3><p>Реализуются ФГОС начального, основного и среднего общего образования.</p><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/edustandarts/">Стандарты и требования</a></section>
-    <section class="card" id="staff"><span class="ico">👩‍🏫</span><h3>Руководство. Педагогический состав</h3><table class="kv"><tr><td>Директор</td><td>Лендова Татьяна Викторовна</td></tr><tr><td>Приёмный день</td><td>среда, 14:00–18:00</td></tr><tr><td>Приёмная</td><td><a href="tel:+78512500567">(8512) 50-05-67</a></td></tr></table><p>73 педагога: Заслуженные учителя России, Почётные работники образования, Отличники просвещения.</p><a class="btn btn-small btn-ink" href="https://gym4.net/pedagogicheskij-sostav/">Педагогический состав</a></section>
-    <section class="card" id="objects"><span class="ico">🏊</span><h3>Материально-техническое обеспечение</h3><ul><li>Два спортивных зала и бассейн</li><li>Четыре оборудованные спортплощадки</li><li>Два компьютерных класса</li><li>Библиотечно-информационный центр и английская библиотека</li><li>Столовая с горячим питанием и буфет</li></ul></section>
-    <section class="card" id="paid"><span class="ico">💼</span><h3>Платные образовательные услуги</h3><div class="chips"><span>Подготовка дошкольников</span><span>Бальные танцы</span><span>Основы правоведения</span><span>Русская словесность</span><span>Happy kids</span><span>Cambridge English</span></div><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/paid_edu/">Условия и стоимость</a></section>
-    <section class="card" id="budget"><span class="ico">💰</span><h3>Финансово-хозяйственная деятельность</h3><p>План ФХД, отчёты о поступлениях и расходах, независимая оценка качества.</p><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/budget/">Документы</a> <a class="btn btn-small btn-line" href="https://bus.gov.ru/pub/info-card/33692">bus.gov.ru</a></section>
-    <section class="card" id="vacant"><span class="ico">🪑</span><h3>Вакантные места</h3><p>Актуальное количество свободных мест по классам — в разделе и в приёмной гимназии.</p><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/vacant/">Вакантные места</a></section>
-    <section class="card" id="grants"><span class="ico">🤝</span><h3>Стипендии и меры поддержки</h3><p>Меры социальной поддержки обучающихся, льготное питание.</p><a class="btn btn-small btn-ink" href="https://gym4.net/sveden/grants/">Подробнее</a></section>
-    <section class="card" id="intl"><span class="ico">🌍</span><h3>Международное сотрудничество</h3><p>Гимназия входит в сеть ассоциированных школ ЮНЕСКО.</p><a class="btn btn-small btn-ink" href="https://gym4.net/mezhdunarodnoe-sotrudnichestvo/">Подробнее</a></section>
-    <section class="card" id="food"><span class="ico">🍎</span><h3>Организация питания</h3><p>Ежедневное меню, здоровое питание, контроль с участием родителей.</p><a class="btn btn-small btn-ink" href="parents.html#food">Питание на сайте</a></section>
-  </div></div>
-</div></main>
-''')
+sveden = section("Основные сведения", "Реквизиты и общая информация об образовательной организации.", [
+("Полное и сокращённое наименование", "Официальное наименование, сокращённое название и организационно-правовая форма."),
+("Дата создания и история", "Подтверждённая дата основания, историческая справка и архивные материалы."),
+("Место нахождения и режим работы", "Юридический и фактический адрес, график работы и часы приёма."),
+("Контактные данные", "Телефон, электронная почта и официальные интернет-ресурсы."),
+]) + section("Структура и органы управления", "Сведения об органах управления и структурных подразделениях.", [
+("Структура управления", "Схема управления, коллегиальные органы и распределение полномочий."),
+("Руководство", "ФИО, должности, часы приёма и официальные контакты — после подтверждения."),
+("Педагогический состав", "Список педагогов, образование, квалификация и преподаваемые дисциплины."),
+]) + section("Образование", "Программы, учебные планы и календарные графики.", [
+("Образовательные программы", "Уровни образования, формы обучения, нормативные сроки и языки обучения."),
+("Учебные планы", "Утверждённые учебные планы и аннотации рабочих программ."),
+("Календарный учебный график", "Актуальный график учебного года и каникул."),
+]) + table_placeholder("Материально-техническое обеспечение", ["Объект / ресурс", "Описание", "Доступность"], 4) + section("Документы", "Список локальных актов и обязательных документов с датой и ссылкой на файл.", [
+("Устав и лицензия", "Загрузить актуальные документы, проверить сроки и реквизиты."),
+("Правила внутреннего распорядка", "Опубликовать утверждённые правила для обучающихся и родителей."),
+("Отчёты и предписания", "Добавить документы, подлежащие официальному размещению."),
+])
+page("sveden.html", "Сведения об образовательной организации", "Структура раздела сведений об образовательной организации.", layout("Сведения об образовательной организации", "Структурированный раздел для обязательных сведений, документов и материалов.", sveden, "Образовательная организация"))
 
-# ---------------- РОДИТЕЛЯМ ----------------
-page("parents.html", "Родителям", "Приём, питание, льготы, безопасность и ответы на частые вопросы для родителей.",
-hero("Родителям", "Приём и перевод, питание, льготы, безопасность и ответы на частые вопросы.", "Для семьи") + '''
-<main id="main" class="container">
-  <div class="grid"><a class="card" href="priem.html#first"><span class="ico">🎒</span><b>Приём в 1 класс</b><span>Сроки, документы, подача через Госуслуги</span></a><a class="card" href="priem.html#gym"><span class="ico">🏫</span><b>Приём / перевод в гимназию</b><span>5 класс и вакантные места</span></a><a class="card" href="https://gym4.net/klassy-i-klassnye-rukovoditeli/"><span class="ico">👥</span><b>Классы и руководители</b><span>Список классов и классные руководители</span></a></div>
-  <h2 id="food" data-mood="green">Организация питания</h2>
-  <p class="lead">В гимназии организовано горячее питание, работает буфет. Ученики 1–4 классов обеспечиваются бесплатным горячим питанием. Контроль качества ведётся с участием родителей.</p>
-  <div class="note">Меню ниже — учебный демонстрационный пример. Актуальное ежедневное меню публикуется на <a href="https://gym4.net/food/">gym4.net/food</a>.</div>
-  <div class="card"><table><tr><th>День</th><th>Завтрак</th><th>Обед</th></tr><tr><td>Понедельник</td><td>Каша овсяная, какао, бутерброд с сыром</td><td>Щи, куриная котлета с гарниром, компот</td></tr><tr><td>Вторник</td><td>Запеканка творожная, чай с молоком</td><td>Суп гороховый, рыба запечённая с рисом, кисель</td></tr><tr><td>Среда</td><td>Каша рисовая, чай, выпечка</td><td>Борщ, гуляш с гречей, компот</td></tr><tr><td>Четверг</td><td>Омлет, какао, бутерброд</td><td>Суп-лапша, тефтели с макаронами, компот</td></tr><tr><td>Пятница</td><td>Каша пшённая, чай, сырник</td><td>Рассольник, плов, фруктовый сок</td></tr></table></div>
-  <div class="chips" style="margin-top:14px"><a href="https://gym4.net/perechen-lgot/">Перечень льгот</a><a href="https://gym4.net/zdorovoe-pitanie/">Здоровое питание</a><a href="https://gym4.net/informaciya-po-rezultatam-kontrolnyx-meropriyatij-s-uchastiem-roditelej/">Результаты проверок питания</a></div>
-  <h2 id="safety" data-mood="red">Безопасность и права ребёнка</h2>
-  <div class="grid"><a class="card" href="https://gym4.net/prava-rebenka/"><span class="ico">⚖️</span><b>Права ребёнка</b><span>Основные документы и памятки</span></a><a class="card" href="https://gym4.net/dlya-roditelej-3/budte-bditelny/"><span class="ico">👀</span><b>Будьте бдительны</b><span>Профилактика и безопасность детей</span></a><a class="card" href="https://gym4.net/pamyatka-po-profilaktike-prestuplenij-protiv-polovoj-neprikosnovennosti-nesovershennoletnix/"><span class="ico">🛡️</span><b>Памятка по профилактике</b><span>Защита несовершеннолетних</span></a><a class="card" href="https://gym4.net/o-svyazi-obraza-zhizni-detej-s-ix-zdorovem-v-tom-chisle-immunitetom/"><span class="ico">🩺</span><b>Медицинская профилактика</b><span>Образ жизни и здоровье детей</span></a></div>
-  <h2 id="faq">Часто задаваемые вопросы</h2>
-  <details><summary>Как записать ребёнка в 1 класс?</summary><p>Заявление подаётся через Госуслуги или лично в гимназию. Кампания для закреплённой территории начинается 1 апреля. Подробности — <a href="priem.html#first">в разделе «Приём»</a>.</p></details>
-  <details><summary>Какие документы нужны для перевода в гимназию?</summary><p>Заявление, паспорт родителя, свидетельство о рождении ребёнка, личное дело и выписка оценок. Наличие свободных мест уточняйте в приёмной: <a href="tel:+78512500567">(8512) 50-05-67</a>.</p></details>
-  <details><summary>Питание платное?</summary><p>Ученики 1–4 классов получают бесплатное горячее питание. Для остальных категорий действуют льготы — см. <a href="https://gym4.net/perechen-lgot/">перечень льгот</a>.</p></details>
-  <details><summary>Где посмотреть ежедневное меню?</summary><p>В разделе «Питание» выше и на странице <a href="https://gym4.net/food/">ежедневного меню</a> действующего сайта.</p></details>
-</main>
-''')
+parents = section("Полезная информация", "Материалы для родителей и законных представителей обучающихся.", [
+("Организация питания", "Меню, стоимость, льготное питание, поставщик и порядок обратной связи."),
+("Безопасность детей", "Памятки по дорожной, пожарной, информационной и антитеррористической безопасности."),
+("Психолого-педагогическая помощь", "Порядок записи, часы консультаций и контакты ответственных специалистов."),
+("Медицинское сопровождение", "Порядок медицинского обслуживания и согласованные памятки."),
+("Школьная форма и принадлежности", "Утверждённые требования и рекомендации, если они действуют."),
+("Родительские собрания", "График собраний, повестки и материалы для родителей."),
+]) + table_placeholder("Памятки и документы для родителей", ["Название материала", "Дата обновления", "Файл"], 5) + section("Обратная связь", "Здесь будут размещены официальные способы связи и порядок подачи обращений.", [
+("Порядок обращения", "Кому и каким способом направлять вопрос; сроки рассмотрения и ответственный."),
+("Часто задаваемые вопросы", "Ответы на типовые вопросы после согласования с администрацией."),
+])
+page("parents.html", "Родителям", "Информационный раздел для родителей и законных представителей.", layout("Родителям", "Материалы, документы и полезные сведения для семей обучающихся.", parents, "Семья и школа"))
 
-# ---------------- УЧЕНИКАМ ----------------
-page("students.html", "Ученикам", "ГИА, итоговое сочинение, кружки и секции, телефон доверия и правила безопасности.",
-hero("Ученикам", "Экзамены, олимпиады, кружки и секции, помощь и безопасность.", "Школьная жизнь") + '''
-<main id="main" class="container">
-  <h2 id="gia" data-mood="blue">Государственная итоговая аттестация</h2>
-  <div class="grid"><section class="card"><span class="ico">9</span><h3>ГИА-9</h3><p>Русский язык и математика + два предмета по выбору. Допуск — при отсутствии задолженностей и с результатом «зачёт» за итоговое собеседование по русскому языку.</p><a class="btn btn-small btn-ink" href="https://gym4.net/gia-9/">Регламенты и расписание</a></section><section class="card"><span class="ico">11</span><h3>ГИА-11</h3><p>Для аттестата — русский язык и математика (базовая или профильная). Предметы по выбору — для поступления в вуз. Допуск — «зачёт» за итоговое сочинение.</p><a class="btn btn-small btn-ink" href="https://gym4.net/gia-11-2/">Регламенты и расписание</a></section></div>
-  <h2 id="essay">Итоговое сочинение</h2>
-  <section class="card"><p>Пишется в первую среду декабря, оценивается по системе «зачёт / незачёт» и является условием допуска к ГИА-11. Темы и структура — в материалах гимназии.</p><a class="btn btn-small btn-ink" href="https://gym4.net/itogovoe-sochinenie/">Материалы и сроки</a></section>
-  <h2 id="clubs" data-mood="green">Кружки и секции</h2>
-  <div class="chips"><span>🏊 «Золотая рыбка» (плавание)</span><span>🎤 «Звонкие голоса»</span><span>🎭 «Фабрика идей»</span><span>⚽ «Кожаный мяч»</span><span>🏐 «Олимпийские резервы»</span><span>🏀 Баскетбол</span><span>🇬🇧 Английский театр</span><span>💃 Ритмика</span><span>🤸 ОФП</span><span>♟️ Шахматы</span><span>🌟 Школа личностного роста</span><span>🤝 Республика «Содружество»</span></div>
-  <div class="note note-info">Ученики гимназии ежегодно становятся победителями и призёрами районных, городских, областных, всероссийских и международных олимпиад. Выпускники — студенты ведущих вузов России по версии RAEX.</div>
-  <h2 id="help" data-mood="red">Нужна помощь?</h2>
-  <section class="card"><h3>Детский телефон доверия: <a href="tel:88002000122">8-800-2000-122</a></h3><p>Бесплатно, анонимно, круглосуточно. Психологическая служба гимназии также готова помочь.</p><a class="btn btn-small btn-ink" href="https://gym4.net/telefon-doveriya/">Все контакты помощи</a></section>
-  <h2 id="safety">Безопасность</h2>
-  <div class="grid"><a class="card" href="https://gym4.net/pravila-dorozhnogo-dvizheniya-dlya-peshexodov/"><span class="ico">🚦</span><b>ПДД для пешеходов</b><span>Безопасный путь в школу</span></a><a class="card" href="https://gym4.net/pravila-povedeniya-v-obshhestvennom-transporte-i-na-mestax-posadki-passazhirov/"><span class="ico">🚌</span><b>Правила в транспорте</b><span>Общественный транспорт и посадки</span></a><a class="card" href="https://gym4.net/kak-ne-stat-zhertvoj-telefonnogo-moshennichestva/"><span class="ico">📵</span><b>Телефонные мошенники</b><span>Как не стать жертвой</span></a><a class="card" href="https://gym4.net/raspisanie-dvizheniya-prigorodnyx-poezdov/"><span class="ico">🚆</span><b>Пригородные поезда</b><span>Расписание движения</span></a></div>
-</main>
-''')
+students = section("Учебный процесс", "Раздел для обучающихся: актуальная информация и учебные материалы.", [
+("Расписание занятий", "Ссылка на утверждённое расписание или подключённую систему расписания."),
+("График каникул", "Даты каникул на текущий учебный год после утверждения."),
+("Электронный дневник", "Официальная ссылка и инструкция по входу без сбора логинов на демо-сайте."),
+("Библиотека и электронные ресурсы", "Каталог, правила пользования и проверенные образовательные ресурсы."),
+]) + section("Внеурочная деятельность", "Кружки, секции, проекты и события школьной жизни.", [
+("Олимпиады и конкурсы", "Календарь, положения, сроки и результаты — только после публикации организатором."),
+("Кружки и секции", "Название, руководитель, возраст, время занятий и порядок записи."),
+("Проектная деятельность", "Темы проектов, конференции, требования и архив работ."),
+("Ученическое самоуправление", "Органы самоуправления, состав, планы и контакты."),
+]) + section("Поддержка ученика", "Справочные материалы и безопасные каналы получения помощи.", [
+("Профориентация", "Материалы о выборе профессии, днях открытых дверей и поступлении."),
+("Психологическая поддержка", "Контакты и порядок обращения к школьному специалисту."),
+("Правила и памятки", "Правила поведения, цифровая безопасность и действия в экстренных ситуациях."),
+])
+page("students.html", "Ученикам", "Информация для обучающихся гимназии.", layout("Ученикам", "Учебные материалы, расписание, проекты и школьная жизнь.", students, "Обучающимся"))
 
-# ---------------- НОВОСТИ ----------------
-page("news.html", "Новости", "Новости гимназии с поиском, фильтром по категориям и сортировкой.",
-hero("Новости гимназии", "Поиск, фильтр по категориям и сортировка работают прямо в браузере.", "События") + '''
-<main id="main" class="container">
-  <div class="note">Демонстрационные новости для предварительного показа. В боевой версии подключаются к WordPress или другой CMS.</div>
-  <div class="toolbar"><input id="newsSearch" type="search" placeholder="Поиск по новостям…" aria-label="Поиск по новостям"><select id="newsSort" aria-label="Сортировка"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select><div class="filter" role="group" aria-label="Фильтр новостей"><button class="on" data-filter="all">Все</button><button data-filter="study">Учёба</button><button data-filter="olimp">Олимпиады</button><button data-filter="project">Проекты</button><button data-filter="sport">Спорт</button></div><span id="newsCount" class="count" aria-live="polite"></span></div>
-  <section id="newsList" class="news">
-    <article class="card" data-cat="olimp" data-date="2026-11-12"><time datetime="2026-11-12">12 ноября 2026</time><span class="badge badge-blue">Олимпиады</span><b>Школьный этап ВсОШ</b><span>Приглашаем учеников 4–11 классов. Победители пройдут на муниципальный этап.</span><p><span class="badge badge-gold">Демо</span></p></article>
-    <article class="card" data-cat="sport" data-date="2026-11-10"><time datetime="2026-11-10">10 ноября 2026</time><span class="badge badge-green">Спорт</span><b>Турнир «Кожаный мяч»</b><span>Сборная гимназии вышла в финал городских соревнований по футболу.</span><p><span class="badge badge-gold">Демо</span></p></article>
-    <article class="card" data-cat="project" data-date="2026-11-08"><time datetime="2026-11-08">8 ноября 2026</time><span class="badge badge-red">Проекты</span><b>«Орлята России»: новый сезон</b><span>Гимназия — флагманская школа федерального проекта социальной активности младших школьников.</span><p><span class="badge badge-gold">Демо</span></p></article>
-    <article class="card" data-cat="study" data-date="2026-11-05"><time datetime="2026-11-05">5 ноября 2026</time><span class="badge badge-blue">Учёба</span><b>Английский театр открыл сезон</b><span>Студия приглашает учеников 5–8 классов. Постановки готовятся на английском языке.</span><p><span class="badge badge-gold">Демо</span></p></article>
-    <article class="card" data-cat="study" data-date="2026-11-01"><time datetime="2026-11-01">1 ноября 2026</time><span class="badge badge-blue">Учёба</span><b>Родительские собрания по ГИА</b><span>В 9-х и 11-х классах прошли собрания о порядке проведения экзаменов.</span><p><span class="badge badge-gold">Демо</span></p></article>
-    <article class="card" data-cat="olimp" data-date="2026-10-28"><time datetime="2026-10-28">28 октября 2026</time><span class="badge badge-blue">Олимпиады</span><b>Победы на муниципальных олимпиадах</b><span>Ученики гимназии завоевали призовые места по английскому языку и математике.</span><p><span class="badge badge-gold">Демо</span></p></article>
-  </section>
-  <div id="newsEmpty" class="note" hidden>Ничего не найдено. <button class="btn btn-small btn-line" data-filter="all" style="margin-left:8px">Сбросить</button></div>
-</main>
-''')
+news = section("Новости гимназии", "В этом блоке будут появляться проверенные публикации с датой, изображением и автором.", [
+("Карточка новости №1", "Заглушка публикации. Добавить заголовок, дату, краткий текст, изображение и ссылку на подробную страницу."),
+("Карточка новости №2", "Заглушка объявления. Указать срок действия и ответственного за актуальность."),
+("Карточка новости №3", "Заглушка события. Добавить подтверждённые сведения и материалы."),
+]) + section("Объявления", "Срочные сообщения и важные уведомления с датой публикации и сроком актуальности.", [
+("Объявление №1", "Текст объявления и срок действия будут внесены редактором."),
+("Объявление №2", "Текст объявления и срок действия будут внесены редактором."),
+])
+page("news.html", "Новости и объявления", "Шаблон ленты новостей и объявлений гимназии.", layout("Новости и объявления", "Публикации, события и важные сообщения. Сейчас здесь размещены только редакционные заглушки.", news, "Новости"))
 
-# ---------------- КОНТАКТЫ ----------------
-page("contacts.html", "Контакты", "Адрес, телефоны, e-mail, график работы и демо-форма обратной связи.",
-hero("Контакты", "Адрес, телефоны, электронная почта, график работы и обратная связь.", "Связь со школой") + '''
-<main id="main" class="container">
-  <div class="grid"><section class="card"><span class="ico">📍</span><h3>Адрес</h3><p>414024, г. Астрахань, Советский район,<br>ул. Б. Хмельницкого, д. 16, корп. 1</p><a class="btn btn-small btn-ink" href="https://yandex.ru/maps/?text=Астрахань,+улица+Богдана+Хмельницкого,+16к1" target="_blank" rel="noopener">Открыть в Яндекс.Картах</a></section><section class="card"><span class="ico">📞</span><h3>Телефоны</h3><table class="kv"><tr><td>Приёмная директора</td><td><a href="tel:+78512500567">(8512) 50-05-67</a></td></tr><tr><td>Учительская / библиотека</td><td><a href="tel:+78512243404">(8512) 24-34-04</a></td></tr><tr><td>Медицинский кабинет</td><td><a href="tel:+78512336222">(8512) 33-62-22</a></td></tr></table></section><section class="card"><span class="ico">✉️</span><h3>Электронная почта</h3><p><a href="mailto:gimn4@obr.astrobl.ru">gimn4@obr.astrobl.ru</a><br><a href="mailto:gum4ast@30gorod.ru">gum4ast@30gorod.ru</a></p></section><section class="card"><span class="ico">🕗</span><h3>График работы</h3><table class="kv"><tr><td>Понедельник–суббота</td><td>07:30–18:30</td></tr><tr><td>Выходной</td><td>воскресенье</td></tr><tr><td>Приёмный день директора</td><td>среда, 14:00–18:00</td></tr><tr><td>Директор</td><td>Лендова Татьяна Викторовна</td></tr></table></section></div>
-  <h2 id="founder">Учредитель</h2>
-  <section class="card"><p><b>Управление образования администрации МО «Городской округ город Астрахань»</b><br>Начальник — Фролов Сергей Сергеевич<br>414000, г. Астрахань, ул. Никольская/Ульяновых, д. 10/14<br>тел./факс: <a href="tel:+78512515727">(8512) 51-57-27</a> · <a href="mailto:uprav.obr@30gorod.ru">uprav.obr@30gorod.ru</a><br>График: пн–пт 08:30–17:30, перерыв 13:00–14:00.</p></section>
-  <h2 id="feedback" data-mood="gold">Написать нам</h2>
-  <div class="note note-info">Форма показана только для демонстрации интерфейса. Не вводите ФИО, телефоны, адреса и другие персональные данные: отправки на сервер и сохранения в браузере нет.</div>
-  <section class="card form"><form id="fbForm"><label>Тема обращения<select name="topic"><option>Приём и перевод</option><option>Питание</option><option>Учебный процесс</option><option>Другое</option></select></label><label>Пример вопроса<textarea name="demoQuestion" rows="5" placeholder="Только тестовый текст — без персональных данных"></textarea></label><button class="btn btn-gold" type="submit">Проверить демо-сценарий</button></form></section>
-</main>
-''')
+priem = section("Поступление в первый класс", "Порядок приёма, сроки и перечень документов должны быть сверены с действующими правилами.", [
+("Порядок подачи заявления", "Добавить актуальный порядок, способы подачи заявления и ссылки на официальные сервисы."),
+("Сроки приёмной кампании", "Указать даты после утверждения и проверки нормативных документов."),
+("Необходимые документы", "Разместить утверждённый перечень документов и требования к копиям."),
+]) + section("Перевод и приём в другие классы", "Порядок зачисления при наличии свободных мест.", [
+("Наличие свободных мест", "Добавить актуальные сведения по параллелям с датой обновления."),
+("Порядок перевода", "Пошаговая инструкция и список документов."),
+("Ответы на вопросы", "Ответы приёмной комиссии после согласования."),
+]) + table_placeholder("Вакантные места", ["Класс / параллель", "Количество мест", "Дата актуальности"], 5)
+page("priem.html", "Приём в гимназию", "Шаблон раздела о приёме и зачислении обучающихся.", layout("Приём в гимназию", "Порядок поступления, документы, сроки и сведения о вакантных местах.", priem, "Поступающим"))
 
-# ---------------- ПРИЁМ ----------------
-page("priem.html", "Приём", "Приём в 1 класс и перевод в гимназию: сроки, документы и порядок подачи заявления.",
-hero("Приём в гимназию", "Порядок приёма в 1 класс и перевода в гимназию, сроки и документы.", "Поступление") + '''
-<main id="main" class="container">
-  <div class="note">Сроки указаны по федеральному порядку приёма. Актуальные даты кампании и закреплённые территории уточняйте в приёмной: <a href="tel:+78512500567">(8512) 50-05-67</a>.</div>
-  <div class="grid"><section class="card" id="first"><span class="ico">🎒</span><h3>Приём в 1 класс</h3><p>Возраст ребёнка на 1 сентября: от 6,5 до 8 лет.</p><ol class="steps"><li><b>1 апреля — 30 июня</b> — заявления от детей на закреплённой территории и льготных категорий.</li><li><b>6 июля — 5 сентября</b> — заявления на оставшиеся свободные места.</li><li><b>Распорядительный акт</b> о зачислении издаётся в течение 5 рабочих дней после завершения приёма.</li></ol><p><b>Документы:</b> паспорт родителя, свидетельство о рождении ребёнка, документ о регистрации по месту жительства.</p><a class="btn btn-small btn-gold" href="https://www.gosuslugi.ru/" target="_blank" rel="noopener">Подать через Госуслуги</a> <a class="btn btn-small btn-line" href="https://gym4.net/priem-v-1-klass/">Подробности</a></section><section class="card" id="gym"><span class="ico">🏫</span><h3>Приём / перевод в 5 класс</h3><p>Гимназия реализует программы повышенного уровня с углублённым изучением английского языка и спецкурсами перевода и зарубежной литературы.</p><p><b>Документы:</b> заявление, паспорт родителя, свидетельство о рождении, личное дело обучающегося и выписка оценок.</p><p>Наличие вакантных мест — <a href="sveden.html#vacant">в разделе «Вакантные места»</a> и в приёмной.</p><a class="btn btn-small btn-ink" href="https://gym4.net/priem-v-5-klass/">Условия приёма</a></section></div>
-  <h2>Коротко о главном</h2>
-  <div class="grid"><section class="card"><span class="ico">📅</span><h3>Когда подавать</h3><p>Основная волна — с 1 апреля. Если остались места, продолжается с 6 июля.</p></section><section class="card"><span class="ico">🧾</span><h3>Что подготовить</h3><p>Паспорт родителя, свидетельство о рождении ребёнка и подтверждение регистрации.</p></section><section class="card"><span class="ico">☎️</span><h3>Куда звонить</h3><p>Приёмная директора: <a href="tel:+78512500567">(8512) 50-05-67</a>. Приёмный день — среда, 14:00–18:00.</p></section></div>
-</main>
-''')
+contacts = section("Контактная информация", "Реквизиты и контакты будут внесены только после сверки с администрацией.", [
+("Адрес гимназии", "Указать подтверждённый почтовый и фактический адрес."),
+("Телефоны", "Указать официальные номера и назначение каждого телефона."),
+("Электронная почта", "Указать адреса для общих вопросов и отдельных направлений."),
+("Часы работы и приём граждан", "Опубликовать график работы и часы личного приёма."),
+]) + section("Как добраться", "Схема проезда, ориентиры и доступность входа будут добавлены после проверки.", [
+("Схема расположения", "Добавить карту или схему с проверенными координатами."),
+("Общественный транспорт", "Добавить маршруты и остановки после проверки."),
+("Доступная среда", "Описать доступность входов и помещений на основании фактической проверки."),
+]) + '''<section class="content-section"><h2>Демонстрация формы обращения</h2><div class="card form"><div class="note note-info">Форма показана только для демонстрации интерфейса. Она не отправляет, не сохраняет и не передаёт введённые данные.</div><form id="fbForm"><label for="demoTopic">Тема обращения</label><select id="demoTopic"><option>Выберите тему</option><option>Общий вопрос</option><option>Приём в гимназию</option><option>Документы</option></select><label for="demoMessage">Текст сообщения</label><textarea id="demoMessage" rows="4" placeholder="Поле для демонстрации — не вводите реальные персональные данные"></textarea><button class="btn btn-gold" type="submit">Проверить демонстрацию</button><p class="placeholder-owner">После нажатия появится уведомление, что сообщение не отправлено.</p></form></div></section>'''
+page("contacts.html", "Контакты", "Шаблон контактной информации и демонстрация безопасной формы.", layout("Контакты", "Адрес, телефоны, электронная почта и способы связи будут заполнены после проверки.", contacts, "Связь с гимназией"))
 
-# ---------------- ДИЗАЙН-СИСТЕМА ----------------
-page("styleguide.html", "Дизайн-система", "Палитра, типографика, компоненты и принципы дизайна демонстрационного проекта.",
-hero("Дизайн-система проекта", "Единый стиль для всех страниц: палитра, типографика, компоненты, сетка и принципы.", "Для проверки проекта") + '''
-<main id="main" class="container">
-  <h2>Идея стиля</h2>
-  <div class="grid"><section class="card"><span class="ico">🖋️</span><h3>Академичность</h3><p>Чернильный синий, тёплая бумага и золото наград передают атмосферу гимназии: традиция, знание, достоинство.</p></section><section class="card"><span class="ico">🌍</span><h3>Открытость миру</h3><p>Электрический синий используется как акцентный цвет интерфейса и помогает выделять интерактивные элементы.</p></section><section class="card"><span class="ico">♿</span><h3>Доступность</h3><p>Контрастные пары, версия для слабовидящих, фокусные состояния и отключение анимаций.</p></section></div>
-  <h2>Палитра</h2><p class="lead">Нажмите «Копировать», чтобы скопировать HEX-код.</p>
-  <div class="grid"><section class="card"><div class="swatch-color" style="background:#182742"></div><h3>Чернильный</h3><p><code>#182742</code> · шапка, подвал, hero</p><button class="btn btn-small btn-line" data-copy="#182742">Копировать</button></section><section class="card"><div class="swatch-color" style="background:#f5efe3"></div><h3>Бумага</h3><p><code>#F5EFE3</code> · фон страниц</p><button class="btn btn-small btn-line" data-copy="#F5EFE3">Копировать</button></section><section class="card"><div class="swatch-color" style="background:#c9962e"></div><h3>Золото</h3><p><code>#C9962E</code> · главные действия</p><button class="btn btn-small btn-line" data-copy="#C9962E">Копировать</button></section><section class="card"><div class="swatch-color" style="background:#2f6fd0"></div><h3>Синий ЮНЕСКО</h3><p><code>#2F6FD0</code> · ссылки</p><button class="btn btn-small btn-line" data-copy="#2F6FD0">Копировать</button></section><section class="card"><div class="swatch-color" style="background:#3d8bff"></div><h3>Электрический</h3><p><code>#3D8BFF</code> · прогресс и свечения</p><button class="btn btn-small btn-line" data-copy="#3D8BFF">Копировать</button></section><section class="card"><div class="swatch-color" style="background:#2e8f66"></div><h3>Успех</h3><p><code>#2E8F66</code> · подтверждения</p><button class="btn btn-small btn-line" data-copy="#2E8F66">Копировать</button></section><section class="card"><div class="swatch-color" style="background:#c8442e"></div><h3>Важное</h3><p><code>#C8442E</code> · предупреждения</p><button class="btn btn-small btn-line" data-copy="#C8442E">Копировать</button></section><section class="card"><div class="swatch-color" style="background:#fffcf5"></div><h3>Поверхность</h3><p><code>#FFFCF5</code> · карточки</p><button class="btn btn-small btn-line" data-copy="#FFFCF5">Копировать</button></section></div>
-  <h2>Типографика</h2>
-  <section class="card"><p class="kicker">Заголовки · Playfair Display</p><p class="serif" style="font-size:2.6rem;margin:8px 0 18px">Гимназия №4 — школа с историей</p><h3 style="font-size:1.5rem">Подзаголовок раздела и название карточки</h3><p class="kicker" style="margin-top:22px">Основной текст · Manrope</p><p>Основной шрифт хорошо читается на экранах любого размера. Используется в меню, кнопках, таблицах, формах и длинных текстах.</p><p class="lead">Лид-абзац выделяет главное перед содержимым раздела.</p><p style="color:var(--muted);font-size:.88rem">Второстепенный текст: подписи, даты, технические пометки и сноски.</p></section>
-  <h2 id="components">Компоненты</h2>
-  <div class="grid"><section class="card"><h3>Кнопки</h3><p><a class="btn btn-gold" href="#components">Главная</a> <a class="btn btn-ink" href="#components">Обычная</a> <a class="btn btn-line" href="#components">Контурная</a></p><p style="margin-top:12px"><a class="btn btn-small btn-gold" href="#components">Малая</a> <a class="btn btn-small btn-danger" href="#components">Опасная</a></p></section><section class="card"><h3>Бейджи</h3><p><span class="badge badge-blue">Информация</span><span class="badge badge-gold">Демо</span><span class="badge badge-green">Успех</span><span class="badge badge-red">Важное</span></p><p>Цвета кодируют смысл и всегда дублируются текстом.</p></section><section class="card"><h3>Карточка-ссылка</h3><a class="card" href="#components" style="display:block"><span class="ico">📚</span><b>Пример карточки</b><span>Карточки ведут к разделам и дают мягкий отклик при наведении.</span></a></section><section class="card form"><h3>Формы</h3><label>Поле ввода<input placeholder="Введите текст"></label><label class="agree"><input type="checkbox">Согласие на обработку данных</label></section><section class="card"><h3>Аккордеон</h3><details><summary>Как работает аккордеон?</summary><p>Нативный HTML-элемент details доступен с клавиатуры и не требует JavaScript.</p></details></section><section class="card"><h3>Таблица</h3><table class="kv"><tr><td>Приёмная</td><td>(8512) 50-05-67</td></tr><tr><td>Учительская</td><td>(8512) 24-34-04</td></tr><tr><td>Медкабинет</td><td>(8512) 33-62-22</td></tr></table></section></div>
-  <h2>Сетка и состояния</h2>
-  <section class="card"><p><b>Контейнер:</b> 1160px, поля 20px. <b>Сетка:</b> CSS Grid auto-fit, колонки от 260px.</p><p><b>Радиусы:</b> карточки 18px, кнопки 12px, чипы 99px. <b>Отступы:</b> 8 / 12 / 16 / 18 / 24 / 32 / 56px.</p><p><b>Состояния:</b> hover — подъём и золотая граница; focus — золотое кольцо 3px; active — чернильная заливка.</p><div class="spacing"><span style="width:8px"></span><span style="width:12px"></span><span style="width:16px"></span><span style="width:18px"></span><span style="width:24px"></span><span style="width:32px"></span><span style="width:56px"></span></div></section>
-  <h2>Правила использования</h2>
-  <div class="grid"><section class="card"><h3>Можно</h3><ul><li>Золото — только для главных действий</li><li>Сохранять тёплый фон и чернильные заголовки</li><li>Оставлять воздух вокруг текста</li><li>Помечать демонстрационные материалы</li></ul></section><section class="card"><h3>Нельзя</h3><ul><li>Ставить золотой текст на светлом фоне без проверки контраста</li><li>Прятать важные контакты за лишним кликом</li><li>Убирать фокусные состояния</li><li>Смешивать больше двух акцентов в одном блоке</li></ul></section></div>
-</main>
-''')
+style = section("Визуальная система", "Единый набор цветов, типографики и компонентов для дальнейшей разработки.", [
+("Цветовая палитра", "Чернильный синий, тёплый светлый фон и золотой акцент."),
+("Типографика", "Заголовки с выразительной антиквой, основной текст — нейтральный гротеск."),
+("Компоненты", "Карточки, кнопки, таблицы, уведомления и формы с едиными состояниями."),
+("Адаптивность и доступность", "Мобильная сетка, контраст, фокус, клавиатура и reduced motion."),
+])
+page("styleguide.html", "Дизайн-система", "Описание визуальной системы демонстрационного сайта.", layout("Дизайн-система", "Внутренний раздел для разработки и согласования визуального языка.", style, "Для разработчиков"))
 
-# ---------------- 404 ----------------
-page("404.html", "Страница не найдена", "Ошибка 404 — страница не найдена.", '''
-<section class="page-hero" data-mood="red"><div class="container"><p class="kicker">Ошибка 404</p><h1>Страница не найдена</h1><p class="lead">Возможно, ссылка устарела или была введена с ошибкой.</p></div></section>
-<main id="main" class="container"><section class="card"><p>Вернитесь на главную или откройте нужный раздел:</p><p><a class="btn btn-gold" href="index.html">На главную</a> <a class="btn btn-line" href="news.html">Новости</a> <a class="btn btn-line" href="contacts.html">Контакты</a></p></section></main>
-''')
+notfound = '''<section class="page-hero" data-mood="red"><div class="container"><p class="kicker">Ошибка 404</p><h1>Страница не найдена</h1><p class="lead">Возможно, ссылка устарела или была введена с ошибкой.</p></div></section><main id="main" class="container"><section class="card"><p>Вернитесь на главную или выберите раздел сайта.</p><p><a class="btn btn-gold" href="index.html">На главную</a> <a class="btn btn-line" href="news.html">Новости</a> <a class="btn btn-line" href="contacts.html">Контакты</a></p></section></main>'''
+page("404.html", "Страница не найдена", "Ошибка 404 — страница не найдена.", notfound)
+
 
 # ---------------- СЛУЖЕБНЫЕ ФАЙЛЫ ----------------
 (OUT / ".nojekyll").write_text("", encoding="utf-8")
