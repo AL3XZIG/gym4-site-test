@@ -1,22 +1,25 @@
-# Demo site
+# Static HTML demo
 
-Static multi-page preview for GitHub Pages. The generator creates `site/` from `build_demo.py`; generated output is not committed.
+This directory is the website. Every page is a real, standalone HTML file.
 
 ## Source layout
 
-- `build_demo.py` — creates the pages and copies assets into the generated site.
-- `assets/css/style.css` — shared responsive styles.
-- `assets/js/app.js` — menu, accessibility controls, motion and demo-only form feedback.
-- `site/` — generated output; do not edit by hand.
+- `*.html` — page markup; edit the relevant page directly.
+- `assets/css/style.css` — shared layout, responsive design and visual components.
+- `assets/js/app.js` — mobile menu, accessibility controls, scrolling and demo form feedback.
+- `assets/favicon.svg` — site icon.
 
 ## Run locally
 
+Open `index.html` directly in a browser, or run:
+
 ```bash
-python build_demo.py
-python -m http.server 8000 --directory site
+python -m http.server 8000
 ```
 
-Open http://localhost:8000.
+Then visit http://localhost:8000.
+
+No Python generator, Node.js, npm or build step is required. Python's built-in server is optional and only serves the files locally.
 
 ## Pages
 
@@ -30,6 +33,6 @@ Open http://localhost:8000.
 - `styleguide.html` — design system
 - `404.html` — not found
 
-All content blocks requiring school-specific facts are explicitly marked as editor placeholders. The demo form does not transmit or persist entered text.
+All school-specific facts are clearly marked as placeholders. The form does not transmit or persist entered text.
 
-GitHub Actions builds and tests the site on pull requests but deploys only after a push to `main`. In repository Settings → Pages, select GitHub Actions as the deployment source once.
+GitHub Actions uploads this directory directly as the Pages artifact. In repository Settings → Pages, select GitHub Actions as the deployment source.
