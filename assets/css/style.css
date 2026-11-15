@@ -354,3 +354,233 @@ html[data-scheme="wb"] .feature-card h3,html[data-scheme="wb"] .data-card strong
 /* Режим доступности */
 html[data-spacing="wide"] body{line-height:2}.a11y-panel .a11y-in{align-items:flex-start}.a11y-panel .a11y-group{align-items:flex-start;flex-direction:column}.a11y-panel .seg button{min-height:40px}html[data-images="hide"] main img,html[data-images="hide"] main picture,html[data-images="hide"] main video{visibility:hidden!important}html[data-scheme="bw"] body,html[data-scheme="bw"] .site-header,html[data-scheme="bw"] .a11y-panel,html[data-scheme="bw"] .quick-card,html[data-scheme="bw"] .home-news-card,html[data-scheme="bw"] .photo-frame,html[data-scheme="bw"] .event-photo{color:#000!important;background:#fff!important}html[data-scheme="bw"] h1,html[data-scheme="bw"] h2,html[data-scheme="bw"] h3,html[data-scheme="bw"] a{color:#000!important}html[data-scheme="wb"] body,html[data-scheme="wb"] .site-header,html[data-scheme="wb"] .a11y-panel,html[data-scheme="wb"] .quick-card,html[data-scheme="wb"] .home-news-card,html[data-scheme="wb"] .photo-frame,html[data-scheme="wb"] .event-photo{color:#fff!important;background:#000!important}html[data-scheme="wb"] h1,html[data-scheme="wb"] h2,html[data-scheme="wb"] h3,html[data-scheme="wb"] a{color:#fff!important}
 @media(max-width:800px){.photo-gallery__grid,.event-gallery__grid{grid-template-columns:1fr 1fr}.photo-frame--large{grid-column:1/-1}.footer-social{grid-template-columns:1fr;gap:1.2rem}}@media(max-width:520px){.photo-gallery__grid,.event-gallery__grid,.footer-social__links{grid-template-columns:1fr}.photo-frame--large{grid-column:auto}.photo-frame__placeholder,.photo-frame--large .photo-frame__placeholder,.event-photo__placeholder{min-height:190px}.gallery-note{margin-top:.5rem}}
+
+/* ==========================================================================
+   Gymnasium 4 — institutional editorial refresh
+   School-first design: editorial layout, calm contrast, no university imagery.
+   Uses system fonts and local assets only.
+   ========================================================================== */
+:root {
+  --navy: #14283f;
+  --navy-deep: #0b1d2e;
+  --blue: #365f7d;
+  --blue-soft: #eaf0f3;
+  --ink: #202d38;
+  --muted: #65717b;
+  --paper: #ffffff;
+  --surface: #f4f5f2;
+  --line: #dce1e2;
+  --accent: #b49a6a;
+  --accent-soft: #f2ecdf;
+  --focus: #8b5a12;
+  --wrap: 1260px;
+  --font: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+body { color: var(--ink); background: #fff; letter-spacing: .002em; }
+h1, h2, h3 { letter-spacing: -.035em; }
+.wrap { width: min(100% - 48px, var(--wrap)); }
+
+/* Верхняя служебная полоса и навигация */
+.util-bar { color: #53616d; background: #f2f3f0; border-bottom: 1px solid #e2e5e2; }
+.util-contacts a, .util-links a { color: var(--navy); }
+.util-contacts span { color: #697680; }
+.util-links a { font-size: .73rem; letter-spacing: .015em; }
+.site-header { background: rgba(255,255,255,.98); border-bottom: 0; }
+.header-in { min-height: 94px; }
+.brand { gap: 1rem; }
+.brand-mark { width: 3.5rem; height: 3.5rem; border: 1px solid #d9c8a4; border-bottom: 3px solid var(--accent); font-size: 2rem; }
+.brand-name { font-size: 1.22rem; letter-spacing: -.035em; }
+.brand-sub { font-size: .72rem; letter-spacing: .13em; text-transform: uppercase; }
+.tool-btn, .menu-btn { border-color: #cfd6da; font-size: .8rem; transition: color .18s ease, background .18s ease, border-color .18s ease; }
+.site-nav { background: #fff; border-top: 1px solid #edf0ef; border-bottom: 1px solid #dce1e2; }
+.site-nav ul { gap: .15rem; }
+.site-nav a { padding: .92rem .95rem .82rem; color: #3d4d5b; border-bottom: 3px solid transparent; font-size: .82rem; font-weight: 700; letter-spacing: .01em; }
+.site-nav a:hover { color: var(--navy); background: #f5f6f3; }
+.site-nav a[aria-current="page"] { color: var(--navy); background: transparent; border-bottom-color: var(--accent); }
+.a11y-panel { background: #f5f6f3; }
+
+/* Главный экран */
+.home-hero { isolation: isolate; background: linear-gradient(112deg, #0b1d2e 0%, #142e49 62%, #203d55 100%); }
+.home-hero::before { position: absolute; z-index: -1; inset: 0; content: ""; opacity: .22; background: linear-gradient(90deg, transparent 0 49.9%, rgba(255,255,255,.08) 50%, transparent 50.1%), linear-gradient(0deg, transparent 0 79.9%, rgba(255,255,255,.07) 80%, transparent 80.1%); background-size: 120px 120px; }
+.home-hero__inner { min-height: 555px; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); gap: clamp(2rem, 5vw, 5rem); padding-block: 5rem 4.8rem; }
+.home-hero__content { max-width: 740px; }
+.home-hero .eyebrow { color: #d2bb91; letter-spacing: .19em; font-size: .7rem; }
+.home-hero h1 { max-width: 720px; font-size: clamp(3rem, 6vw, 5.65rem); line-height: .99; letter-spacing: -.065em; }
+.home-hero h1 span { color: #d5bd91; }
+.home-hero__lead { max-width: 610px; color: #d5dfe7; font-size: clamp(1rem, 1.35vw, 1.13rem); line-height: 1.75; }
+.button { min-height: 50px; padding: .82rem 1.18rem; border-radius: 2px; transition: transform .18s ease, background-color .18s ease, color .18s ease, border-color .18s ease; }
+.button:hover { transform: translateY(-2px); }
+.button--light { color: var(--navy); background: #f7f6f1; }
+.button--outline { border-color: rgba(255,255,255,.45); }
+.home-hero__visual { min-height: 390px; overflow: hidden; border: 1px solid rgba(225,232,236,.28); border-left: 1px solid rgba(225,232,236,.28); background: radial-gradient(circle at 50% 35%, rgba(185,162,119,.16), transparent 38%), linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.008)); }
+.home-hero__visual::before { width: 76%; height: 76%; border: 1px solid rgba(231,220,198,.35); border-radius: 0; transform: rotate(-7deg); }
+.home-hero__visual::after { width: 62%; height: 62%; border: 1px solid rgba(231,220,198,.18); border-radius: 0; background: repeating-linear-gradient(135deg, transparent 0 20px, rgba(255,255,255,.045) 21px 22px); transform: rotate(7deg); }
+.hero-monogram { color: #f3efe5; font-size: clamp(9rem, 17vw, 14.5rem); font-weight: 750; letter-spacing: -.12em; text-shadow: 0 12px 35px rgba(0,0,0,.12); }
+.hero-caption { padding: 1.05rem 1.25rem; background: rgba(7,22,36,.94); border-top: 2px solid var(--accent); }
+.hero-caption span { color: #c5d0d8; }
+.hero-caption strong { font-size: 1.2rem; letter-spacing: -.02em; }
+.home-hero__bottom { background: #081827; }
+.home-hero__bottom .wrap { padding-block: .92rem; color: #c2ccd4; font-size: .7rem; letter-spacing: .17em; }
+.home-hero__bottom span { position: relative; }
+.home-hero__bottom span + span::before { content: " / "; padding-right: 1rem; color: #987f59; }
+
+/* Ритм страницы, заголовки секций и быстрые ссылки */
+.quick-section { padding-block: 4.6rem 4.8rem; }
+.section-heading { margin-bottom: 1.8rem; }
+.section-heading h2 { font-size: clamp(1.75rem, 3vw, 2.55rem); }
+.eyebrow--dark { color: #8a7049; }
+.text-link { color: #365f7d; font-size: .84rem; }
+.quick-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid #cfd7d8; border-left: 0; }
+.quick-card { min-height: 178px; padding: 1.35rem 1.45rem; border-right: 0; border-bottom: 1px solid #cfd7d8; border-top: 1px solid #cfd7d8; margin-top: -1px; transition: background .2s ease, transform .2s ease; }
+.quick-card:nth-child(3n + 2), .quick-card:nth-child(3n + 3) { border-left: 1px solid #e0e4e3; }
+.quick-card:hover { background: #f5f6f3; transform: translateY(-2px); }
+.quick-card__number { margin-bottom: 1.45rem; color: #9b8055; letter-spacing: .15em; }
+.quick-card strong { font-size: 1.12rem; }
+.quick-card > span:not(.quick-card__number):not(.quick-card__arrow) { max-width: 270px; font-size: .82rem; }
+.quick-card__arrow { color: #8d744f; }
+
+/* О гимназии, история и факты */
+.home-profile { padding-block: 4.8rem; background: #f5f5f1; border-block: 1px solid #e3e5e1; }
+.profile-grid { gap: clamp(2.5rem, 6vw, 6.2rem); }
+.profile-intro h2 { font-size: clamp(2rem, 3.5vw, 3.05rem); line-height: 1.08; }
+.profile-intro p:not(.eyebrow) { line-height: 1.8; }
+.history-list { border-top-color: #d5d9d3; }
+.history-item { grid-template-columns: 104px minmax(0,1fr); padding: 1.55rem 0; border-bottom-color: #d5d9d3; }
+.history-year { color: #91764d; font-size: 2.4rem; }
+.school-facts { padding-block: 4.2rem 2rem; }
+.school-facts__grid { border: 0; border-block: 1px solid #d5dcdd; background: transparent; }
+.school-fact { min-height: 145px; padding: 1.5rem; border-right: 1px solid #e0e4e3; }
+.school-fact strong { color: var(--navy); font-size: clamp(2.15rem, 3.5vw, 3.1rem); font-weight: 650; }
+.school-fact span { max-width: 220px; color: #64717a; line-height: 1.5; }
+
+/* Направления школьной жизни */
+.home-directions { margin-top: 2.4rem; padding-block: 4.2rem; background: #f4f5f2; border-block: 1px solid #e2e5e1; }
+.home-directions__grid { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: #dfe3df; border: 1px solid #dfe3df; }
+.home-direction { min-height: 225px; padding: 1.5rem; background: #fff; }
+.home-direction__index { color: #947b54; letter-spacing: .14em; }
+.home-direction h3 { font-size: 1.16rem; line-height: 1.25; }
+.home-direction p { font-size: .84rem; line-height: 1.7; }
+
+/* Новости: редакционная, а не каталожная подача */
+.home-news { padding-block: 4.5rem 4.8rem; }
+.home-news-grid { grid-template-columns: repeat(3, minmax(0,1fr)); border: 0; gap: 1px; background: #dce1e0; }
+.home-news-card { min-height: 205px; padding: 1.5rem; background: #fff; border: 0; transition: background .18s ease; }
+.home-news-card:hover { background: #f7f7f3; }
+.home-news-card time { color: #92784f; font-size: .68rem; letter-spacing: .12em; }
+.home-news-card h3 { font-size: 1.12rem; line-height: 1.3; }
+.home-news-card p { font-size: .82rem; line-height: 1.6; }
+.editor-note { color: #626d75; background: #f3f4f1; border-left-color: #9a8765; }
+
+/* Фотоблоки остаются честными слотами до получения школьных фотографий */
+.photo-gallery { padding-block: 4.2rem 4.6rem; }
+.photo-gallery__grid, .event-gallery__grid { gap: 1px; background: #dce1e0; border: 1px solid #dce1e0; }
+.photo-frame, .event-photo { border: 0; }
+.photo-frame__placeholder, .event-photo__placeholder { min-height: 230px; padding: 1.5rem; color: #34495b; background: linear-gradient(135deg, #e9edeb, #f5f5f1); }
+.photo-frame--large .photo-frame__placeholder { min-height: 310px; }
+.photo-frame__placeholder::before, .event-photo__placeholder::before { background: linear-gradient(135deg, transparent 0 48%, rgba(20,40,63,.045) 48.2% 48.5%, transparent 48.7%), linear-gradient(45deg, transparent 0 67%, rgba(20,40,63,.035) 67.2% 67.5%, transparent 67.7%); }
+.photo-frame__placeholder span, .event-photo__placeholder span { color: #8e7752; }
+.photo-frame__placeholder strong, .event-photo__placeholder strong { color: var(--navy); }
+.photo-frame__placeholder small, .event-photo__placeholder small { color: #65717b; }
+.photo-frame__placeholder--blue, .event-photo__placeholder--alt, .photo-frame__placeholder--gold, .event-photo__placeholder--warm { color: #34495b; background: linear-gradient(135deg, #e7ecef, #f5f5f1); }
+.photo-frame figcaption, .event-photo figcaption { color: #68747c; background: #fff; }
+
+/* Официальный информационный раздел и внутренние страницы */
+.inner-hero { color: #fff; background: linear-gradient(112deg, #0b1d2e, #183a56); border-bottom: 0; }
+.inner-hero__grid { min-height: 250px; padding-block: 3.2rem; }
+.inner-hero h1 { max-width: 850px; margin-bottom: .9rem; color: #fff; font-size: clamp(2.5rem, 5vw, 4.3rem); letter-spacing: -.06em; }
+.inner-hero .eyebrow { color: #d2bb91; }
+.inner-hero .crumbs { color: #bfccd5; }
+.inner-hero .crumbs a { color: #fff; }
+.inner-hero__lead { max-width: 760px; color: #d4dfe7; font-size: 1.05rem; line-height: 1.7; }
+.inner-hero__index { border-left-color: rgba(255,255,255,.24); }
+.inner-hero__index strong { color: rgba(255,255,255,.9); }
+.page-main { padding-block: 3.1rem 4.6rem; }
+.page-layout { gap: clamp(1.8rem, 4vw, 3.8rem); }
+.page-aside { min-width: 0; }
+.aside-panel { padding: 1.25rem; background: #f4f5f2; border: 1px solid #e0e4e0; border-top: 3px solid #9b835d; }
+.aside-panel li + li { border-top-color: #e0e4e0; }
+.aside-panel a { color: #405364; padding-block: .72rem; }
+.aside-panel a:hover, .aside-panel a.is-active { color: #8a7049; }
+.aside-help { margin-top: 1rem; background: #14283f; }
+.page-intro { padding: 1.35rem 1.5rem; background: #f4f5f2; border-left: 3px solid #a38b63; }
+.page-section { padding-bottom: 3.4rem; margin-bottom: 3.4rem; border-bottom-color: #dfe3e0; }
+.page-section h2 { font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.12; }
+.section-index { color: #9a8158; }
+.section-kicker { letter-spacing: .15em; }
+.feature-grid { gap: 1px; background: #dfe3e0; border: 1px solid #dfe3e0; }
+.feature-card { padding: 1.45rem; background: #fff; border: 0; box-shadow: none; transition: background .18s ease; }
+.feature-card:hover { background: #f8f8f5; }
+.feature-card h3 { font-size: 1.12rem; }
+.feature-kicker { color: #90774f; }
+.data-grid { gap: 1px; background: #dfe3e0; border: 1px solid #dfe3e0; }
+.data-card { padding: 1.25rem; border: 0; }
+.document-row { padding-block: 1.15rem; }
+.document-row > b { color: #735d39; background: #f4f0e7; border-color: #e6ddcb; }
+.notice-panel { background: #f3f5f4; border-color: #e0e4e0; border-left-color: #8a7049; }
+.faq-list details { border-color: #dfe3e0; }
+.contact-grid { gap: 1px; background: #dfe3e0; border: 1px solid #dfe3e0; }
+.contact-card { border: 0; min-height: 155px; }
+.contact-card--primary { background: #f4f5f2; }
+.route-panel { background: #f4f5f2; border-color: #dfe3e0; }
+.route-placeholder { background: #e8ece9; border-color: #d4dbd7; }
+.page-end { border-top-color: #dfe3e0; }
+
+/* Подвал — единый завершающий блок всех страниц */
+.site-footer { background: #0b1d2e; }
+.footer-grid { padding-block: 3.2rem 2.4rem; }
+.footer-title { letter-spacing: .01em; }
+.footer-social { padding-block: 2.2rem; }
+.footer-bottom { padding-block: 1.2rem 1.6rem; }
+
+/* Адаптивность обновлённой композиции */
+@media (max-width: 980px) {
+  .home-hero__inner { grid-template-columns: minmax(0,1.15fr) minmax(230px,.85fr); gap: 1.8rem; }
+  .quick-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .quick-card:nth-child(3n + 2), .quick-card:nth-child(3n + 3) { border-left: 0; }
+  .quick-card:nth-child(even) { border-left: 1px solid #e0e4e3; }
+  .home-directions__grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  .inner-hero__grid { padding-block: 2.5rem; }
+  .page-layout { grid-template-columns: 1fr; }
+  .page-aside { position: static; }
+}
+@media (max-width: 680px) {
+  .wrap { width: min(100% - 32px, var(--wrap)); }
+  .header-in { min-height: 78px; }
+  .home-hero__inner { min-height: 0; grid-template-columns: 1fr; padding-block: 3.5rem 2rem; }
+  .home-hero__visual { min-height: 250px; }
+  .hero-monogram { font-size: 8.5rem; }
+  .quick-section, .home-news { padding-block: 3rem; }
+  .quick-grid { grid-template-columns: 1fr; }
+  .quick-card { min-height: 145px; border-left: 0 !important; }
+  .home-profile { padding-block: 3.2rem; }
+  .school-facts { padding-block: 3rem 1rem; }
+  .home-directions { padding-block: 3rem; }
+  .home-directions__grid { grid-template-columns: 1fr; }
+  .home-direction { min-height: 0; }
+  .home-news-grid { grid-template-columns: 1fr; }
+  .home-news-card { min-height: 0; padding: 1.25rem; }
+  .photo-gallery { padding-block: 3rem; }
+  .photo-gallery__grid, .event-gallery__grid { grid-template-columns: 1fr; }
+  .photo-frame--large { grid-column: auto; }
+  .photo-frame__placeholder, .photo-frame--large .photo-frame__placeholder, .event-photo__placeholder { min-height: 190px; }
+  .footer-grid { gap: 1.4rem; }
+}
+@media (max-width: 420px) {
+  .util-contacts { flex-wrap: wrap; gap: .25rem .8rem; }
+  .brand-mark { width: 2.8rem; height: 2.8rem; }
+  .header-tools { gap: .45rem; }
+  .tool-btn, .menu-btn { padding-inline: .55rem; font-size: .74rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button, .quick-card, .feature-card, .home-news-card { transition: none; }
+}
+
+/* Режимы высокой контрастности сохраняют приоритет над новой палитрой */
+html[data-scheme="bw"] .site-nav { background: #fff !important; }
+html[data-scheme="bw"] .site-nav a, html[data-scheme="bw"] .util-links a, html[data-scheme="bw"] .util-contacts a { color: #000 !important; }
+html[data-scheme="bw"] .inner-hero, html[data-scheme="bw"] .home-hero, html[data-scheme="bw"] .site-footer, html[data-scheme="bw"] .documents-band { color: #fff !important; background: #000 !important; }
+html[data-scheme="wb"] .site-nav { background: #000 !important; }
+html[data-scheme="wb"] .site-nav a, html[data-scheme="wb"] .util-links a, html[data-scheme="wb"] .util-contacts a { color: #fff !important; }
+html[data-scheme="wb"] .inner-hero, html[data-scheme="wb"] .home-hero, html[data-scheme="wb"] .site-footer, html[data-scheme="wb"] .documents-band { color: #fff !important; background: #000 !important; }
