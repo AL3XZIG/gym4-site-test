@@ -6,7 +6,7 @@ on:
     paths: ["demo/**", "tests/**", "docs/**", "README.md", ".github/workflows/pages.yml"]
   pull_request:
     branches: [main]
-    paths: ["demo/**", "tests/**", ".github/workflows/pages.yml"]
+    paths: ["demo/**", "tests/**", "docs/**", "README.md", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
