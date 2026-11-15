@@ -34,6 +34,18 @@ class DemoBuildTests(unittest.TestCase):
                     target = (page.parent / ref).resolve()
                     self.assertTrue(target.exists(), f"{page.name}: broken local reference {ref}")
 
+    def test_standalone_assets_are_copied(self):
+        source = ROOT / "demo" / "assets"
+        self.assertEqual((source / "css" / "style.css").read_bytes(), (SITE / "assets" / "css" / "style.css").read_bytes())
+        self.assertEqual((source / "js" / "app.js").read_bytes(), (SITE / "assets" / "js" / "app.js").read_bytes())
+
+    def test_every_page_has_shared_shell(self):
+        for page in SITE.glob("*.html"):
+            html = page.read_text(encoding="utf-8")
+            self.assertIn('id="siteHeader"', html, page.name)
+            self.assertIn('class="footer-grid"', html, page.name)
+            self.assertIn('class="skip-link"', html, page.name)
+
     def test_inner_pages_have_editor_placeholders(self):
         pages = ["sveden.html", "parents.html", "students.html", "news.html", "priem.html", "contacts.html", "styleguide.html"]
         for name in pages:
