@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# Перед запуском на рабочем домене добавьте строку Sitemap: https://ВАШ-ДОМЕН/sitemap.xml
