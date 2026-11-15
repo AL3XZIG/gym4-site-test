@@ -1,12 +1,20 @@
-name: Deploy static Gymnasium demo
+name: Deploy Gymnasium website to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths: ["demo/**", "docs/**", "README.md", ".github/workflows/pages.yml"]
+    paths:
+      - "*.html"
+      - "assets/**"
+      - ".github/workflows/pages.yml"
+      - "README.md"
   pull_request:
     branches: [main]
-    paths: ["demo/**", "docs/**", "README.md", ".github/workflows/pages.yml"]
+    paths:
+      - "*.html"
+      - "assets/**"
+      - ".github/workflows/pages.yml"
+      - "README.md"
   workflow_dispatch:
 
 permissions:
@@ -20,21 +28,43 @@ concurrency:
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Verify static site structure
+
+      - name: Validate root website
+        shell: bash
         run: |
-          test -f demo/index.html
-          test -f demo/assets/css/style.css
-          test -f demo/assets/js/app.js
-          for page in sveden parents students news priem contacts styleguide 404; do test -f "demo/$page.html"; done
-          ! grep -R -n "build_demo.py" demo --exclude='README.md'
+          set -euo pipefail
+          test -f index.html
+          test -f 404.html
+          test -f assets/css/style.css
+          test -f assets/js/app.js
+          test -f assets/favicon.svg
+          for page in sveden parents students news priem contacts styleguide; do
+            test -f "${page}.html"
+          done
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Stage only website files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site/assets
+          cp ./*.html _site/
+          cp -R assets/. _site/assets/
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: demo
+          path: _site
+
       - name: Deploy to GitHub Pages
         if: github.event_name != 'pull_request'
         id: deployment
