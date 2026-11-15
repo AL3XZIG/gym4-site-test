@@ -45,3 +45,6 @@ Workflow .github/workflows/pages.yml:
 - Адреса, телефоны, ФИО, расписания, документы, новости и нормативные сведения должны быть внесены и проверены ответственными сотрудниками.
 - Форма на странице контактов ничего не отправляет и не сохраняет.
 - Будущая серверная версия с CMS и авторизацией описана в docs/ARCHITECTURE.md.
+
+
+Pages validation uses the root-level HTML files and assets directory; the old demo directory is not deployed.
