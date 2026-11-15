@@ -584,3 +584,31 @@ html[data-scheme="bw"] .inner-hero, html[data-scheme="bw"] .home-hero, html[data
 html[data-scheme="wb"] .site-nav { background: #000 !important; }
 html[data-scheme="wb"] .site-nav a, html[data-scheme="wb"] .util-links a, html[data-scheme="wb"] .util-contacts a { color: #fff !important; }
 html[data-scheme="wb"] .inner-hero, html[data-scheme="wb"] .home-hero, html[data-scheme="wb"] .site-footer, html[data-scheme="wb"] .documents-band { color: #fff !important; background: #000 !important; }
+
+/* Дополнительная редакционная сетка ленты новостей */
+.news-list { gap: 0; border-top: 1px solid #dfe3e0; }
+.news-entry {
+  display: grid;
+  grid-template-columns: minmax(130px, 175px) minmax(0,1fr);
+  grid-template-areas: "date title" "date summary" "date meta";
+  align-items: start;
+  gap: .3rem 1.4rem;
+  padding: 1.45rem .15rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #dfe3e0;
+}
+.news-entry__date { grid-area: date; margin-top: .3rem; color: #92784f; line-height: 1.5; }
+.news-entry h3 { grid-area: title; margin: 0; font-size: 1.13rem; line-height: 1.35; }
+.news-entry h3 a { color: var(--navy); text-decoration: none; }
+.news-entry h3 a:hover { color: var(--blue); text-decoration: underline; }
+.news-entry p { grid-area: summary; margin: .15rem 0; color: var(--muted); font-size: .88rem; line-height: 1.65; }
+.news-entry__meta { grid-area: meta; color: #7a858d; font-size: .75rem; }
+.news-entry[hidden] { display: none !important; }
+.filter-chip { padding: .55rem .9rem; border-radius: 2px; transition: color .18s ease, background .18s ease, border-color .18s ease; }
+.filter-chip:not(.is-active):hover { border-color: #9eacb2; background: #f4f5f2; }
+.search-field input, .sort-field select { border-radius: 2px; border-color: #d2d9d9; }
+.search-field input:focus, .sort-field select:focus { outline: 2px solid #9a835f; outline-offset: 1px; }
+@media (max-width: 680px) {
+  .news-entry { grid-template-columns: 1fr; grid-template-areas: "date" "title" "summary" "meta"; gap: .4rem; padding-block: 1.2rem; }
+}
