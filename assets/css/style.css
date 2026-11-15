@@ -612,3 +612,19 @@ html[data-scheme="wb"] .inner-hero, html[data-scheme="wb"] .home-hero, html[data
 @media (max-width: 680px) {
   .news-entry { grid-template-columns: 1fr; grid-template-areas: "date" "title" "summary" "meta"; gap: .4rem; padding-block: 1.2rem; }
 }
+
+/* Мобильная навигация и контраст служебной полосы */
+@media (max-width: 980px) {
+  .site-nav a { border-bottom: 1px solid #e1e6e4; border-left: 3px solid transparent; }
+  .site-nav a[aria-current="page"] { background: #f4f5f2; border-left-color: var(--accent); border-bottom-color: #e1e6e4; }
+}
+html[data-scheme="bw"] .util-bar { color: #000 !important; background: #fff !important; border-color: #000 !important; }
+html[data-scheme="bw"] .home-hero__visual { color: #000 !important; background: #fff !important; border: 2px solid #000 !important; }
+html[data-scheme="bw"] .home-hero__visual::before, html[data-scheme="bw"] .home-hero__visual::after { border-color: #000 !important; background: transparent !important; }
+html[data-scheme="bw"] .hero-monogram, html[data-scheme="bw"] .hero-caption strong, html[data-scheme="bw"] .hero-caption span { color: #000 !important; }
+html[data-scheme="bw"] .hero-caption { background: #fff !important; border-color: #000 !important; }
+html[data-scheme="wb"] .util-bar { color: #fff !important; background: #000 !important; border-color: #fff !important; }
+html[data-scheme="wb"] .home-hero__visual { color: #fff !important; background: #000 !important; border: 2px solid #fff !important; }
+html[data-scheme="wb"] .home-hero__visual::before, html[data-scheme="wb"] .home-hero__visual::after { border-color: #fff !important; background: transparent !important; }
+html[data-scheme="wb"] .hero-monogram, html[data-scheme="wb"] .hero-caption strong, html[data-scheme="wb"] .hero-caption span { color: #fff !important; }
+html[data-scheme="wb"] .hero-caption { background: #000 !important; border-color: #fff !important; }
