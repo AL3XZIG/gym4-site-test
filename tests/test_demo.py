@@ -34,6 +34,21 @@ class DemoBuildTests(unittest.TestCase):
                     target = (page.parent / ref).resolve()
                     self.assertTrue(target.exists(), f"{page.name}: broken local reference {ref}")
 
+    def test_inner_pages_have_editor_placeholders(self):
+        pages = ["sveden.html", "parents.html", "students.html", "news.html", "priem.html", "contacts.html", "styleguide.html"]
+        for name in pages:
+            html = (SITE / name).read_text(encoding="utf-8")
+            self.assertIn("ЗАГЛУШКА ДЛЯ ЗАПОЛНЕНИЯ", html, name)
+            self.assertIn("Демонстрационный макет", html, name)
+            self.assertIn('id="nav"', html, name)
+
+    def test_demo_contains_no_old_contact_claims(self):
+        for page in SITE.glob("*.html"):
+            html = page.read_text(encoding="utf-8")
+            self.assertNotIn("+78512500567", html, page.name)
+            self.assertNotIn("gimn4@obr.astrobl.ru", html, page.name)
+            self.assertNotIn("ул. Б. Хмельницкого, 16", html, page.name)
+
     def test_demo_form_does_not_store_messages(self):
         contacts = (SITE / "contacts.html").read_text(encoding="utf-8")
         script = (SITE / "assets" / "js" / "app.js").read_text(encoding="utf-8")
