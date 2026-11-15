@@ -2,6 +2,13 @@
 
 Static multi-page preview for GitHub Pages. The generator creates `site/` from `build_demo.py`; generated output is not committed.
 
+## Source layout
+
+- `build_demo.py` — creates the pages and copies assets into the generated site.
+- `assets/css/style.css` — shared responsive styles.
+- `assets/js/app.js` — menu, accessibility controls, motion and demo-only form feedback.
+- `site/` — generated output; do not edit by hand.
+
 ## Run locally
 
 ```bash
