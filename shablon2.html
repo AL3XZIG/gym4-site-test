@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="МБОУ г. Астрахани «Гимназия № 4» — обновлённая демонстрационная версия: живой статус школы, умный поиск, режим проверки данных, лента новостей и расписание.">
+<meta name="theme-color" content="#0D1726">
+<title>Гимназия № 4 · Астрахань</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B4F8A'/%3E%3Cpath d='M4 22c5-3 8 3 13 0s6 2 11-1' stroke='%230FB5C9' stroke-width='2' fill='none'/%3E%3Ctext x='16' y='17' font-family='Georgia,serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'%3E4%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Golos+Text:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ==================== ТОКЕНЫ ==================== */
+:root{
+  --volga:#0B4F8A; --volga-d:#083A66; --caspian:#0FB5C9; --lotus:#D6247E; --steppe:#E8A317;
+  --reed:#2E9E5B; --brick:#C8362B; --violet:#6B4FD8;
+  --ink:#0D1726; --ink-2:#132238; --ink-3:#1B2F4C;
+  --paper:#F7F4EE; --cool:#EDF2F8; --surface:#FFFFFF; --overlay:rgba(9,17,30,.72);
+  --text:#12203A; --muted:#5A6B80; --faint:#8695A8;
+  --line:#E2DED4; --line-2:#C9D2DE; --on-dark:#EEF4FF; --on-dark-mut:#A5B8D2;
+  --tone:var(--caspian);
+  --ok:var(--reed); --warn:var(--steppe); --danger:var(--brick); --info:var(--volga);
+  --ok-soft:#E6F5EC; --warn-soft:#FCF2DC; --danger-soft:#FBE9E7; --info-soft:#E7F0F9;
+  --disp:'Unbounded',system-ui,sans-serif;
+  --sans:'Golos Text',system-ui,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --head:4.4rem; --r:14px; --ease:cubic-bezier(.22,.68,.24,1);
+  --shadow:0 18px 46px -22px rgba(11,32,60,.45);
+  --shadow-lg:0 40px 90px -30px rgba(8,22,44,.55);
+  --pad:1.15rem;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scrollbar-color:var(--volga) var(--cool);scrollbar-width:thin}
+body{background:var(--paper);color:var(--text);font-family:var(--sans);font-size:1rem;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--cool)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--volga),var(--caspian));border-radius:8px;border:3px solid var(--cool)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--caspian),var(--lotus))}
+.scroll::-webkit-scrollbar{width:8px;height:8px}
+.scroll::-webkit-scrollbar-thumb{border-width:2px}
+::selection{background:var(--caspian);color:#04202B}
+a{color:var(--volga);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+svg{display:block}
+:focus-visible{outline:2px solid var(--caspian);outline-offset:2px;border-radius:6px}
+.ic{width:1.1em;height:1.1em;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.wrap{max-width:76rem;margin:0 auto;padding:0 clamp(1rem,4vw,2.4rem)}
+.mono{font-family:var(--mono)}
+.skip{position:fixed;left:1rem;top:-5rem;z-index:400;background:var(--ink);color:#fff;padding:.7rem 1.2rem;border-radius:10px;font-weight:700;transition:top .2s}
+.skip:focus{top:1rem}
+
+/* режимы доступности */
+body[data-scheme="dark"]{--paper:#0D1726;--cool:#132238;--surface:#15243C;--text:#EEF4FF;--muted:#A5B8D2;--faint:#8FA3BF;--line:#25395A;--line-2:#33507A;--info-soft:#16304F;--ok-soft:#123526;--warn-soft:#3A2E12;--danger-soft:#3B1D1A;--overlay:rgba(3,8,16,.8)}
+body[data-scheme="dark"] .card,body[data-scheme="dark"] .tile{background:var(--surface)}
+body[data-scheme="bw"]{--paper:#fff;--cool:#fff;--surface:#fff;--text:#000;--muted:#000;--faint:#000;--line:#000;--line-2:#000;--volga:#000;--caspian:#000;--lotus:#000;--steppe:#000;--reed:#000;--brick:#000;--violet:#000;--tone:#000;--ink:#000;--ink-2:#000;--ink-3:#000;--on-dark:#fff;--on-dark-mut:#fff;--info-soft:#fff;--ok-soft:#fff;--warn-soft:#fff;--danger-soft:#fff}
+body[data-scheme="wb"]{--paper:#000;--cool:#000;--surface:#000;--text:#fff;--muted:#fff;--faint:#fff;--line:#fff;--line-2:#fff;--volga:#fff;--caspian:#fff;--lotus:#fff;--steppe:#fff;--reed:#fff;--brick:#fff;--violet:#fff;--tone:#fff;--ink:#000;--ink-2:#000;--ink-3:#000;--on-dark:#fff;--on-dark-mut:#fff;--info-soft:#000;--ok-soft:#000;--warn-soft:#000;--danger-soft:#000}
+body[data-scheme="bw"] a,body[data-scheme="wb"] a,body[data-links="on"] a{text-decoration:underline;text-underline-offset:3px}
+body[data-spacing="wide"]{line-height:2.05;letter-spacing:.03em;word-spacing:.12em}
+body[data-images="off"] [data-img]{display:none!important}
+body[data-density="compact"]{--pad:.85rem}
+body[data-density="roomy"]{--pad:1.6rem}
+body[data-motion="off"] *,body[data-motion="off"] *::before,body[data-motion="off"] *::after{animation:none!important;transition:none!important}
+body[data-motion="off"]{scroll-behavior:auto}
+body[data-motion="off"] [data-reveal]{opacity:1!important;transform:none!important}
+
+/* ==================== ХРОМ ==================== */
+#progress{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;z-index:210;
+  background:linear-gradient(90deg,var(--volga),var(--caspian),var(--lotus),var(--steppe));transition:background .6s}
+.notice{background:var(--ink);color:var(--on-dark-mut);font-size:.78rem;padding:.45rem 0}
+.notice .wrap{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.notice i{width:.42rem;height:.42rem;border-radius:50%;background:var(--steppe);box-shadow:0 0 8px var(--steppe);flex:none}
+.notice b{color:var(--on-dark);font-weight:600}
+.notice button{margin-left:auto;color:var(--caspian);font-weight:700;font-size:.78rem;display:inline-flex;gap:.35rem;align-items:center}
+.notice button:hover{text-decoration:underline}
+.utility{background:var(--surface);border-bottom:1px solid var(--line);font-size:.83rem}
+.utility .wrap{display:flex;gap:1.2rem;align-items:center;min-height:2.5rem;flex-wrap:wrap}
+.utility a,.utility span{display:inline-flex;gap:.4rem;align-items:center;color:var(--muted);font-weight:600}
+.utility a:hover{color:var(--volga)}
+.utility .grow{flex:1}
+.live-dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--reed);box-shadow:0 0 0 0 rgba(46,158,91,.6);animation:ping 2.4s infinite}
+.live-dot.closed{background:var(--brick);animation:none}
+@keyframes ping{70%{box-shadow:0 0 0 7px rgba(46,158,91,0)}100%{box-shadow:0 0 0 0 rgba(46,158,91,0)}}
+
+header.hdr{position:sticky;top:0;z-index:200;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line-2)}
+.hdr .bar{display:flex;align-items:center;gap:.9rem;min-height:var(--head)}
+.brand{display:flex;gap:.7rem;align-items:center;color:var(--text)}
+.brand:hover{text-decoration:none}
+.mark{width:2.7rem;height:2.7rem;border-radius:12px;display:grid;place-items:center;flex:none;position:relative;overflow:hidden;
+  background:linear-gradient(140deg,var(--volga),var(--violet));color:#fff;font-family:var(--disp);font-weight:900;font-size:1.15rem;
+  box-shadow:0 8px 20px -8px var(--volga)}
+.mark::after{content:"";position:absolute;inset:auto 0 0 0;height:38%;background:linear-gradient(90deg,transparent,var(--caspian),transparent);opacity:.65;animation:wave 5s linear infinite}
+@keyframes wave{to{transform:translateX(60%)}}
+.brand b{font-family:var(--disp);font-weight:700;font-size:1rem;line-height:1.2;display:block}
+.brand small{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+nav.main{display:flex;gap:.1rem;margin-left:auto;flex-wrap:wrap}
+nav.main a{position:relative;padding:.5rem .6rem;border-radius:9px;font-weight:600;font-size:.87rem;color:var(--muted);white-space:nowrap}
+nav.main a:hover{color:var(--text);background:var(--info-soft);text-decoration:none}
+nav.main a[aria-current]{color:var(--volga);background:var(--info-soft)}
+nav.main a[aria-current]::after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:.18rem;height:2px;border-radius:2px;background:var(--tone)}
+.hdr-actions{display:flex;gap:.45rem;align-items:center}
+.iconbtn{width:2.5rem;height:2.5rem;border-radius:11px;border:1px solid var(--line-2);background:var(--surface);display:grid;place-items:center;color:var(--muted);transition:.18s var(--ease)}
+.iconbtn:hover{color:var(--volga);border-color:var(--volga);transform:translateY(-1px)}
+.iconbtn.on{background:var(--volga);border-color:var(--volga);color:#fff}
+.searchbtn{display:flex;align-items:center;gap:.55rem;height:2.5rem;padding:0 .8rem;border-radius:11px;border:1px solid var(--line-2);background:var(--surface);color:var(--faint);font-size:.85rem;font-weight:600;transition:.18s}
+.searchbtn:hover{border-color:var(--caspian);color:var(--volga)}
+.searchbtn kbd{font-family:var(--mono);font-size:.66rem;border:1px solid var(--line-2);border-radius:5px;padding:.1rem .3rem;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:11px;font-weight:700;font-size:.92rem;padding:.72rem 1.25rem;border:1px solid transparent;transition:.18s var(--ease)}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-p{background:linear-gradient(120deg,var(--volga),var(--violet));color:#fff;box-shadow:0 10px 26px -12px var(--volga)}
+.btn-p:hover{box-shadow:0 16px 34px -14px var(--violet)}
+.btn-l{border-color:var(--line-2);background:var(--surface);color:var(--text)}
+.btn-l:hover{border-color:var(--volga);color:var(--volga)}
+.btn-c{background:var(--caspian);color:#04222C}
+.btn-s{padding:.5rem .85rem;font-size:.82rem;border-radius:9px}
+.btn-danger{border-color:var(--brick);color:var(--brick);background:var(--danger-soft)}
+.burger{display:none}
+.sheet{position:absolute;top:100%;left:0;right:0;background:var(--surface);border-bottom:1px solid var(--line-2);padding:.6rem clamp(1rem,4vw,2.4rem) 1.1rem;
+  display:flex;flex-direction:column;box-shadow:var(--shadow);opacity:0;transform:translateY(-8px);pointer-events:none;transition:.22s var(--ease);max-height:calc(100vh - var(--head));overflow:auto}
+.sheet.open{opacity:1;transform:none;pointer-events:auto}
+.sheet a{padding:.75rem .3rem;border-bottom:1px solid var(--line);font-weight:600;color:var(--text);display:flex;justify-content:space-between;align-items:center}
+.sheet a:last-of-type{border-bottom:none}
+.sheet a[aria-current]{color:var(--volga)}
+.sheet a:hover{text-decoration:none;color:var(--volga)}
+
+/* ==================== ПАЛИТРА КОМАНД ==================== */
+.cmdk{position:fixed;inset:0;z-index:320;display:flex;justify-content:center;align-items:flex-start;padding:12vh 1rem 1rem;
+  background:var(--overlay);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:.2s var(--ease)}
+.cmdk.open{opacity:1;pointer-events:auto}
+.cmdk-box{width:min(42rem,100%);background:var(--surface);border:1px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-lg);overflow:hidden;transform:translateY(-14px) scale(.98);transition:.24s var(--ease);display:flex;flex-direction:column;max-height:74vh}
+.cmdk.open .cmdk-box{transform:none}
+.cmdk-in{display:flex;align-items:center;gap:.75rem;padding:1rem 1.15rem;border-bottom:1px solid var(--line)}
+.cmdk-in .ic{color:var(--caspian);width:1.25rem;height:1.25rem}
+.cmdk-in input{flex:1;border:none;background:none;font-size:1.05rem;font-weight:600;outline:none}
+.cmdk-in input::placeholder{color:var(--faint);font-weight:400}
+.cmdk-in kbd{font-family:var(--mono);font-size:.66rem;color:var(--faint);border:1px solid var(--line-2);border-radius:5px;padding:.15rem .35rem}
+.cmdk-list{overflow-y:auto;padding:.5rem;flex:1}
+.cmdk-group{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);padding:.7rem .7rem .35rem}
+.cmdk-item{display:flex;gap:.8rem;align-items:center;width:100%;text-align:left;padding:.65rem .7rem;border-radius:11px;transition:background .12s}
+.cmdk-item .ico{width:2rem;height:2rem;border-radius:9px;display:grid;place-items:center;background:var(--info-soft);color:var(--volga);flex:none}
+.cmdk-item b{display:block;font-size:.92rem;font-weight:600}
+.cmdk-item small{display:block;font-size:.76rem;color:var(--faint)}
+.cmdk-item .tail{margin-left:auto;font-family:var(--mono);font-size:.66rem;color:var(--faint)}
+.cmdk-item mark{background:color-mix(in srgb,var(--caspian) 35%,transparent);color:inherit;border-radius:3px}
+.cmdk-item[aria-selected="true"]{background:var(--info-soft);box-shadow:inset 2px 0 0 var(--caspian)}
+.cmdk-empty{padding:2.4rem 1rem;text-align:center;color:var(--muted)}
+.cmdk-foot{border-top:1px solid var(--line);padding:.6rem 1rem;display:flex;gap:1rem;flex-wrap:wrap;font-size:.74rem;color:var(--faint)}
+.cmdk-foot span{display:inline-flex;gap:.35rem;align-items:center}
+.cmdk-foot kbd{font-family:var(--mono);border:1px solid var(--line-2);border-radius:4px;padding:0 .28rem}
+
+/* ==================== ДОК ОФОРМЛЕНИЯ ==================== */
+.dock{position:fixed;top:calc(var(--head) + 3.2rem);right:1rem;z-index:205;width:min(21rem,calc(100vw - 2rem));
+  background:var(--surface);border:1px solid var(--line-2);border-radius:16px;box-shadow:var(--shadow-lg);
+  padding:1.1rem;max-height:min(72vh,44rem);overflow-y:auto;opacity:0;transform:translateX(14px);pointer-events:none;transition:.24s var(--ease)}
+.dock.open{opacity:1;transform:none;pointer-events:auto}
+.dock h3{font-family:var(--disp);font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.dock .sub{font-size:.74rem;color:var(--faint);margin:.25rem 0 .9rem}
+.dock .row{margin-bottom:.85rem}
+.dock .lbl{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.dock .lbl output{color:var(--volga);font-weight:700}
+.seg{display:flex;gap:.3rem;flex-wrap:wrap}
+.seg button{flex:1;min-width:3.4rem;border:1px solid var(--line-2);background:var(--surface);border-radius:9px;padding:.42rem .5rem;font-size:.78rem;font-weight:600;color:var(--muted);transition:.15s}
+.seg button:hover{border-color:var(--caspian);color:var(--volga)}
+.seg button[aria-pressed="true"]{background:var(--volga);border-color:var(--volga);color:#fff}
+input[type=range]{width:100%;height:20px;-webkit-appearance:none;appearance:none;background:none}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:4px;background:var(--fill,var(--line-2))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;margin-top:-5.5px;border-radius:50%;background:var(--surface);border:2px solid var(--volga);box-shadow:0 2px 8px -2px var(--volga)}
+input[type=range]::-moz-range-track{height:5px;border-radius:4px;background:var(--line-2)}
+input[type=range]::-moz-range-progress{height:5px;border-radius:4px;background:var(--volga)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--surface);border:2px solid var(--volga)}
+select.sel{width:100%;border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:.55rem 2rem .55rem .7rem;font-size:.85rem;font-weight:600;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235A6B80' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center}
+select.sel:hover{border-color:var(--caspian)}
+.switch{display:flex;align-items:center;gap:.6rem;cursor:pointer;user-select:none;padding:.2rem 0}
+.switch input{position:absolute;opacity:0;width:0;height:0}
+.track{width:2.4rem;height:1.3rem;border-radius:999px;background:var(--line-2);position:relative;transition:.2s;flex:none}
+.track i{position:absolute;left:2px;top:2px;width:.95rem;height:.95rem;border-radius:50%;background:var(--surface);transition:.2s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch input:checked+.track{background:var(--reed)}
+.switch input:checked+.track i{transform:translateX(1.1rem)}
+.switch input:focus-visible+.track{outline:2px solid var(--caspian);outline-offset:2px}
+.switch span{font-size:.85rem;font-weight:600}
+.dock-foot{display:flex;gap:.5rem;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--line)}
+.dock-foot .btn{flex:1}
+
+/* ==================== DRAWER ==================== */
+.drawer{position:fixed;inset:0;z-index:310;pointer-events:none}
+.drawer .scrim{position:absolute;inset:0;background:var(--overlay);opacity:0;transition:.25s}
+.drawer .panel{position:absolute;top:0;right:0;height:100%;width:min(34rem,100%);background:var(--surface);border-left:1px solid var(--line-2);
+  box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .3s var(--ease);display:flex;flex-direction:column}
+.drawer.open{pointer-events:auto}
+.drawer.open .scrim{opacity:1}
+.drawer.open .panel{transform:none}
+.drawer-head{padding:1.1rem 1.3rem;border-bottom:1px solid var(--line);display:flex;gap:.8rem;align-items:flex-start}
+.drawer-head h3{font-family:var(--disp);font-size:1.05rem;font-weight:700;line-height:1.3}
+.drawer-head .k{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--caspian);display:block;margin-bottom:.3rem}
+.drawer-body{flex:1;overflow-y:auto;padding:1.2rem 1.3rem}
+.drawer-foot{border-top:1px solid var(--line);padding:.9rem 1.3rem;display:flex;gap:.6rem;flex-wrap:wrap;background:var(--cool)}
+
+/* ==================== ТОСТ ==================== */
+#toast{position:fixed;left:50%;bottom:1.4rem;z-index:340;transform:translate(-50%,150%);transition:transform .35s var(--ease);
+  background:var(--ink);color:var(--on-dark);border-radius:13px;padding:.8rem 1rem;display:flex;gap:.8rem;align-items:center;
+  box-shadow:var(--shadow-lg);font-size:.88rem;font-weight:600;max-width:min(30rem,calc(100vw - 2rem))}
+#toast.show{transform:translate(-50%,0)}
+#toast .ic{color:var(--caspian)}
+#toast button{color:var(--steppe);font-weight:700;font-size:.84rem;white-space:nowrap}
+#toast button:hover{text-decoration:underline}
+
+/* ==================== МОБИЛЬНАЯ ПАНЕЛЬ ==================== */
+.mobbar{position:fixed;left:0;right:0;bottom:0;z-index:190;display:none;background:color-mix(in srgb,var(--surface) 94%,transparent);
+  backdrop-filter:blur(12px);border-top:1px solid var(--line-2);padding:.4rem .5rem calc(.4rem + env(safe-area-inset-bottom))}
+.mobbar button,.mobbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.4rem;border-radius:10px;color:var(--muted);font-size:.66rem;font-weight:700}
+.mobbar .ic{width:1.2rem;height:1.2rem}
+.mobbar a:hover,.mobbar button:hover{text-decoration:none;color:var(--volga);background:var(--info-soft)}
+
+/* ==================== ОБЩЕЕ ==================== */
+.view{animation:vin .4s var(--ease)}
+@keyframes vin{from{opacity:0;transform:translateY(10px)}}
+.crumbs{display:flex;gap:.5rem;flex-wrap:wrap;font-size:.8rem;color:var(--faint);padding:1.1rem 0 0}
+.crumbs a{color:var(--muted)}
+.crumbs b{color:var(--text)}
+.phead{padding:1.9rem 0 2.1rem;border-bottom:1px solid var(--line)}
+.kick{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tone);display:flex;gap:.65rem;align-items:center;margin-bottom:.8rem}
+.kick::before{content:"";width:1.6rem;height:2px;border-radius:2px;background:currentColor}
+h1{font-family:var(--disp);font-weight:900;font-size:clamp(1.75rem,4vw,2.7rem);line-height:1.14;letter-spacing:-.02em}
+.phead p{color:var(--muted);max-width:46rem;margin-top:.85rem;font-size:1.02rem}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(1.25rem,2.4vw,1.75rem);line-height:1.24;letter-spacing:-.01em}
+h3{font-family:var(--sans);font-weight:700;font-size:1.03rem;line-height:1.35}
+section{scroll-margin-top:calc(var(--head) + 1.4rem)}
+.sec{padding:clamp(2.4rem,5vw,3.6rem) 0;border-bottom:1px solid var(--line)}
+.sec:last-child{border-bottom:none}
+.shead{margin-bottom:1.6rem;max-width:48rem}
+.snum{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:.55rem}
+.snum b{color:var(--tone)}
+.shead p{color:var(--muted);margin-top:.6rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--pad);transition:.22s var(--ease)}
+.grid{display:grid;gap:.9rem}
+.layout{display:grid;grid-template-columns:14.5rem minmax(0,1fr);gap:clamp(1.5rem,4vw,3rem);padding:2.2rem 0 3rem;align-items:start}
+.side{position:sticky;top:calc(var(--head) + 1.4rem);display:flex;flex-direction:column;gap:1.1rem}
+.side .lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+.subnav{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.subnav button{display:flex;gap:.6rem;text-align:left;padding:.62rem .2rem;border-bottom:1px solid var(--line);font-size:.88rem;font-weight:600;color:var(--muted);transition:.15s}
+.subnav button i{font-family:var(--mono);font-size:.68rem;font-style:normal;color:var(--faint)}
+.subnav button:hover{color:var(--volga)}
+.subnav button.active{color:var(--volga);box-shadow:inset 2px 0 0 var(--tone);padding-left:.55rem}
+.help{background:linear-gradient(150deg,var(--ink-2),var(--ink));color:var(--on-dark);border-radius:var(--r);padding:1.1rem}
+.help h4{font-family:var(--disp);font-size:.9rem;font-weight:700;margin-bottom:.4rem}
+.help p{font-size:.82rem;color:var(--on-dark-mut)}
+.help a{color:var(--caspian);font-weight:700}
+.help .btn{width:100%;margin-top:.8rem}
+.note{display:flex;gap:.7rem;border:1px solid var(--line);border-left:3px solid var(--steppe);background:var(--warn-soft);border-radius:10px;padding:.85rem 1rem;font-size:.87rem;color:var(--muted);margin-top:1.2rem}
+.note .ic{color:var(--steppe);margin-top:.15rem}
+.note b{color:var(--text)}
+.note.info{border-left-color:var(--info);background:var(--info-soft)}.note.info .ic{color:var(--info)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}.note.ok .ic{color:var(--ok)}
+.src{font-size:.79rem;color:var(--faint);margin-top:1rem}
+.src a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+.chip{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.24rem .6rem;border-radius:999px;border:1px solid var(--line-2);color:var(--muted);background:var(--surface)}
+.chip.c{color:var(--volga);border-color:color-mix(in srgb,var(--caspian) 55%,var(--line));background:var(--info-soft)}
+.chip.l{color:var(--lotus);border-color:color-mix(in srgb,var(--lotus) 40%,var(--line));background:color-mix(in srgb,var(--lotus) 8%,var(--surface))}
+.chip.s{color:#8A5B00;border-color:color-mix(in srgb,var(--steppe) 55%,var(--line));background:var(--warn-soft)}
+.chip.g{color:#1B6B3D;border-color:color-mix(in srgb,var(--reed) 45%,var(--line));background:var(--ok-soft)}
+[data-reveal]{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s var(--ease);transition-delay:calc(var(--d,0)*70ms)}
+[data-reveal].in{opacity:1;transform:none}
+
+/* аудит-метки */
+[data-audit]{position:relative}
+.audit-badge{display:inline-flex;align-items:center;gap:.3rem;margin-left:.45rem;vertical-align:middle;
+  font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid color-mix(in srgb,var(--steppe) 60%,var(--line));color:#8A5B00;background:var(--warn-soft);
+  border-radius:999px;padding:.12rem .45rem;cursor:pointer;transition:.15s}
+.audit-badge:hover{transform:translateY(-1px);box-shadow:0 4px 10px -4px var(--steppe)}
+.audit-badge[data-st="ok"]{border-color:color-mix(in srgb,var(--reed) 55%,var(--line));color:#1B6B3D;background:var(--ok-soft)}
+.audit-badge[data-st="fix"]{border-color:color-mix(in srgb,var(--brick) 55%,var(--line));color:var(--brick);background:var(--danger-soft)}
+body[data-review="on"] [data-audit]{outline:1px dashed color-mix(in srgb,var(--steppe) 75%,transparent);outline-offset:4px;border-radius:6px}
+body[data-review="on"] [data-audit][data-st="ok"]{outline-color:color-mix(in srgb,var(--reed) 70%,transparent)}
+body[data-review="on"] [data-audit][data-st="fix"]{outline-color:color-mix(in srgb,var(--brick) 70%,transparent)}
+.ring{width:3.4rem;height:3.4rem;flex:none}
+.ring circle{fill:none;stroke-width:5}
+.ring .bg{stroke:var(--line-2)}
+.ring .fg{stroke:var(--reed);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray .5s var(--ease)}
+.audit-row{border:1px solid var(--line);border-radius:12px;padding:.85rem;margin-bottom:.6rem;background:var(--surface)}
+.audit-row .t{display:flex;gap:.5rem;align-items:baseline;font-weight:700;font-size:.9rem}
+.audit-row .n{font-size:.8rem;color:var(--muted);margin:.3rem 0 .55rem}
+.audit-row .seg button{min-width:0;font-size:.72rem;padding:.32rem .4rem}
+.audit-row .go{font-size:.75rem;font-weight:700;color:var(--volga);margin-left:auto;white-space:nowrap}
+
+/* ==================== ГЛАВНАЯ ==================== */
+.hero{position:relative;overflow:hidden;background:var(--ink);color:var(--on-dark);padding:clamp(2.6rem,6vw,4.4rem) 0 clamp(2.2rem,5vw,3.4rem)}
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+.hero-bg .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;will-change:transform}
+.hero-bg .b1{width:44rem;height:30rem;left:-12rem;top:-14rem;background:radial-gradient(circle,var(--volga),transparent 68%);animation:dr1 26s ease-in-out infinite alternate}
+.hero-bg .b2{width:36rem;height:26rem;right:-10rem;top:-8rem;background:radial-gradient(circle,var(--lotus),transparent 66%);opacity:.35;animation:dr2 32s ease-in-out infinite alternate}
+.hero-bg .b3{width:34rem;height:24rem;left:34%;bottom:-16rem;background:radial-gradient(circle,var(--caspian),transparent 68%);opacity:.32;animation:dr3 28s ease-in-out infinite alternate}
+@keyframes dr1{to{transform:translate(6rem,4rem) scale(1.12)}}
+@keyframes dr2{to{transform:translate(-5rem,5rem) scale(.92)}}
+@keyframes dr3{to{transform:translate(4rem,-4rem) scale(1.15)}}
+.delta{position:absolute;inset:0;width:100%;height:100%;opacity:.3}
+.delta path{fill:none;stroke:url(#dg);stroke-width:1.2;stroke-dasharray:6 10;animation:flow 22s linear infinite}
+.delta path:nth-child(2){animation-duration:30s;opacity:.7}
+.delta path:nth-child(3){animation-duration:38s;opacity:.5}
+.delta path:nth-child(4){animation-duration:26s;opacity:.6}
+@keyframes flow{to{stroke-dashoffset:-320}}
+.grain{position:absolute;inset:0;opacity:.055;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hero .wrap{position:relative;z-index:1}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(1.6rem,4vw,3rem);align-items:center}
+.hero .org{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--caspian);margin-bottom:1rem}
+.hero h1{font-size:clamp(2rem,4.7vw,3.35rem);color:#fff}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--caspian),var(--steppe));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{color:var(--on-dark-mut);font-size:1.05rem;max-width:36rem;margin:1.1rem 0 1.6rem}
+.hero-cta{display:flex;gap:.7rem;flex-wrap:wrap}
+.hero-cta .btn-l{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.22);color:var(--on-dark)}
+.hero-cta .btn-l:hover{border-color:var(--caspian);color:var(--caspian)}
+.hero-mini{display:flex;gap:1.4rem;flex-wrap:wrap;margin-top:1.8rem;padding-top:1.3rem;border-top:1px solid rgba(255,255,255,.14)}
+.hero-mini div{font-size:.8rem;color:var(--on-dark-mut)}
+.hero-mini b{display:block;font-family:var(--disp);font-size:1.3rem;font-weight:700;color:#fff}
+.boot{opacity:0;transform:translateY(20px)}
+.booted .boot{animation:rise .8s var(--ease) forwards;animation-delay:calc(var(--d,0)*.11s)}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* живой статус */
+.status{background:linear-gradient(165deg,rgba(27,47,76,.92),rgba(13,23,38,.94));border:1px solid rgba(120,170,220,.28);
+  border-radius:18px;padding:1.3rem;box-shadow:0 30px 70px -30px rgba(0,0,0,.8),0 0 40px -22px var(--caspian);backdrop-filter:blur(8px)}
+.status-top{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
+.status-top .ic{color:var(--caspian)}
+.status-top b{font-family:var(--disp);font-size:.9rem;font-weight:700;color:#fff}
+#clock{margin-left:auto;font-family:var(--mono);font-size:.78rem;color:var(--on-dark-mut);font-variant-numeric:tabular-nums}
+.st-row{display:flex;align-items:center;gap:.6rem;padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.86rem;color:var(--on-dark-mut)}
+.st-row:last-of-type{border-bottom:none}
+.st-row b{color:#fff;font-weight:600}
+.st-row .val{margin-left:auto;font-family:var(--mono);font-size:.82rem;color:var(--caspian);font-variant-numeric:tabular-nums}
+.st-big{font-family:var(--disp);font-weight:900;font-size:2rem;color:#fff;line-height:1.1;margin:.5rem 0 .2rem;font-variant-numeric:tabular-nums}
+.st-label{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--steppe)}
+.st-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden;margin:.7rem 0 .9rem}
+.st-bar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--caspian),var(--lotus));transition:width 1s linear}
+.st-foot{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.4rem}
+.st-foot .btn-s{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:var(--on-dark)}
+.st-foot .btn-s:hover{border-color:var(--caspian);color:var(--caspian)}
+.st-foot .switch span{color:var(--on-dark-mut);font-size:.78rem}
+.demo-flag{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#04222C;background:var(--steppe);border-radius:999px;padding:.15rem .5rem;font-weight:700}
+
+/* тикер */
+.ticker{background:var(--ink-2);color:var(--on-dark-mut);border-top:1px solid rgba(255,255,255,.08);overflow:hidden;padding:.7rem 0;position:relative}
+.ticker-track{display:flex;width:max-content;animation:tick 34s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+.ticker-g{display:flex;gap:2.2rem;padding-right:2.2rem;white-space:nowrap;font-size:.84rem;font-weight:600;align-items:center}
+.ticker-g b{color:#fff}
+.ticker-g span.sep{color:var(--lotus)}
+
+/* бенто-навигация */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:.85rem}
+.tile{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.15rem;
+  display:flex;flex-direction:column;gap:.35rem;color:var(--text);transition:.22s var(--ease);grid-column:span 2}
+.tile:hover{text-decoration:none;transform:translateY(-3px);border-color:var(--tone);box-shadow:var(--shadow)}
+.tile::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .3s;background:radial-gradient(340px 140px at 15% 0%,color-mix(in srgb,var(--tone) 16%,transparent),transparent 70%)}
+.tile:hover::before{opacity:1}
+.tile>*{position:relative}
+.tile .n{font-family:var(--mono);font-size:.66rem;color:var(--faint)}
+.tile p{font-size:.84rem;color:var(--muted);flex:1}
+.tile .go{display:inline-flex;gap:.35rem;align-items:center;color:var(--volga);font-weight:700;font-size:.8rem;margin-top:.4rem}
+.tile .go .ic{width:.85em;height:.85em;transition:transform .2s}
+.tile:hover .go .ic{transform:translateX(3px)}
+.tile.wide{grid-column:span 3}
+.tile.big{grid-column:span 3;grid-row:span 2;background:linear-gradient(160deg,var(--ink-2),var(--ink));color:var(--on-dark);border-color:transparent}
+.tile.big h3{font-family:var(--disp);font-size:1.15rem;color:#fff}
+.tile.big p{color:var(--on-dark-mut)}
+.tile.big .go{color:var(--caspian)}
+.tile.big .n{color:var(--caspian)}
+
+/* таймлайн */
+.about{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(1.5rem,4vw,3rem);align-items:start}
+.about .txt p{color:var(--muted);margin-bottom:.9rem}
+.tl{list-style:none;position:relative;padding-left:1.6rem}
+.tl::before{content:"";position:absolute;left:.32rem;top:.6rem;bottom:.6rem;width:2px;background:var(--line-2);border-radius:2px}
+.tl .rail{position:absolute;left:.32rem;top:.6rem;width:2px;border-radius:2px;background:linear-gradient(180deg,var(--caspian),var(--lotus));height:0;transition:height .3s linear}
+.tl li{position:relative;padding-bottom:1.4rem}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:-1.6rem;top:.45rem;width:.72rem;height:.72rem;border-radius:50%;background:var(--paper);border:2px solid var(--volga);z-index:1}
+.tl li.hit::before{border-color:var(--lotus);box-shadow:0 0 0 4px color-mix(in srgb,var(--lotus) 18%,transparent)}
+.tl .y{font-family:var(--disp);font-weight:700;font-size:1.15rem;color:var(--volga);line-height:1.2}
+.tl h3{font-size:.97rem;margin:.2rem 0 .25rem}
+.tl p{font-size:.87rem;color:var(--muted)}
+.bigtl{list-style:none}
+.bigtl li{display:grid;grid-template-columns:8rem minmax(0,1fr);gap:1.4rem;padding:1.3rem 0;border-top:1px solid var(--line)}
+.bigtl .y{font-family:var(--disp);font-weight:900;font-size:1.5rem;color:var(--volga);line-height:1.15}
+.bigtl p{color:var(--muted);font-size:.93rem;max-width:44rem;margin-top:.35rem}
+
+/* цифры */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.25rem;position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--volga),var(--caspian))}
+.stat:nth-child(2)::after{background:linear-gradient(90deg,var(--caspian),var(--reed))}
+.stat:nth-child(3)::after{background:linear-gradient(90deg,var(--reed),var(--steppe))}
+.stat:nth-child(4)::after{background:linear-gradient(90deg,var(--steppe),var(--lotus))}
+.stat .num{font-family:var(--disp);font-weight:900;font-size:clamp(1.7rem,3.2vw,2.3rem);line-height:1.1;font-variant-numeric:tabular-nums}
+.stat .lbl{font-size:.83rem;color:var(--muted);margin-top:.3rem}
+
+/* направления */
+.dirs{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
+.dir{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.25rem;transition:.22s var(--ease);position:relative;overflow:hidden}
+.dir:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.dir .t{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tone);margin-bottom:.5rem;display:block}
+.dir h3{margin-bottom:.35rem}
+.dir p{font-size:.9rem;color:var(--muted)}
+
+/* новости */
+.ntools{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1.1rem}
+.search{position:relative;flex:1;min-width:13rem;max-width:22rem}
+.search .ic{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--faint);width:.95rem;height:.95rem}
+.search input{width:100%;border:1px solid var(--line-2);background:var(--surface);border-radius:11px;padding:.62rem .9rem .62rem 2.2rem;font-size:.9rem;font-weight:500}
+.search input:focus{outline:none;border-color:var(--caspian);box-shadow:0 0 0 3px var(--info-soft)}
+.tabs{display:flex;gap:.35rem;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:.42rem .9rem;font-size:.82rem;font-weight:700;color:var(--muted);transition:.15s}
+.tabs button:hover{border-color:var(--caspian);color:var(--volga)}
+.tabs button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.tabs button em{font-style:normal;font-family:var(--mono);font-size:.7rem;opacity:.65;margin-left:.3rem}
+.feed{display:grid;gap:.8rem}
+.feed.cards{grid-template-columns:repeat(2,1fr)}
+.ncard{text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.15rem;display:flex;flex-direction:column;gap:.5rem;
+  transition:.22s var(--ease);animation:vin .35s var(--ease) backwards;animation-delay:calc(var(--d,0)*55ms)}
+.ncard:hover{transform:translateY(-3px);border-color:var(--caspian);box-shadow:var(--shadow)}
+.ncard .meta{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap}
+.ncard time{font-family:var(--mono);font-size:.74rem;color:var(--faint)}
+.ncard h3{font-size:1.02rem}
+.ncard p{font-size:.87rem;color:var(--muted);flex:1}
+.ncard .foot{display:flex;gap:.6rem;align-items:center;font-size:.76rem;color:var(--faint);margin-top:.2rem}
+.ncard .foot .go{margin-left:auto;color:var(--volga);font-weight:700;display:inline-flex;gap:.3rem;align-items:center}
+.empty{border:1px dashed var(--line-2);border-radius:var(--r);padding:2.4rem 1.2rem;text-align:center;color:var(--muted)}
+.empty .ic{width:1.8rem;height:1.8rem;margin:0 auto .6rem;color:var(--faint)}
+.empty b{display:block;font-family:var(--disp);font-size:1rem;color:var(--text);margin-bottom:.3rem}
+.empty p{font-size:.87rem;max-width:32rem;margin:0 auto}
+.empty .btn{margin-top:1rem}
+.nrows{border-top:1px solid var(--line)}
+.nrow{display:grid;grid-template-columns:6.2rem minmax(0,1fr) auto;gap:1rem;align-items:baseline;padding:.9rem .2rem;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.nrow:hover{background:var(--info-soft)}
+.nrow time{font-family:var(--mono);font-size:.78rem;color:var(--faint)}
+.nrow b{font-weight:700;font-size:.98rem}
+.nrow .t{font-size:.74rem;color:var(--faint);display:inline-flex;gap:.3rem;align-items:center}
+
+/* фото */
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+.ph{aspect-ratio:4/3;border:1px solid var(--line-2);border-radius:var(--r);background:
+  linear-gradient(135deg,var(--cool),var(--surface));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;text-align:center;padding:1rem;color:var(--faint)}
+.ph .ic{width:1.6rem;height:1.6rem;color:var(--volga);opacity:.6}
+.ph b{color:var(--text);font-size:.92rem}
+.ph span{font-size:.75rem}
+.ph .n{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em}
+
+/* таблицы */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.tbl{width:100%;border-collapse:collapse;min-width:34rem}
+.tbl th{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:left;padding:.7rem 1rem;background:var(--cool);border-bottom:1px solid var(--line)}
+.tbl td{padding:.7rem 1rem;border-bottom:1px solid var(--line);font-size:.9rem}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.now td{background:linear-gradient(90deg,var(--warn-soft),transparent);box-shadow:inset 3px 0 0 var(--steppe)}
+.tbl .n{font-family:var(--mono);color:var(--faint)}
+.tbl .t{font-family:var(--mono);font-size:.82rem}
+
+/* кружки */
+.club{display:flex;gap:.8rem;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;transition:.2s var(--ease)}
+.club:hover{border-color:var(--caspian);transform:translateY(-2px)}
+.club .dot{width:.6rem;height:.6rem;border-radius:3px;margin-top:.45rem;flex:none}
+.club b{display:block;font-size:.94rem}
+.club p{font-size:.82rem;color:var(--muted)}
+.clubs{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
+
+/* аккордеон */
+.acc{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin-bottom:.6rem;overflow:hidden}
+.acc[open]{border-color:var(--caspian)}
+.acc summary{list-style:none;display:flex;gap:.8rem;align-items:center;padding:.9rem 1rem;font-weight:700;font-size:.94rem;cursor:pointer}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary .plus{margin-left:auto;width:1.6rem;height:1.6rem;border-radius:8px;background:var(--info-soft);color:var(--volga);display:grid;place-items:center;font-weight:700;transition:transform .25s var(--ease);flex:none}
+.acc[open] summary .plus{transform:rotate(45deg)}
+.acc .body{padding:0 1rem 1rem;color:var(--muted);font-size:.9rem;animation:vin .3s var(--ease)}
+.acc .body ul{margin:.5rem 0 .5rem 1.1rem}
+.acc .body li{margin-bottom:.25rem}
+
+/* чек-лист */
+.check{list-style:none;display:grid;gap:.5rem}
+.check li{display:flex;gap:.7rem;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:.75rem .9rem;transition:.18s}
+.check li.done{border-color:var(--reed);background:var(--ok-soft)}
+.check input{width:1.15rem;height:1.15rem;margin-top:.15rem;accent-color:var(--reed);flex:none}
+.check label{font-size:.9rem;font-weight:600;cursor:pointer}
+.check small{display:block;font-weight:400;color:var(--muted);font-size:.79rem}
+.progress-head{display:flex;gap:1rem;align-items:center;margin-bottom:1rem}
+.progress-head b{font-family:var(--disp);font-size:1.05rem}
+.progress-head span{font-size:.84rem;color:var(--muted)}
+
+/* доработки */
+.ups{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
+.up{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.15rem;display:flex;flex-direction:column;gap:.45rem;position:relative;overflow:hidden;transition:.22s var(--ease)}
+.up:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--caspian)}
+.up .n{font-family:var(--mono);font-size:.66rem;color:var(--faint)}
+.up h3{font-size:1rem;display:flex;gap:.5rem;align-items:center}
+.up p{font-size:.87rem;color:var(--muted);flex:1}
+.up .row{display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap}
+.hotkeys{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem}
+.hotkeys div{display:flex;gap:.7rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;font-size:.86rem}
+.hotkeys kbd{font-family:var(--mono);font-size:.72rem;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:6px;padding:.15rem .4rem;background:var(--cool);white-space:nowrap}
+
+/* контакты */
+.dl{border-top:1px solid var(--line)}
+.dl-row{display:grid;grid-template-columns:13.5rem minmax(0,1fr) auto;gap:1rem;padding:.9rem .2rem;border-bottom:1px solid var(--line);align-items:baseline}
+.dl-row dt{font-weight:700;font-size:.9rem}
+.dl-row dd{font-size:.93rem}
+.dl-row .sub{display:block;font-size:.8rem;color:var(--faint);margin-top:.15rem}
+.dl-row a{font-weight:700}
+.copy{width:2rem;height:2rem;border-radius:8px;border:1px solid var(--line);color:var(--faint);display:grid;place-items:center;transition:.15s}
+.copy:hover{color:var(--volga);border-color:var(--caspian)}
+.mapcard{display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap;background:linear-gradient(150deg,var(--ink-2),var(--ink));color:var(--on-dark);border-radius:var(--r);padding:1.3rem}
+.mapcard .pin{width:3rem;height:3rem;border-radius:12px;background:rgba(15,181,201,.16);color:var(--caspian);display:grid;place-items:center;flex:none}
+.mapcard .txt{flex:1;min-width:14rem}
+.mapcard b{font-family:var(--disp);font-size:1rem;display:block;margin-bottom:.2rem;color:#fff}
+.mapcard span{font-size:.85rem;color:var(--on-dark-mut)}
+.mapcard .coords{font-family:var(--mono);font-size:.72rem;display:block;margin-top:.25rem}
+.steps{list-style:none;counter-reset:s;border-top:1px solid var(--line)}
+.steps li{counter-increment:s;display:flex;gap:1rem;padding:.85rem .2rem;border-bottom:1px solid var(--line);font-size:.92rem}
+.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--volga);flex:none}
+.warnbox{border:1px solid color-mix(in srgb,var(--steppe) 60%,var(--line));border-left-width:4px;background:var(--warn-soft);border-radius:var(--r);padding:1.2rem}
+.warnbox h3{display:flex;gap:.55rem;align-items:center;color:#8A5B00;margin-bottom:.5rem}
+.warnbox p{font-size:.91rem;color:var(--muted);max-width:44rem}
+
+/* CTA */
+.cta{display:flex;gap:1.4rem;align-items:center;flex-wrap:wrap;border-radius:var(--r);padding:1.6rem;
+  background:linear-gradient(120deg,var(--volga),var(--violet) 65%,var(--lotus));color:#fff;box-shadow:var(--shadow)}
+.cta .txt{flex:1;min-width:16rem}
+.cta h2{color:#fff;font-size:1.3rem;margin-bottom:.3rem}
+.cta p{font-size:.92rem;opacity:.9}
+.cta .btn{background:#fff;color:var(--volga)}
+
+/* ==================== ПОДВАЛ ==================== */
+footer.ft{background:var(--ink);color:var(--on-dark-mut);margin-top:2rem;position:relative;overflow:hidden}
+footer.ft .delta{opacity:.18}
+footer.ft .wrap{position:relative;z-index:1}
+.ft-top{display:flex;justify-content:flex-end;padding:.9rem 0 0}
+.ft-top button{display:inline-flex;gap:.4rem;align-items:center;color:var(--on-dark-mut);font-weight:700;font-size:.8rem}
+.ft-top button:hover{color:var(--caspian)}
+.ft-grid{display:grid;grid-template-columns:1.3fr 1fr .8fr 1.1fr;gap:2rem;padding:1.4rem 0 2.2rem}
+.ft-grid h4{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--caspian);margin-bottom:.85rem}
+.ft-brand .brand b{color:#fff}
+.ft-brand p{font-size:.84rem;margin-top:.8rem;max-width:26rem}
+.ft-list{list-style:none;display:grid;gap:.45rem;font-size:.87rem}
+.ft-list a{color:var(--on-dark-mut);font-weight:600}
+.ft-list a:hover{color:var(--caspian)}
+.digital{display:grid;gap:.5rem}
+.digital a,.digital .soon{display:flex;gap:.7rem;align-items:center;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:.6rem .75rem;color:var(--on-dark)}
+.digital a:hover{border-color:var(--caspian);text-decoration:none}
+.digital .badge{width:2rem;height:2rem;border-radius:9px;display:grid;place-items:center;background:rgba(15,181,201,.16);color:var(--caspian);font-weight:700;font-size:.8rem;flex:none}
+.digital b{display:block;font-size:.85rem}
+.digital small{display:block;font-size:.72rem;color:var(--on-dark-mut)}
+.digital .st{margin-left:auto;font-family:var(--mono);font-size:.6rem;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:.12rem .45rem}
+.ft-theme{border-top:1px solid rgba(255,255,255,.12);padding:1.3rem 0;display:flex;gap:1.4rem;align-items:flex-end;flex-wrap:wrap}
+.ft-theme .txt{flex:1;min-width:15rem}
+.ft-theme .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lotus);display:block;margin-bottom:.3rem}
+.ft-theme h4{font-family:var(--disp);font-size:.98rem;color:#fff;margin-bottom:.2rem;letter-spacing:0;text-transform:none}
+.ft-theme p{font-size:.79rem}
+.ft-theme select{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22);color:#fff;max-width:20rem}
+.ft-theme .now{font-family:var(--mono);font-size:.7rem}
+.ft-theme .now b{color:var(--caspian)}
+.ft-partners{border-top:1px solid rgba(255,255,255,.12);padding:1.3rem 0}
+.ft-partners .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--caspian);display:block;margin-bottom:.3rem}
+.ft-partners h4{font-family:var(--disp);font-size:.98rem;color:#fff;margin-bottom:.2rem}
+.ft-partners p{font-size:.79rem;margin-bottom:.9rem}
+.slot{border:1px dashed rgba(255,255,255,.25);border-radius:12px;padding:1rem;display:flex;gap:.8rem;align-items:center;max-width:30rem;font-size:.8rem}
+.slot .plus{width:2.2rem;height:2.2rem;border-radius:9px;border:1px dashed rgba(255,255,255,.3);display:grid;place-items:center;font-size:1.2rem;flex:none;color:var(--caspian)}
+.ft-bottom{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0 1.5rem;display:flex;gap:1rem;justify-content:space-between;flex-wrap:wrap;font-size:.79rem}
+.ft-bottom a{color:var(--caspian);font-weight:700}
+
+/* ==================== АДАПТИВ ==================== */
+@media (max-width:70rem){
+  nav.main{display:none}
+  .burger{display:grid}
+  .hero-grid,.about{grid-template-columns:1fr}
+  .layout{grid-template-columns:1fr}
+  .side{position:static}
+  .subnav{flex-direction:row;flex-wrap:wrap;border-top:none;gap:.35rem}
+  .subnav button{border:1px solid var(--line);border-radius:999px;padding:.4rem .85rem}
+  .subnav button.active{box-shadow:none;padding-left:.85rem;border-color:var(--volga);background:var(--info-soft)}
+  .help{display:none}
+  .bento{grid-template-columns:repeat(4,1fr)}
+  .tile.big{grid-row:span 1}
+  .ft-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:48rem){
+  .searchbtn span,.searchbtn kbd{display:none}
+  .searchbtn{width:2.5rem;padding:0;justify-content:center}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .dirs,.clubs,.ups,.feed.cards,.hotkeys{grid-template-columns:1fr}
+  .photos{grid-template-columns:1fr}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .tile,.tile.wide,.tile.big{grid-column:span 2}
+  .bigtl li{grid-template-columns:1fr;gap:.2rem}
+  .dl-row{grid-template-columns:1fr auto;gap:.3rem .8rem}
+  .dl-row dt{grid-column:1/-1}
+  .nrow{grid-template-columns:1fr;gap:.2rem}
+  .ft-grid{grid-template-columns:1fr}
+  .mobbar{display:flex}
+  body{padding-bottom:4.2rem}
+  #toast{bottom:5rem}
+  .dock{top:auto;bottom:4.6rem;right:.5rem;left:.5rem;width:auto;max-height:60vh}
+  .drawer .panel{width:100%}
+  .utility .hide-sm{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  [data-reveal],.boot{opacity:1!important;transform:none!important}
+}
+@media print{
+  .notice,.utility,header.hdr,.mobbar,.dock,.cmdk,.drawer,#toast,#progress,.side,.ntools,.tabs,.hero-cta,.st-foot,.ft-theme,.ft-partners,.ft-top{display:none!important}
+  body{background:#fff;color:#000;padding:0}
+  .hero{background:#fff;color:#000}
+  .hero h1,.hero .lead,.hero .org{color:#000}
+  .hero-bg,.ticker{display:none}
+  .card,.tile,.stat,.dir,.ncard{border-color:#999;box-shadow:none}
+  a{color:#000;text-decoration:underline}
+}
+</style>
+</head>
+<body data-scheme="light" data-spacing="normal" data-images="on" data-motion="on" data-links="off" data-density="normal" data-review="off">
+<a class="skip" href="#main">Перейти к основному содержанию</a>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a12 12 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3L2.5 20h19z"/><path d="M12 9.5v4.5M12 17.2v.1"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.8v.1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5.5 5.5L20 6.5"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4h9l-1 3h6l-2 5 2 5h-9l-1-3H5"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 3v11M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 18H5a2 2 0 01-2-2v-5a2 2 0 012-2h14a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="7" y="14" width="10" height="7"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M12 3a6 6 0 00-6 6v4l-2 4h16l-2-4V9a6 6 0 00-6-6z"/><path d="M10 20a2 2 0 004 0"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5c-2-1.5-5-2-9-2v16c4 0 7 .5 9 2 2-1.5 5-2 9-2V3c-4 0-7 .5-9 2z"/><path d="M12 5v16"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.5a3.2 3.2 0 010 6M18 20c0-2.4-.8-4-2-5"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.3-5.6M20 3v4h-4"/></symbol>
+  <symbol id="i-mega" viewBox="0 0 24 24"><path d="M3 10v4l11 5V5zM14 8l6-3v14l-6-3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+</svg>
+
+<div id="progress"></div>
+
+<div class="notice">
+  <div class="wrap">
+    <i aria-hidden="true"></i>
+    <span><b>Демонстрационная версия.</b> Сведения и документы требуют проверки администрацией.</span>
+    <button id="noticeReview"><svg class="ic" style="width:.9em;height:.9em"><use href="#i-flag"/></svg>Что нужно подтвердить</button>
+  </div>
+</div>
+
+<div class="utility">
+  <div class="wrap">
+    <a href="tel:+78512500567"><svg class="ic"><use href="#i-phone"/></svg>(8512) 50-05-67</a>
+    <span class="hide-sm"><i class="live-dot" id="utilDot"></i><span id="utilStatus">Проверяем режим…</span></span>
+    <span class="grow"></span>
+    <a href="#/priem" class="hide-sm">Приём в гимназию</a>
+    <a href="#/parents" class="hide-sm">Родителям</a>
+    <a href="https://www.gosuslugi.ru/" target="_blank" rel="noopener">Госуслуги <svg class="ic" style="width:.8em;height:.8em"><use href="#i-ext"/></svg></a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap bar">
+    <a class="brand" href="#/" aria-label="Гимназия № 4 — на главную">
+      <span class="mark" aria-hidden="true">4</span>
+      <span><b>Гимназия № 4</b><small>Астрахань</small></span>
+    </a>
+    <nav class="main" aria-label="Основная навигация">
+      <a href="#/" data-nav="home">Главная</a>
+      <a href="#/history" data-nav="history">История</a>
+      <a href="#/sveden" data-nav="sveden">Сведения</a>
+      <a href="#/parents" data-nav="parents">Родителям</a>
+      <a href="#/students" data-nav="students">Обучающимся</a>
+      <a href="#/news" data-nav="news">Новости</a>
+      <a href="#/priem" data-nav="priem">Приём</a>
+      <a href="#/life" data-nav="life">Школьная жизнь</a>
+      <a href="#/contacts" data-nav="contacts">Контакты</a>
+    </nav>
+    <div class="hdr-actions">
+      <button class="searchbtn" id="openCmd" aria-label="Умный поиск по сайту">
+        <svg class="ic"><use href="#i-search"/></svg><span>Поиск по сайту</span><kbd>Ctrl K</kbd>
+      </button>
+      <button class="iconbtn" id="reviewBtn" aria-pressed="false" title="Режим проверки данных (Alt+R)" aria-label="Режим проверки данных"><svg class="ic"><use href="#i-flag"/></svg></button>
+      <button class="iconbtn" id="dockBtn" aria-expanded="false" title="Оформление и доступность (Alt+A)" aria-label="Оформление и доступность"><svg class="ic"><use href="#i-eye"/></svg></button>
+      <button class="iconbtn burger" id="burger" aria-expanded="false" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+  <nav class="sheet scroll" id="sheet" aria-label="Мобильная навигация">
+    <a href="#/" data-nav="home">Главная <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/history" data-nav="history">История <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/sveden" data-nav="sveden">Сведения <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/parents" data-nav="parents">Родителям <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/students" data-nav="students">Обучающимся <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/news" data-nav="news">Новости <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/priem" data-nav="priem">Приём <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/life" data-nav="life">Школьная жизнь <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/contacts" data-nav="contacts">Контакты <svg class="ic"><use href="#i-arrow"/></svg></a>
+    <a href="#/upgrades" data-nav="upgrades" style="color:var(--lotus)">Что улучшено <svg class="ic"><use href="#i-spark"/></svg></a>
+  </nav>
+</header>
+
+<!-- ДОК ОФОРМЛЕНИЯ -->
+<aside class="dock scroll" id="dock" aria-label="Оформление и доступность">
+  <h3><svg class="ic" style="color:var(--caspian)"><use href="#i-eye"/></svg>Оформление и доступность</h3>
+  <p class="sub">Настройки применяются мгновенно и хранятся только в этом браузере.</p>
+  <div class="row">
+    <div class="lbl"><span>Размер шрифта</span><output id="sizeOut">100%</output></div>
+    <input type="range" id="sizeRange" min="100" max="200" step="25" value="100" aria-label="Размер шрифта">
+  </div>
+  <div class="row"><div class="lbl"><span>Цветовая схема</span></div>
+    <div class="seg" data-set="scheme">
+      <button data-val="light" aria-pressed="true">Обычная</button>
+      <button data-val="dark" aria-pressed="false">Тёмная</button>
+      <button data-val="bw" aria-pressed="false">Ч/Б</button>
+      <button data-val="wb" aria-pressed="false">Б/Ч</button>
+    </div>
+  </div>
+  <div class="row"><div class="lbl"><span>Плотность вёрстки</span></div>
+    <div class="seg" data-set="density">
+      <button data-val="compact" aria-pressed="false">Плотно</button>
+      <button data-val="normal" aria-pressed="true">Обычно</button>
+      <button data-val="roomy" aria-pressed="false">Просторно</button>
+    </div>
+  </div>
+  <div class="row"><div class="lbl"><span>Межстрочный интервал</span></div>
+    <div class="seg" data-set="spacing">
+      <button data-val="normal" aria-pressed="true">Обычный</button>
+      <button data-val="wide" aria-pressed="false">Увеличенный</button>
+    </div>
+  </div>
+  <div class="row"><div class="lbl"><span>Праздничная тема</span></div>
+    <select class="sel" id="themeSel" aria-label="Тема оформления"></select>
+  </div>
+  <div class="row">
+    <label class="switch"><input type="checkbox" id="swImages" checked><span class="track"><i></i></span><span>Показывать изображения</span></label>
+    <label class="switch"><input type="checkbox" id="swMotion" checked><span class="track"><i></i></span><span>Анимации и переходы</span></label>
+    <label class="switch"><input type="checkbox" id="swLinks"><span class="track"><i></i></span><span>Подчёркивать все ссылки</span></label>
+    <label class="switch"><input type="checkbox" id="swReview"><span class="track"><i></i></span><span>Режим проверки данных</span></label>
+  </div>
+  <div class="dock-foot">
+    <button class="btn btn-l btn-s" id="settingsReset"><svg class="ic"><use href="#i-reset"/></svg>Сбросить</button>
+    <button class="btn btn-p btn-s" id="dockClose">Готово</button>
+  </div>
+</aside>
+
+<!-- ПАЛИТРА КОМАНД -->
+<div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Умный поиск">
+  <div class="cmdk-box">
+    <div class="cmdk-in">
+      <svg class="ic"><use href="#i-search"/></svg>
+      <input id="cmdInput" type="text" placeholder="Раздел, новость, телефон или действие…" autocomplete="off" aria-label="Поисковый запрос">
+      <kbd>Esc</kbd>
+    </div>
+    <div class="cmdk-list scroll" id="cmdList" role="listbox" aria-label="Результаты"></div>
+    <div class="cmdk-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> навигация</span><span><kbd>Enter</kbd> открыть</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd> поиск</span><span><kbd>Alt</kbd>+<kbd>R</kbd> проверка данных</span>
+    </div>
+  </div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <div class="scrim" data-close></div>
+  <div class="panel">
+    <div class="drawer-head">
+      <div style="flex:1"><span class="k" id="drawerKick">Раздел</span><h3 id="drawerTitle">Заголовок</h3></div>
+      <button class="iconbtn" data-close aria-label="Закрыть"><svg class="ic"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="drawer-body scroll" id="drawerBody"></div>
+    <div class="drawer-foot" id="drawerFoot"></div>
+  </div>
+</div>
+
+<div id="toast" role="status"><svg class="ic"><use href="#i-check"/></svg><span id="toastText"></span><button id="toastAction" hidden>Отменить</button></div>
+
+<main id="main">
+
+<!-- ==================== ГЛАВНАЯ ==================== -->
+<div class="view" data-view="home">
+  <section class="hero" data-tone="#0FB5C9">
+    <div class="hero-bg" aria-hidden="true">
+      <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+      <svg class="delta" viewBox="0 0 1200 600" preserveAspectRatio="none">
+        <defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0FB5C9"/><stop offset=".5" stop-color="#6B4FD8"/><stop offset="1" stop-color="#D6247E"/></linearGradient></defs>
+        <path d="M-20 120 C 200 180, 320 60, 520 140 S 900 260, 1220 180"/>
+        <path d="M-20 260 C 180 320, 360 200, 560 280 S 940 400, 1220 320"/>
+        <path d="M-20 400 C 220 460, 340 340, 600 420 S 960 520, 1220 460"/>
+        <path d="M-20 540 C 260 580, 420 480, 660 540 S 980 620, 1220 580"/>
+      </svg>
+      <span class="grain"></span>
+    </div>
+    <div class="wrap hero-grid">
+      <div>
+        <p class="org boot" style="--d:0">МБОУ г. Астрахани «Гимназия № 4»</p>
+        <h1 class="boot" style="--d:1">Знания открывают <em>возможности</em></h1>
+        <p class="lead boot" style="--d:2">Школа с историей и языковым профилем: начальное, основное и среднее общее образование с углублённым изучением английского языка. Обновлённый сайт показывает, что происходит в гимназии прямо сейчас.</p>
+        <div class="hero-cta boot" style="--d:3">
+          <a class="btn btn-p" href="#/priem">Поступление в гимназию <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn-l" href="#/sveden">Сведения об организации</a>
+          <button class="btn btn-l" id="heroUpgrades"><svg class="ic"><use href="#i-spark"/></svg>Что улучшено</button>
+        </div>
+        <div class="hero-mini boot" style="--d:4">
+          <div><b>1964</b>начало истории</div>
+          <div><b data-audit="stats-pupils" data-audit-note="Численность обучающихся перенесена с gym4.net без даты обновления.">≈ 1 450</b>обучающихся</div>
+          <div><b data-audit="stats-teachers" data-audit-note="73 педагога и руководителя кружков — подтвердить актуальность на текущий учебный год.">73</b>педагога</div>
+          <div><b>1–11</b>классы</div>
+        </div>
+      </div>
+
+      <div class="status boot" style="--d:2" id="statusCard">
+        <div class="status-top">
+          <svg class="ic"><use href="#i-clock"/></svg><b>Сейчас в гимназии</b>
+          <span id="clock">--:--:--</span>
+        </div>
+        <div class="st-label" id="stLabel">СИНХРОНИЗАЦИЯ…</div>
+        <div class="st-big" id="stBig">--:--</div>
+        <div class="st-bar"><i id="stBar"></i></div>
+        <div class="st-row"><span>Режим работы</span><b class="val" id="stOpen">—</b></div>
+        <div class="st-row"><span>Учебный день</span><b class="val" id="stLesson">—</b></div>
+        <div class="st-row"><span>Приём директора</span><b class="val" id="stPriem">—</b></div>
+        <div class="st-foot">
+          <a class="btn btn-s" href="#/students"><svg class="ic"><use href="#i-bell"/></svg>Расписание звонков</a>
+          <label class="switch" title="Показать виджет в разгар учебного дня"><input type="checkbox" id="demoTime"><span class="track"><i></i></span><span>Демо-время</span></label>
+          <span class="demo-flag" id="demoFlag" hidden>среда 10:47</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-label="Ключевые факты о гимназии">
+    <div class="ticker-track">
+      <div class="ticker-g"><span><b>1964</b> — школа № 46 с английским уклоном</span><span class="sep">✦</span><span>Ассоциированная школа <b>ЮНЕСКО</b></span><span class="sep">✦</span><span><b>«Орлята России»</b> — флагманская школа области, 2023</span><span class="sep">✦</span><span><b>2</b> спортзала и <b>4</b> площадки</span><span class="sep">✦</span><span>Английский театр и Cambridge English</span><span class="sep">✦</span></div>
+      <div class="ticker-g" aria-hidden="true"><span><b>1964</b> — школа № 46 с английским уклоном</span><span class="sep">✦</span><span>Ассоциированная школа <b>ЮНЕСКО</b></span><span class="sep">✦</span><span><b>«Орлята России»</b> — флагманская школа области, 2023</span><span class="sep">✦</span><span><b>2</b> спортзала и <b>4</b> площадки</span><span class="sep">✦</span><span>Английский театр и Cambridge English</span><span class="sep">✦</span></div>
+    </div>
+  </div>
+
+  <section class="sec" data-tone="#0B4F8A">
+    <div class="wrap">
+      <div class="shead" data-reveal><span class="snum"><b>01</b> / Навигация</span><h2>Нужная информация — рядом</h2><p>Или нажмите <b>Ctrl + K</b>: умный поиск найдёт раздел, новость, телефон и даже нужное действие.</p></div>
+      <div class="bento">
+        <a class="tile big" href="#/priem" data-reveal><span class="n">01 · главное</span><h3>Приём в гимназию</h3><p>Порядок зачисления, интерактивный чек-лист документов с сохранением прогресса и ответы на частые вопросы родителей.</p><span class="go">Открыть раздел <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+        <a class="tile wide" href="#/students" data-reveal style="--d:1"><span class="n">02</span><h3>Обучающимся</h3><p>Расписание звонков с текущим уроком, кружки и секции.</p><span class="go">Открыть <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+        <a class="tile wide" href="#/parents" data-reveal style="--d:2"><span class="n">03</span><h3>Родителям</h3><p>Питание, безопасность, поддержка и электронные сервисы.</p><span class="go">Открыть <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+        <a class="tile" href="#/news" data-reveal style="--d:3"><span class="n">04</span><h3>Новости</h3><p>Лента с поиском и фильтрами.</p><span class="go">Открыть <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+        <a class="tile" href="#/sveden" data-reveal style="--d:4"><span class="n">05</span><h3>Сведения</h3><p>Обязательные подразделы и статусы.</p><span class="go">Открыть <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+        <a class="tile" href="#/contacts" data-reveal style="--d:5"><span class="n">06</span><h3>Контакты</h3><p>Адрес, телефоны, маршрут.</p><span class="go">Открыть <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+        <a class="tile wide" href="#/life" data-reveal style="--d:6"><span class="n">07</span><h3>Школьная жизнь</h3><p>Год гимназии, фотолетопись, достижения и направления.</p><span class="go">Открыть <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+        <a class="tile wide" href="#/history" data-reveal style="--d:7"><span class="n">08</span><h3>История</h3><p>От школы № 46 к гимназии № 4 — летопись и источники.</p><span class="go">Открыть <svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" data-tone="#6B4FD8">
+    <div class="wrap">
+      <div class="shead" data-reveal><span class="snum"><b>02</b> / О гимназии</span><h2>Традиции, которые помогают смотреть вперёд</h2></div>
+      <div class="about">
+        <div class="txt" data-reveal>
+          <p>Гимназия № 4 продолжает образовательные традиции школы с углублённым изучением английского языка. В центре её работы — качественное общее образование, развитие интересов обучающихся и открытая связь семьи и школы.</p>
+          <p data-audit="hist-dates" data-audit-note="В официальных материалах встречаются 1996 и 1997 годы. Соотношение дат требует уточнения по приказу № 205 от 16.07.1997.">В официальных материалах встречаются даты 1996 и 1997 годов. До отдельного подтверждения администрацией они приведены совместно — сайт не «сглаживает» противоречие, а показывает его.</p>
+          <a class="btn btn-l btn-s" href="#/history">Полная история <svg class="ic"><use href="#i-arrow"/></svg></a>
+        </div>
+        <ol class="tl" id="homeTl" data-reveal style="--d:1">
+          <span class="rail" aria-hidden="true"></span>
+          <li><span class="y">1964</span><h3>Начало истории</h3><p>Основана средняя общеобразовательная школа № 46 с преподаванием ряда предметов на английском языке.</p></li>
+          <li><span class="y">1984</span><h3>Новое здание</h3><p>Построено здание, в котором гимназия располагается согласно официальным сведениям.</p></li>
+          <li><span class="y">1996–1997</span><h3>Преобразование в гимназию</h3><p>Создание на базе школы № 46; оформление приказом Управления образования № 205 от 16.07.1997.</p></li>
+          <li><span class="y">2002</span><h3>Муниципальная гимназия</h3><p>Переименование приказом № 188 от 26.04.2002.</p></li>
+          <li><span class="y">2011</span><h3>Современный статус</h3><p>МБОУ г. Астрахани «Гимназия № 4» — приказ № 08-07-319 от 30.06.2011.</p></li>
+        </ol>
+      </div>
+      <p class="src">Источники: <a href="https://gym4.net/o-gimnazii/" target="_blank" rel="noopener">раздел «О гимназии»</a>, <a href="https://gym4.net/sveden/common/" target="_blank" rel="noopener">основные сведения</a>, публичные доклады за 2017–2018 и 2023–2024 учебные годы.</p>
+    </div>
+  </section>
+
+  <section class="sec" data-tone="#2E9E5B">
+    <div class="wrap">
+      <div class="shead" data-reveal><span class="snum"><b>03</b> / Гимназия в цифрах</span><h2>Масштаб и возможности</h2></div>
+      <div class="stats">
+        <div class="stat" data-reveal><div class="num" data-count="1450" data-prefix="≈ ">≈ 0</div><div class="lbl">обучающихся, 1–11 классы</div></div>
+        <div class="stat" data-reveal style="--d:1"><div class="num" data-count="73">0</div><div class="lbl">педагога и руководителя кружков и секций</div></div>
+        <div class="stat" data-reveal style="--d:2"><div class="num" data-count="2">0</div><div class="lbl">спортивных зала</div></div>
+        <div class="stat" data-reveal style="--d:3"><div class="num" data-count="4">0</div><div class="lbl">спортивные площадки</div></div>
+      </div>
+      <div class="note" data-reveal><svg class="ic"><use href="#i-alert"/></svg><span data-audit="stats-all" data-audit-note="Показатели численности и инфраструктуры перенесены с gym4.net; дата обновления на источнике указана не для всех цифр.">Показатели перенесены с официальной страницы gym4.net. На источнике не для всех цифр указана дата обновления — администрация должна подтвердить их перед публикацией. <a href="#/sveden">Материальная база →</a></span></div>
+    </div>
+  </section>
+
+  <section class="sec" data-tone="#D6247E">
+    <div class="wrap">
+      <div class="shead" data-reveal><span class="snum"><b>04</b> / Направления</span><h2>Чем живёт гимназия</h2></div>
+      <div class="dirs">
+        <div class="dir" data-reveal><span class="t">Языковой профиль</span><h3>Углублённый английский</h3><p>Английская библиотека, «Английский театр» и дополнительные языковые программы, включая Cambridge English.</p></div>
+        <div class="dir" data-reveal style="--d:1"><span class="t">Международные проекты</span><h3>Ассоциированная школа ЮНЕСКО</h3><p>Участие в сети ассоциированных школ ЮНЕСКО и научно-практическая конференция «Мир вокруг нас».</p></div>
+        <div class="dir" data-reveal style="--d:2"><span class="t">Воспитание</span><h3>«Орлята России»</h3><p>В 2023 году гимназии присвоен статус флагманской школы Астраханской области по программе.</p></div>
+        <div class="dir" data-reveal style="--d:3"><span class="t">Спорт и творчество</span><h3>Кружки, секции и студии</h3><p>Плавание, футбол, волейбол, баскетбол, шахматы, музыкальная и театральные студии.</p></div>
+      </div>
+      <p class="src" data-audit="dirs" data-audit-note="Актуальность расписаний, программ и набора в кружки требует подтверждения.">Сведения приведены по материалам официального сайта и требуют проверки актуальности расписаний, программ и набора. <a href="#/life">Школьная жизнь →</a></p>
+    </div>
+  </section>
+
+  <section class="sec" data-tone="#E8A317">
+    <div class="wrap">
+      <div class="shead" data-reveal><span class="snum"><b>05</b> / Информация</span><h2>Новости и объявления</h2></div>
+      <div class="nrows" id="homeNews" data-reveal></div>
+      <p class="src">Материалы от 09.11.2026 перенесены со старого сайта; полные тексты открываются на gym4.net. <a href="#/news">Вся лента →</a></p>
+    </div>
+  </section>
+
+  <section class="sec" data-tone="#0FB5C9">
+    <div class="wrap">
+      <div class="shead" data-reveal><span class="snum"><b>06</b> / Фотолетопись</span><h2>Школьная жизнь — в событиях и фотографиях</h2><p>Места для снимков гимназии. Фотографии добавляются после согласования с администрацией и проверки прав.</p></div>
+      <div class="photos">
+        <div class="ph" data-img data-reveal><span class="n">01</span><svg class="ic"><use href="#i-camera"/></svg><b>Здание гимназии</b><span>Добавить согласованную фотографию</span></div>
+        <div class="ph" data-img data-reveal style="--d:1"><span class="n">02</span><svg class="ic"><use href="#i-camera"/></svg><b>Учебные проекты</b><span>Учёба и исследовательская работа</span></div>
+        <div class="ph" data-img data-reveal style="--d:2"><span class="n">03</span><svg class="ic"><use href="#i-camera"/></svg><b>Творчество и спорт</b><span>Внеурочная жизнь</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="cta" data-reveal>
+        <div class="txt"><h2>Сведения об образовательной организации</h2><p>13 обязательных подразделов со статусами готовности и ссылками на официальные источники.</p></div>
+        <a class="btn" href="#/sveden">Открыть раздел <svg class="ic"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== ИСТОРИЯ ==================== -->
+<div class="view" data-view="history" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>История гимназии</b></nav>
+    <div class="phead"><span class="kick">Наша история</span><h1>От школы № 46 к гимназии № 4</h1><p>История образовательной организации, связанной с углублённым изучением английского языка, начинается в 1964 году.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="history"><button data-go="h-tl"><i>01</i>Летопись</button><button data-go="h-now"><i>02</i>Гимназия сегодня</button><button data-go="h-src"><i>03</i>Источники</button></nav>
+        </div>
+        <div class="help"><h4>Нужна помощь?</h4><p>Приёмная директора: <a href="tel:+78512500567">(8512) 50-05-67</a>. Приёмный день — среда, 14:00–18:00.</p><a class="btn btn-c btn-s" href="#/contacts">Контакты гимназии</a></div>
+      </aside>
+      <div>
+        <section id="h-tl" data-spy-section data-tone="#0B4F8A">
+          <p style="color:var(--muted);max-width:46rem" data-reveal>Современная гимназия № 4 выросла из средней общеобразовательной школы № 46, в которой преподавался ряд предметов на английском языке. В официальных материалах гимназии именно <b>1964 год</b> указан как начало истории образовательной организации.</p>
+          <ol class="bigtl">
+            <li data-reveal><span class="y">1964</span><div><h3>Основание школы № 46</h3><p>В Астрахани основана средняя общеобразовательная школа № 46 с преподаванием ряда предметов на английском языке. Дата указана в публичных докладах гимназии и на её официальном сайте.</p></div></li>
+            <li data-reveal><span class="y">1984</span><div><h3>Здание гимназии</h3><p>Согласно разделу «О гимназии», организация функционирует в здании постройки 1984 года. Это дата здания, а не основания школы.</p></div></li>
+            <li data-reveal><span class="y">1996–1997</span><div><h3>Создание гимназии № 4</h3><p data-audit="hist-1996" data-audit-note="Раздел «О гимназии» называет 1996 год; доклад 2017–2018 — приказ № 205 от 16.07.1997. Нужен первичный распорядительный документ.">Официальный раздел «О гимназии» называет 1996 годом создание гимназии на базе школы № 46. Публичный доклад за 2017–2018 учебный год указывает приказ Управления образования администрации Астрахани № 205 от 16 июля 1997 года. Обе даты сохранены с пояснением: их соотношение требует уточнения по первичному документу.</p></div></li>
+            <li data-reveal><span class="y">2002</span><div><h3>Переименование в муниципальную гимназию</h3><p>Приказом Управления образования администрации города Астрахани № 188 от 26 апреля 2002 года учреждение переименовано в муниципальное общеобразовательное учреждение «Гимназия № 4».</p></div></li>
+            <li data-reveal><span class="y">2011</span><div><h3>Современное наименование</h3><p>Приказом Комитета по образованию и науке администрации города Астрахани от 30 июня 2011 года № 08-07-319 учреждение переименовано в муниципальное бюджетное общеобразовательное учреждение г. Астрахани «Гимназия № 4».</p></div></li>
+          </ol>
+        </section>
+        <section id="h-now" class="sec" data-spy-section data-tone="#2E9E5B">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / Сегодня</span><h2>Гимназия сегодня</h2></div>
+          <div data-reveal style="color:var(--muted);max-width:46rem">
+            <p style="margin-bottom:.9rem">Официальные материалы описывают гимназию как организацию, реализующую программы начального, основного и среднего общего образования. Исторически выделяется углублённое изучение английского языка.</p>
+            <p>Отдельной страницей истории школьного сообщества стала детская общественная организация <b style="color:var(--text)">«Содружество»</b>, созданная в гимназии в 2001 году. Её деятельность связана с участием учеников, педагогов и родителей в общественной жизни школы.</p>
+          </div>
+          <p class="src"><a href="https://gym4.net/o-respublike/" target="_blank" rel="noopener">Подробнее о республике «Содружество» ↗</a></p>
+        </section>
+        <section id="h-src" class="sec" data-spy-section data-tone="#6B4FD8">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / Документы</span><h2>Источники и документы</h2></div>
+          <div class="grid" data-reveal>
+            <a class="card" style="display:flex;gap:.7rem;align-items:center" href="https://gym4.net/o-gimnazii/" target="_blank" rel="noopener"><svg class="ic" style="color:var(--volga)"><use href="#i-doc"/></svg><b>Официальный раздел «О гимназии»</b><svg class="ic" style="margin-left:auto;color:var(--faint)"><use href="#i-ext"/></svg></a>
+            <a class="card" style="display:flex;gap:.7rem;align-items:center" href="https://gym4.net/sveden/common/" target="_blank" rel="noopener"><svg class="ic" style="color:var(--volga)"><use href="#i-doc"/></svg><b>Основные сведения об образовательной организации</b><svg class="ic" style="margin-left:auto;color:var(--faint)"><use href="#i-ext"/></svg></a>
+            <a class="card" style="display:flex;gap:.7rem;align-items:center" href="https://gym4.net/wp-content/uploads/2018/08/%D0%9F%D1%83%D0%B1%D0%BB%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-%D0%B4%D0%BE%D0%BA%D0%BB%D0%B0%D0%B4-2017-2018.pdf" target="_blank" rel="noopener"><svg class="ic" style="color:var(--volga)"><use href="#i-doc"/></svg><b>Публичный доклад за 2017–2018 учебный год</b><svg class="ic" style="margin-left:auto;color:var(--faint)"><use href="#i-ext"/></svg></a>
+            <a class="card" style="display:flex;gap:.7rem;align-items:center" href="https://gym4.net/wp-content/uploads/%D0%9F%D1%83%D0%B1%D0%BB%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-%D0%B4%D0%BE%D0%BA%D0%BB%D0%B0%D0%B4-2023-2024%D0%B3.pdf" target="_blank" rel="noopener"><svg class="ic" style="color:var(--volga)"><use href="#i-doc"/></svg><b>Публичный доклад за 2023–2024 учебный год</b><svg class="ic" style="margin-left:auto;color:var(--faint)"><use href="#i-ext"/></svg></a>
+            <a class="card" style="display:flex;gap:.7rem;align-items:center" href="https://gym4.net/o-respublike/" target="_blank" rel="noopener"><svg class="ic" style="color:var(--volga)"><use href="#i-doc"/></svg><b>Сведения о республике «Содружество»</b><svg class="ic" style="margin-left:auto;color:var(--faint)"><use href="#i-ext"/></svg></a>
+          </div>
+          <div class="note" data-reveal><svg class="ic"><use href="#i-alert"/></svg><span>До официального запуска администрации следует сверить формулировки и, в особенности, расхождение дат 1996 и 1997 годов с приказом № 205.</span></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== СВЕДЕНИЯ ==================== -->
+<div class="view" data-view="sveden" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Сведения об образовательной организации</b></nav>
+    <div class="phead"><span class="kick">Официальная информация</span><h1>Сведения об образовательной организации</h1><p>Обязательные подразделы, их наполнение и статус готовности. Отмечайте подтверждённые пункты — прогресс сохраняется в браузере и выгружается в чек-лист.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="sveden"><button data-go="sv-main"><i>01</i>Основные сведения</button><button data-go="sv-list"><i>02</i>Подразделы</button><button data-go="sv-ready"><i>03</i>Готовность</button></nav>
+        </div>
+        <div class="help"><h4>Проверка данных</h4><p>Включите режим проверки, чтобы увидеть все пункты, требующие подтверждения.</p><button class="btn btn-c btn-s" data-action="review">Включить режим</button></div>
+      </aside>
+      <div>
+        <section id="sv-main" data-spy-section data-tone="#0B4F8A">
+          <div class="shead" data-reveal><span class="snum"><b>01</b> / Ключевые данные</span><h2>Основные сведения</h2></div>
+          <dl class="dl" data-reveal>
+            <div class="dl-row"><dt>Полное наименование</dt><dd>Муниципальное бюджетное общеобразовательное учреждение г. Астрахани «Гимназия № 4»</dd><td></td></div>
+            <div class="dl-row"><dt>Дата создания</dt><dd data-audit="sv-created" data-audit-note="1964 — начало истории школы № 46; дата создания юрлица требует сверки с уставом и ЕГРЮЛ.">1964 (начало истории школы № 46); создание гимназии — 1996–1997</dd><td></td></div>
+            <div class="dl-row"><dt>Учредитель</dt><dd>Муниципальное образование «Городской округ город Астрахань»; функции осуществляет управление образования администрации МО «Город Астрахань»</dd><td></td></div>
+            <div class="dl-row"><dt>Адрес</dt><dd>414024, г. Астрахань, Советский район, ул. Б. Хмельницкого, д. 16, корп. 1</dd><td><button class="copy" data-copy="414024, г. Астрахань, ул. Б. Хмельницкого, д. 16, корп. 1" aria-label="Скопировать адрес"><svg class="ic"><use href="#i-copy"/></svg></button></td></div>
+            <div class="dl-row"><dt>Директор</dt><dd data-audit="sv-director" data-audit-note="ФИО директора перенесено из раздела контактов; подтвердить актуальность и полное написание.">Лендова Татьяна Викторовна</dd><td></td></div>
+            <div class="dl-row"><dt>Телефоны</dt><dd><a href="tel:+78512500567">(8512) 50-05-67</a> — приёмная; <a href="tel:+78512243404">(8512) 24-34-04</a> — учительская и библиотечный центр; <a href="tel:+78512336222">(8512) 33-62-22</a> — медицинский кабинет</dd><td></td></div>
+            <div class="dl-row"><dt>Электронная почта</dt><dd data-audit="sv-mail" data-audit-note="На gym4.net встречаются три адреса, включая gimn-4@astrobl.ru в разделе руководства. Подтвердить рабочие адреса и назначение каждого."><a href="mailto:gimn4@obr.astrobl.ru">gimn4@obr.astrobl.ru</a>, <a href="mailto:gum4ast@30gorod.ru">gum4ast@30gorod.ru</a></dd><td></td></div>
+            <div class="dl-row"><dt>Режим работы</dt><dd>Пн–Сб, 07:30–18:30. Воскресенье — выходной</dd><td></td></div>
+          </dl>
+        </section>
+        <section id="sv-list" class="sec" data-spy-section data-tone="#0FB5C9">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / Структура</span><h2>Обязательные подразделы</h2><p>Фильтруйте по названию, раскрывайте состав и отмечайте готовность.</p></div>
+          <div class="ntools" data-reveal>
+            <div class="search"><svg class="ic"><use href="#i-search"/></svg><input type="search" id="svSearch" placeholder="Поиск подраздела…" aria-label="Поиск подраздела"></div>
+            <button class="btn btn-l btn-s" id="svExpand">Раскрыть все</button>
+            <button class="btn btn-l btn-s" data-action="export-checklist"><svg class="ic"><use href="#i-dl"/></svg>Чек-лист</button>
+          </div>
+          <div id="svList"></div>
+          <div class="empty" id="svEmpty" hidden><svg class="ic"><use href="#i-search"/></svg><b>Подраздел не найден</b><p>Попробуйте другое слово — например, «документы», «педагогический» или «доступная».</p><button class="btn btn-l btn-s" id="svReset">Сбросить поиск</button></div>
+        </section>
+        <section id="sv-ready" class="sec" data-spy-section data-tone="#2E9E5B">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / Контроль</span><h2>Готовность раздела</h2></div>
+          <div class="card" data-reveal style="display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap">
+            <svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" id="svRing" cx="20" cy="20" r="16" stroke-dasharray="0 100"/></svg>
+            <div style="flex:1;min-width:14rem"><b id="svReadyTitle" style="font-family:var(--disp);font-size:1.05rem">0 из 13 подтверждено</b><p style="font-size:.87rem;color:var(--muted)" id="svReadyText">Отмечайте подразделы по мере проверки документов.</p></div>
+            <button class="btn btn-l btn-s" data-action="review"><svg class="ic"><use href="#i-flag"/></svg>Режим проверки</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== РОДИТЕЛЯМ ==================== -->
+<div class="view" data-view="parents" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Родителям</b></nav>
+    <div class="phead"><span class="kick">Семья и школа</span><h1>Родителям</h1><p>Питание, безопасность, поддержка и электронные сервисы. Раздел показывает структуру и честно отмечает то, что администрация ещё должна подтвердить.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="parents"><button data-go="p-blocks"><i>01</i>Основные темы</button><button data-go="p-faq"><i>02</i>Частые вопросы</button><button data-go="p-links"><i>03</i>Сервисы</button></nav>
+        </div>
+        <div class="help"><h4>Приёмная</h4><p><a href="tel:+78512500567">(8512) 50-05-67</a><br>Приём директора — среда, 14:00–18:00.</p><a class="btn btn-c btn-s" href="#/contacts">Все контакты</a></div>
+      </aside>
+      <div>
+        <section id="p-blocks" data-spy-section data-tone="#0B4F8A">
+          <div class="shead" data-reveal><span class="snum"><b>01</b> / Темы</span><h2>Что важно знать</h2></div>
+          <div class="dirs">
+            <div class="dir" data-reveal><span class="t">Питание</span><h3>Школьная столовая</h3><p data-audit="p-food" data-audit-note="Меню, стоимость, порядок льготного питания и поставщик не подтверждены.">Ежедневное меню, порядок оформления льготного питания и контакты ответственного публикуются после подтверждения администрацией.</p></div>
+            <div class="dir" data-reveal style="--d:1"><span class="t">Безопасность</span><h3>Пропускной режим</h3><p data-audit="p-security" data-audit-note="Порядок пропуска, наличие охраны и видеонаблюдения требуют подтверждения.">Правила входа в здание, порядок встречи ребёнка и действия при утере пропуска уточняются у администрации.</p></div>
+            <div class="dir" data-reveal style="--d:2"><span class="t">Поддержка</span><h3>Психолого-педагогическая помощь</h3><p data-audit="p-psy" data-audit-note="Наличие психолога, логопеда и график консультаций не подтверждены.">Специалисты сопровождения, график консультаций и порядок записи — раздел готов к наполнению.</p></div>
+            <div class="dir" data-reveal style="--d:3"><span class="t">Внешний вид</span><h3>Требования к одежде</h3><p data-audit="p-uniform" data-audit-note="Локальный акт о требованиях к одежде обучающихся не приложен.">Локальный акт о требованиях к одежде обучающихся публикуется в подразделе «Документы».</p></div>
+          </div>
+        </section>
+        <section id="p-faq" class="sec" data-spy-section data-tone="#6B4FD8">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / FAQ</span><h2>Частые вопросы</h2></div>
+          <div data-reveal>
+            <details class="acc"><summary>Как связаться с классным руководителем?<span class="plus">+</span></summary><div class="body">Через приёмную гимназии по телефону <a href="tel:+78512500567">(8512) 50-05-67</a> или по официальной электронной почте. Прямые контакты педагогов публикуются только с их согласия.</div></details>
+            <details class="acc"><summary>Когда можно прийти к директору?<span class="plus">+</span></summary><div class="body">Приёмный день — среда, 14:00–18:00. Перед визитом рекомендуется уточнить возможность приёма по телефону. Виджет «Сейчас в гимназии» на главной показывает, идёт ли приём прямо сейчас.</div></details>
+            <details class="acc"><summary>Где смотреть оценки и домашние задания?<span class="plus">+</span></summary><div class="body">Электронный дневник региона. Точная ссылка и порядок доступа будут опубликованы после подтверждения администрацией — раздел «Сервисы» ниже.</div></details>
+            <details class="acc"><summary>Как передать обращение в школу?<span class="plus">+</span></summary><div class="body">По официальной электронной почте или лично в приёмную. Пошаговый порядок описан в разделе <a href="#/contacts">Контакты → Порядок обращения</a>. Демонстрационная версия сайта не отправляет и не сохраняет обращения.</div></details>
+          </div>
+        </section>
+        <section id="p-links" class="sec" data-spy-section data-tone="#2E9E5B">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / Сервисы</span><h2>Электронные сервисы</h2></div>
+          <div class="grid" data-reveal>
+            <a class="card" style="display:flex;gap:.8rem;align-items:center" href="https://www.gosuslugi.ru/" target="_blank" rel="noopener"><span class="chip c">Г</span><div><b>Госуслуги</b><div style="font-size:.84rem;color:var(--muted)">Заявления и государственные сервисы</div></div><svg class="ic" style="margin-left:auto;color:var(--faint)"><use href="#i-ext"/></svg></a>
+            <div class="card" style="display:flex;gap:.8rem;align-items:center" data-audit="p-diary" data-audit-note="Ссылка на региональный электронный дневник и порядок доступа не подтверждены."><span class="chip s">Д</span><div><b>Электронный дневник</b><div style="font-size:.84rem;color:var(--muted)">Ссылка и порядок доступа — после подтверждения</div></div><span class="chip s" style="margin-left:auto">Скоро</span></div>
+            <div class="card" style="display:flex;gap:.8rem;align-items:center" data-audit="p-vk" data-audit-note="Официальное сообщество ВКонтакте не подтверждено; автоматический импорт постов невозможен без VK API."><span class="chip l">VK</span><div><b>Сообщество гимназии</b><div style="font-size:.84rem;color:var(--muted)">Подтверждённая ссылка администрации</div></div><span class="chip s" style="margin-left:auto">Скоро</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ОБУЧАЮЩИМСЯ ==================== -->
+<div class="view" data-view="students" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Обучающимся</b></nav>
+    <div class="phead"><span class="kick">Учёба и внеурочная жизнь</span><h1>Обучающимся</h1><p>Расписание звонков с подсветкой текущего урока, кружки и секции с фильтром по направлениям, библиотека и проекты.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="students"><button data-go="st-bells"><i>01</i>Расписание звонков</button><button data-go="st-clubs"><i>02</i>Кружки и секции</button><button data-go="st-lib"><i>03</i>Библиотека и проекты</button></nav>
+        </div>
+        <div class="help"><h4>Демо-время</h4><p>Включите, чтобы увидеть подсветку текущего урока в разгар учебного дня.</p><button class="btn btn-c btn-s" data-action="demo">Включить демо-время</button></div>
+      </aside>
+      <div>
+        <section id="st-bells" data-spy-section data-tone="#E8A317">
+          <div class="shead" data-reveal><span class="snum"><b>01</b> / День</span><h2>Расписание звонков</h2><p>Текущий урок подсвечивается автоматически, а виджет на главной считает минуты до звонка.</p></div>
+          <div class="tbl-wrap scroll" data-reveal><table class="tbl"><thead><tr><th>№</th><th>Начало</th><th>Конец</th><th>Перемена</th><th>Статус</th></tr></thead><tbody id="bellsBody"></tbody></table></div>
+          <div class="note" data-reveal><svg class="ic"><use href="#i-alert"/></svg><span data-audit="bells" data-audit-note="Сетка звонков демонстрационная. Фактическое расписание звонков и смен должно быть подтверждено администрацией.">Сетка звонков приведена как демонстрационная. Фактическое расписание звонков, смен и сокращённых дней подтверждает администрация.</span></div>
+        </section>
+        <section id="st-clubs" class="sec" data-spy-section data-tone="#D6247E">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / Внеурочно</span><h2>Кружки, секции и студии</h2></div>
+          <div class="tabs" id="clubTabs" role="group" aria-label="Направления кружков" data-reveal></div>
+          <div class="clubs" id="clubList" style="margin-top:1rem"></div>
+          <p class="src" data-audit="clubs-time" data-audit-note="Расписание, руководители и набор в кружки требуют подтверждения на текущий учебный год.">Перечень направлений перенесён с официальных материалов гимназии. Расписание, руководители и набор уточняются.</p>
+        </section>
+        <section id="st-lib" class="sec" data-spy-section data-tone="#0FB5C9">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / Ресурсы</span><h2>Библиотека и проекты</h2></div>
+          <div class="dirs">
+            <div class="dir" data-reveal><span class="t">Библиотека</span><h3>Библиотечный центр и английская библиотека</h3><p>Фонд, читальные зоны и языковые материалы. Телефон библиотечного центра: <a href="tel:+78512243404">(8512) 24-34-04</a>.</p></div>
+            <div class="dir" data-reveal style="--d:1"><span class="t">Наука</span><h3>Конференция «Мир вокруг нас»</h3><p>Научно-практическая конференция гимназии и проекты в сети ассоциированных школ ЮНЕСКО.</p></div>
+            <div class="dir" data-reveal style="--d:2"><span class="t">Языки</span><h3>«Английский театр» и Cambridge English</h3><p>Театральные постановки на английском и дополнительные языковые программы.</p></div>
+            <div class="dir" data-reveal style="--d:3"><span class="t">Сообщество</span><h3>Республика «Содружество»</h3><p>Детская общественная организация гимназии, созданная в 2001 году. <a href="https://gym4.net/o-respublike/" target="_blank" rel="noopener">Подробнее ↗</a></p></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== НОВОСТИ ==================== -->
+<div class="view" data-view="news" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Новости и объявления</b></nav>
+    <div class="phead"><span class="kick">Информационная лента</span><h1>Новости и объявления</h1><p>Поиск, категории, сортировка и карточка публикации. Материалы из редактора новостей подхватываются автоматически.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="news"><button data-go="n-feed"><i>01</i>Лента</button><button data-go="n-ann"><i>02</i>Объявления</button><button data-go="n-photo"><i>03</i>Фотолетопись</button><button data-go="n-req"><i>04</i>Требования</button></nav>
+        </div>
+        <div class="help"><h4>Редакция</h4><p>Черновики из редактора появятся в ленте этого браузера.</p><a class="btn btn-c btn-s" href="news-editor.html">Редактор новостей ↗</a></div>
+      </aside>
+      <div>
+        <section id="n-feed" data-spy-section data-tone="#0B4F8A">
+          <div class="shead" data-reveal><span class="snum"><b>01</b> / Лента</span><h2>Новости гимназии</h2></div>
+          <div class="ntools" data-reveal>
+            <div class="search"><svg class="ic"><use href="#i-search"/></svg><input type="search" id="newsSearch" placeholder="Поиск по новостям…" aria-label="Поиск по новостям"></div>
+            <select class="sel" id="newsSort" style="width:auto" aria-label="Сортировка"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select>
+            <button class="iconbtn" id="newsView" title="Переключить вид ленты" aria-label="Переключить вид ленты"><svg class="ic"><use href="#i-grid"/></svg></button>
+            <button class="btn btn-l btn-s" data-action="import-editor"><svg class="ic"><use href="#i-reset"/></svg>Из редактора</button>
+            <button class="btn btn-l btn-s" data-action="export-news"><svg class="ic"><use href="#i-dl"/></svg>news.json</button>
+          </div>
+          <div class="tabs" id="newsTabs" role="group" aria-label="Категории" data-reveal></div>
+          <div class="feed" id="newsFeed" style="margin-top:1rem" aria-live="polite"></div>
+          <div class="empty" id="newsEmpty" hidden><svg class="ic"><use href="#i-search"/></svg><b>Ничего не найдено</b><p>Измените запрос или выберите другую категорию.</p><button class="btn btn-l btn-s" id="newsReset">Сбросить фильтры</button></div>
+          <p class="src">Полные тексты и фотографии — на официальном сайте gym4.net. Локальные материалы хранятся только в этом браузере и выгружаются в <span class="mono">assets/data/news.json</span>.</p>
+        </section>
+        <section id="n-ann" class="sec" data-spy-section data-tone="#E8A317">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / Срочно</span><h2>Объявления</h2></div>
+          <div class="empty" data-reveal><svg class="ic"><use href="#i-mega"/></svg><b>Актуальных объявлений пока нет</b><p>Срочные сообщения публикуются отдельно от новостей и снимаются по окончании срока действия. Редакция указывает дату размещения и срок актуальности.</p></div>
+        </section>
+        <section id="n-photo" class="sec" data-spy-section data-tone="#D6247E">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / Фотолетопись</span><h2>Мероприятия гимназии</h2><p>Изображения размещаются после проверки прав и согласий.</p></div>
+          <div class="photos">
+            <div class="ph" data-img data-reveal><span class="n">Профориентация</span><svg class="ic"><use href="#i-camera"/></svg><b>Городская неделя профессий</b><span>09.11.2026 · материал на gym4.net</span></div>
+            <div class="ph" data-img data-reveal style="--d:1"><span class="n">Творчество</span><svg class="ic"><use href="#i-camera"/></svg><b>«Мы — таланты»</b><span>09.11.2026 · фотографии выступлений</span></div>
+            <div class="ph" data-img data-reveal style="--d:2"><span class="n">Библиотека</span><svg class="ic"><use href="#i-camera"/></svg><b>Первое знакомство с книжным миром</b><span>09.11.2026 · фотографии события</span></div>
+          </div>
+        </section>
+        <section id="n-req" class="sec" data-spy-section data-tone="#2E9E5B">
+          <div class="shead" data-reveal><span class="snum"><b>04</b> / Регламент</span><h2>Требования к публикациям</h2></div>
+          <ul class="check" data-reveal style="pointer-events:none">
+            <li><svg class="ic" style="color:var(--reed);margin-top:.2rem"><use href="#i-check"/></svg><label>Проверить факты, даты, фамилии и ссылки.</label></li>
+            <li><svg class="ic" style="color:var(--reed);margin-top:.2rem"><use href="#i-check"/></svg><label>Получить согласование фотографий и персональных данных.</label></li>
+            <li><svg class="ic" style="color:var(--reed);margin-top:.2rem"><use href="#i-check"/></svg><label>Добавить дату, категорию и имя ответственного редактора.</label></li>
+            <li><svg class="ic" style="color:var(--reed);margin-top:.2rem"><use href="#i-check"/></svg><label>Указать срок актуальности для объявлений.</label></li>
+          </ul>
+          <div class="note info" data-reveal><svg class="ic"><use href="#i-info"/></svg><span><b>Про ВКонтакте.</b> Автоматически читать посты сообщества без VK API и разрешённого доступа нельзя. В редакторе вставляется ссылка на пост, его текст и изображение — ссылка на оригинал сохраняется в публикации.</span></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ПРИЁМ ==================== -->
+<div class="view" data-view="priem" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Приём в гимназию</b></nav>
+    <div class="phead"><span class="kick">Поступление</span><h1>Приём в гимназию</h1><p>Порядок обращения, интерактивный чек-лист документов и ответы на вопросы. Прогресс чек-листа сохраняется в браузере — можно вернуться и продолжить.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="priem"><button data-go="pr-steps"><i>01</i>Порядок</button><button data-go="pr-docs"><i>02</i>Документы</button><button data-go="pr-faq"><i>03</i>Вопросы</button></nav>
+        </div>
+        <div class="help"><h4>Приёмная</h4><p><a href="tel:+78512500567">(8512) 50-05-67</a><br>Пн–Сб, 07:30–18:30</p><a class="btn btn-c btn-s" href="tel:+78512500567">Позвонить</a></div>
+      </aside>
+      <div>
+        <section id="pr-steps" data-spy-section data-tone="#0B4F8A">
+          <div class="shead" data-reveal><span class="snum"><b>01</b> / Порядок</span><h2>Как подать заявление</h2></div>
+          <ol class="steps" data-reveal>
+            <li>Уточните в приёмной наличие свободных мест в нужном классе и сроки приёма на текущий учебный год.</li>
+            <li>Соберите документы по чек-листу ниже и подготовьте копии.</li>
+            <li>Подайте заявление лично в приёмную гимназии или через региональный сервис записи — порядок подтверждает администрация.</li>
+            <li>Дождитесь уведомления о зачислении и уточните дату начала занятий и организационные вопросы.</li>
+          </ol>
+          <div class="note" data-reveal><svg class="ic"><use href="#i-alert"/></svg><span data-audit="pr-rules" data-audit-note="Правила приёма, сроки кампании, количество вакантных мест и закреплённая территория не опубликованы.">Правила приёма, сроки кампании, количество вакантных мест и закреплённая территория публикуются в подразделе «Вакантные места» после подтверждения администрацией.</span></div>
+        </section>
+        <section id="pr-docs" class="sec" data-spy-section data-tone="#2E9E5B">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / Чек-лист</span><h2>Документы</h2><p>Отмечайте собранное — прогресс сохранится в этом браузере.</p></div>
+          <div class="progress-head" data-reveal>
+            <svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" id="prRing" cx="20" cy="20" r="16" stroke-dasharray="0 100"/></svg>
+            <div style="flex:1"><b id="prTitle">Собрано 0 из 8</b><span style="display:block" id="prSub">Перечень ориентировочный — точный список подтверждает приёмная.</span></div>
+            <button class="btn btn-l btn-s" id="prPrint"><svg class="ic"><use href="#i-print"/></svg>Печать</button>
+            <button class="btn btn-l btn-s" id="prReset"><svg class="ic"><use href="#i-reset"/></svg>Сброс</button>
+          </div>
+          <ul class="check" id="prList" data-reveal></ul>
+          <div class="note" data-reveal><svg class="ic"><use href="#i-alert"/></svg><span data-audit="pr-docs" data-audit-note="Перечень документов ориентировочный; точный список и требования к копиям подтверждает приёмная.">Перечень ориентировочный. Точный список документов, требования к копиям и необходимость медицинской карты подтверждает приёмная гимназии.</span></div>
+        </section>
+        <section id="pr-faq" class="sec" data-spy-section data-tone="#6B4FD8">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / FAQ</span><h2>Частые вопросы</h2></div>
+          <div data-reveal>
+            <details class="acc"><summary>Есть ли вступительные испытания?<span class="plus">+</span></summary><div class="body">Порядок приёма в конкретный класс определяет администрация в соответствии с действующими правилами приёма. Уточните в приёмной по телефону <a href="tel:+78512500567">(8512) 50-05-67</a>.</div></details>
+            <details class="acc"><summary>Можно ли перевестись в середине года?<span class="plus">+</span></summary><div class="body">Перевод возможен при наличии свободных мест. Актуальное количество вакантных мест публикуется в подразделе «Вакантные места для приёма (перевода)».</div></details>
+            <details class="acc"><summary>Нужно ли знать английский заранее?<span class="plus">+</span></summary><div class="body">Гимназия реализует программы с углублённым изучением английского языка. Требования к уровню подготовки при поступлении в конкретный класс уточняет администрация.</div></details>
+            <details class="acc"><summary>Где посмотреть официальные документы?<span class="plus">+</span></summary><div class="body">В разделе <a href="#/sveden">Сведения об образовательной организации</a> — подразделы «Документы», «Образование» и «Вакантные места».</div></details>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ШКОЛЬНАЯ ЖИЗНЬ ==================== -->
+<div class="view" data-view="life" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Школьная жизнь</b></nav>
+    <div class="phead"><span class="kick">Год гимназии</span><h1>Школьная жизнь</h1><p>Ритм учебного года, фотолетопись событий и достижения. Даты мероприятий уточняются в календаре администрации.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="life"><button data-go="l-year"><i>01</i>Ритм года</button><button data-go="l-photo"><i>02</i>Фотолетопись</button><button data-go="l-ach"><i>03</i>Достижения</button></nav>
+        </div>
+        <div class="help"><h4>Кружки</h4><p>13 направлений: спорт, языки, творчество и наука.</p><a class="btn btn-c btn-s" href="#/students">Смотреть кружки</a></div>
+      </aside>
+      <div>
+        <section id="l-year" data-spy-section data-tone="#E8A317">
+          <div class="shead" data-reveal><span class="snum"><b>01</b> / Календарь</span><h2>Ритм учебного года</h2></div>
+          <div class="grid" data-reveal id="yearGrid"></div>
+          <div class="note" data-reveal><svg class="ic"><use href="#i-alert"/></svg><span data-audit="l-calendar" data-audit-note="Календарь мероприятий и точные даты не подтверждены; приведён типовой ритм года.">Приведён типовой ритм года. Точные даты мероприятий, каникул и конференций утверждает администрация.</span></div>
+        </section>
+        <section id="l-photo" class="sec" data-spy-section data-tone="#D6247E">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / События</span><h2>Фотолетопись</h2></div>
+          <div class="photos">
+            <div class="ph" data-img data-reveal><span class="n">09.11.2026</span><svg class="ic"><use href="#i-camera"/></svg><b>Городская неделя профессий</b><span>Профориентация · материал на gym4.net</span></div>
+            <div class="ph" data-img data-reveal style="--d:1"><span class="n">09.11.2026</span><svg class="ic"><use href="#i-camera"/></svg><b>«Мы — таланты»</b><span>Творческий дебют на сцене гимназии</span></div>
+            <div class="ph" data-img data-reveal style="--d:2"><span class="n">09.11.2026</span><svg class="ic"><use href="#i-camera"/></svg><b>Первое знакомство с книжным миром</b><span>Библиотечный центр</span></div>
+          </div>
+          <p class="src"><a href="#/news">Открыть ленту новостей →</a></p>
+        </section>
+        <section id="l-ach" class="sec" data-spy-section data-tone="#2E9E5B">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / Достижения</span><h2>Чем гордится гимназия</h2></div>
+          <div class="dirs">
+            <div class="dir" data-reveal><span class="t">2023</span><h3>Флагманская школа «Орлят России»</h3><p>Гимназии присвоен статус флагманской школы Астраханской области по программе «Орлята России».</p></div>
+            <div class="dir" data-reveal style="--d:1"><span class="t">ЮНЕСКО</span><h3>Ассоциированная школа</h3><p>Участие в сети ассоциированных школ ЮНЕСКО и проведение конференции «Мир вокруг нас».</p></div>
+            <div class="dir" data-reveal style="--d:2"><span class="t">Языки</span><h3>Английский театр</h3><p>Театральные постановки на английском языке и дополнительные программы, включая Cambridge English.</p></div>
+            <div class="dir" data-reveal style="--d:3"><span class="t">2001</span><h3>Республика «Содружество»</h3><p>Детская общественная организация, объединяющая учеников, педагогов и родителей.</p></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== КОНТАКТЫ ==================== -->
+<div class="view" data-view="contacts" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Контакты</b></nav>
+    <div class="phead"><span class="kick">Связь с гимназией</span><h1>Контакты</h1><p>Официальные способы связи с копированием в один клик, живым статусом работы и порядком обращения.</p></div>
+    <div class="layout">
+      <aside class="side">
+        <div><span class="lbl">В этом разделе</span>
+          <nav class="subnav" data-spy="contacts"><button data-go="c-details"><i>01</i>Контактная информация</button><button data-go="c-founder"><i>02</i>Учредитель</button><button data-go="c-route"><i>03</i>Как добраться</button><button data-go="c-access"><i>04</i>Доступная среда</button><button data-go="c-appeal"><i>05</i>Порядок обращения</button></nav>
+        </div>
+        <div class="help"><h4>Быстрые действия</h4><p>Сохраните контакт гимназии в телефон.</p><button class="btn btn-c btn-s" data-action="vcard"><svg class="ic"><use href="#i-dl"/></svg>Скачать vCard</button></div>
+      </aside>
+      <div>
+        <section id="c-details" data-spy-section data-tone="#0B4F8A">
+          <div class="shead" data-reveal><span class="snum"><b>01</b> / Официальные каналы</span><h2>Контактная информация</h2></div>
+          <div class="card" data-reveal style="display:flex;gap:.8rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
+            <i class="live-dot" id="cDot"></i><b id="cStatus" style="font-family:var(--disp);font-size:.95rem">Проверяем режим…</b>
+            <span style="font-size:.85rem;color:var(--muted)" id="cStatusSub"></span>
+            <button class="btn btn-l btn-s" style="margin-left:auto" data-action="print"><svg class="ic"><use href="#i-print"/></svg>Печать</button>
+          </div>
+          <dl class="dl" data-reveal>
+            <div class="dl-row"><dt>Адрес гимназии</dt><dd>414024, г. Астрахань, Советский район, ул. Б. Хмельницкого, д. 16, корп. 1<span class="sub">Фактический адрес по данным раздела контактов gym4.net.</span></dd><td><button class="copy" data-copy="414024, г. Астрахань, ул. Б. Хмельницкого, д. 16, корп. 1" aria-label="Скопировать адрес"><svg class="ic"><use href="#i-copy"/></svg></button></td></div>
+            <div class="dl-row"><dt>Приёмная директора</dt><dd><a href="tel:+78512500567">(8512) 50-05-67</a><span class="sub" data-audit="c-director" data-audit-note="ФИО директора перенесено из раздела контактов gym4.net; подтвердить актуальность.">Директор — Лендова Татьяна Викторовна.</span></dd><td><button class="copy" data-copy="+78512500567" aria-label="Скопировать телефон приёмной"><svg class="ic"><use href="#i-copy"/></svg></button></td></div>
+            <div class="dl-row"><dt>Учительская и библиотечный центр</dt><dd><a href="tel:+78512243404">(8512) 24-34-04</a><span class="sub">Телефон указан в официальных сведениях гимназии.</span></dd><td><button class="copy" data-copy="+78512243404" aria-label="Скопировать телефон учительской"><svg class="ic"><use href="#i-copy"/></svg></button></td></div>
+            <div class="dl-row"><dt>Медицинский кабинет</dt><dd><a href="tel:+78512336222">(8512) 33-62-22</a><span class="sub">Отдельный телефон медицинского кабинета.</span></dd><td><button class="copy" data-copy="+78512336222" aria-label="Скопировать телефон медкабинета"><svg class="ic"><use href="#i-copy"/></svg></button></td></div>
+            <div class="dl-row"><dt>Режим работы</dt><dd>Пн–Сб, 07:30–18:30<span class="sub">Воскресенье — выходной.</span></dd><td></td></div>
+            <div class="dl-row"><dt>Приёмный день директора</dt><dd>Среда, 14:00–18:00<span class="sub">Перед визитом рекомендуется уточнить возможность приёма по телефону.</span></dd><td></td></div>
+            <div class="dl-row"><dt>Электронная почта</dt><dd><a href="mailto:gimn4@obr.astrobl.ru">gimn4@obr.astrobl.ru</a><br><a href="mailto:gum4ast@30gorod.ru">gum4ast@30gorod.ru</a></dd><td><button class="copy" data-copy="gimn4@obr.astrobl.ru" aria-label="Скопировать email"><svg class="ic"><use href="#i-copy"/></svg></button></td></div>
+          </dl>
+          <div class="note" data-reveal><svg class="ic"><use href="#i-alert"/></svg><span data-audit="c-mail" data-audit-note="Три адреса на gym4.net: gimn4@obr.astrobl.ru, gum4ast@30gorod.ru и gimn-4@astrobl.ru (раздел руководства). Подтвердить рабочие адреса."><b>Проверка адресов.</b> На страницах gym4.net встречаются три адреса: gimn4@obr.astrobl.ru, gum4ast@30gorod.ru и gimn-4@astrobl.ru (в разделе руководства). Перед запуском администрация должна подтвердить рабочие адреса и назначение каждого.</span></div>
+          <p class="src">Источник: <a href="https://gym4.net/kontakty/" target="_blank" rel="noopener">gym4.net/kontakty/</a>, данные собраны 15.11.2026.</p>
+        </section>
+        <section id="c-founder" class="sec" data-spy-section data-tone="#6B4FD8">
+          <div class="shead" data-reveal><span class="snum"><b>02</b> / Учредитель</span><h2>Учредитель гимназии</h2><p>Муниципальное образование «Городской округ город Астрахань». Функции и полномочия осуществляет управление образования администрации МО «Город Астрахань».</p></div>
+          <dl class="dl" data-reveal>
+            <div class="dl-row"><dt>Юридический адрес</dt><dd>414000, г. Астрахань, ул. Никольская / Ульяновых, д. 10/14</dd><td></td></div>
+            <div class="dl-row"><dt>Телефон и факс</dt><dd><a href="tel:+78512523985">(8512) 52-39-85</a><br><a href="tel:+78512515727">(8512) 51-57-27</a></dd><td></td></div>
+            <div class="dl-row"><dt>Электронная почта</dt><dd><a href="mailto:uprav.obr@30gorod.ru">uprav.obr@30gorod.ru</a></dd><td></td></div>
+            <div class="dl-row"><dt>Режим работы</dt><dd>Пн–Пт, 08:30–17:30<span class="sub">Перерыв 13:00–14:00.</span></dd><td></td></div>
+          </dl>
+          <p class="src">Адреса и режим работы относятся к управлению образования, а не к гимназии.</p>
+        </section>
+        <section id="c-route" class="sec" data-spy-section data-tone="#0FB5C9">
+          <div class="shead" data-reveal><span class="snum"><b>03</b> / Посещение</span><h2>Как добраться</h2></div>
+          <div class="mapcard" data-reveal>
+            <span class="pin"><svg class="ic"><use href="#i-pin"/></svg></span>
+            <div class="txt"><b>Гимназия на карте</b><span>ул. Б. Хмельницкого, д. 16, корп. 1, Советский район</span><span class="coords">48.014738, 46.335291</span></div>
+            <a class="btn btn-c btn-s" href="https://yandex.ru/maps/?ll=46.335291%2C48.014738&z=17&pt=46.335291%2C48.014738%2Cpm2rdm" target="_blank" rel="noopener">Построить маршрут <svg class="ic"><use href="#i-ext"/></svg></a>
+            <button class="btn btn-s" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.24);color:var(--on-dark)" data-copy="48.014738, 46.335291"><svg class="ic"><use href="#i-copy"/></svg>Координаты</button>
+          </div>
+          <p class="src" data-audit="c-transport" data-audit-note="Маршруты общественного транспорта не подтверждены.">Маршруты общественного транспорта и фактические условия доступности здания требуют отдельной проверки.</p>
+        </section>
+        <section id="c-access" class="sec" data-spy-section data-tone="#E8A317">
+          <div class="shead" data-reveal><span class="snum"><b>04</b> / Доступная среда</span><h2>Доступная среда</h2></div>
+          <div class="warnbox" data-reveal>
+            <h3><svg class="ic"><use href="#i-alert"/></svg>Сведения требуют обследования</h3>
+            <p data-audit="c-access" data-audit-note="Наличие пандуса, подъёмных устройств, доступных санитарных помещений, навигации, парковки и сопровождения не подтверждено.">Нужно подтвердить наличие пандуса, подъёмных устройств, доступных санитарных помещений, навигации, парковочных мест и возможности сопровождения. Не обозначать объект как доступный без проверки.</p>
+          </div>
+          <div class="note ok" data-reveal><svg class="ic"><use href="#i-check"/></svg><span><b>Сайт уже доступен:</b> масштаб шрифта до 200%, контрастные схемы, увеличенный интервал, отключение изображений и анимаций, полная навигация с клавиатуры. Откройте панель <b>«Оформление и доступность»</b> в шапке или нажмите <b>Alt + A</b>.</span></div>
+        </section>
+        <section id="c-appeal" class="sec" data-spy-section data-tone="#2E9E5B">
+          <div class="shead" data-reveal><span class="snum"><b>05</b> / Обращения</span><h2>Порядок обращения</h2></div>
+          <ol class="steps" data-reveal>
+            <li>Выберите адресата или подразделение, к компетенции которого относится вопрос.</li>
+            <li>Изложите суть обращения и укажите способ обратной связи.</li>
+            <li>Направьте обращение по официальной электронной почте или передайте его в приёмную.</li>
+            <li>При личной подаче уточните порядок регистрации и часы приёма.</li>
+          </ol>
+          <div class="note info" data-reveal><svg class="ic"><use href="#i-info"/></svg><span data-audit="c-appeal" data-audit-note="График приёма и порядок регистрации обращений не опубликованы.">График приёма и порядок регистрации будут опубликованы после подтверждения администрацией. Демонстрационная версия сайта не принимает и не сохраняет обращения.</span></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ДОРАБОТКИ ==================== -->
+<div class="view" data-view="upgrades" hidden>
+  <div class="wrap">
+    <nav class="crumbs"><a href="#/">Главная</a><span>/</span><b>Что улучшено</b></nav>
+    <div class="phead"><span class="kick">Обновление сайта</span><h1>Доработки этой версии</h1><p>Каждый пункт ниже уже работает — нажмите «Показать», чтобы проверить вживую. Это не список пожеланий, а журнал внедрённых улучшений.</p></div>
+    <section class="sec" data-tone="#D6247E">
+      <div class="shead" data-reveal><span class="snum"><b>01</b> / Реализовано</span><h2>Четырнадцать улучшений</h2></div>
+      <div class="ups" id="upList"></div>
+    </section>
+    <section class="sec" data-tone="#0FB5C9">
+      <div class="shead" data-reveal><span class="snum"><b>02</b> / Управление</span><h2>Горячие клавиши</h2></div>
+      <div class="hotkeys" data-reveal>
+        <div><kbd>Ctrl</kbd>+<kbd>K</kbd><span>Умный поиск по сайту</span></div>
+        <div><kbd>Alt</kbd>+<kbd>A</kbd><span>Оформление и доступность</span></div>
+        <div><kbd>Alt</kbd>+<kbd>R</kbd><span>Режим проверки данных</span></div>
+        <div><kbd>Alt</kbd>+<kbd>T</kbd><span>Следующая праздничная тема</span></div>
+        <div><kbd>Esc</kbd><span>Закрыть панель, поиск или карточку</span></div>
+        <div><kbd>↑</kbd><kbd>↓</kbd><kbd>Enter</kbd><span>Навигация в результатах поиска</span></div>
+      </div>
+    </section>
+    <section class="sec" data-tone="#2E9E5B">
+      <div class="shead" data-reveal><span class="snum"><b>03</b> / Внедрение</span><h2>Как перенести в проект</h2></div>
+      <div class="grid" data-reveal>
+        <div class="card"><h3 style="margin-bottom:.4rem">1 · Заменить страницы</h3><p style="font-size:.9rem;color:var(--muted)">Этот файл самодостаточен: он заменяет <span class="mono">index.html</span> и содержит разделы «История», «Сведения», «Новости», «Приём», «Родителям», «Обучающимся», «Школьная жизнь», «Контакты». Ссылки на <span class="mono">news-editor.html</span> и <span class="mono">admin.html</span> остаются внешними.</p></div>
+        <div class="card"><h3 style="margin-bottom:.4rem">2 · Подключить данные</h3><p style="font-size:.9rem;color:var(--muted)">Лента читает локальные материалы редактора и выгружает <span class="mono">news.json</span>. Замените им <span class="mono">assets/data/news.json</span> в репозитории — публикации увидят все посетители.</p></div>
+        <div class="card"><h3 style="margin-bottom:.4rem">3 · Пройти проверку</h3><p style="font-size:.9rem;color:var(--muted)">Включите режим проверки, отметьте подтверждённые факты и выгрузите чек-лист в Markdown — это готовый список задач для администрации перед официальным запуском.</p></div>
+      </div>
+      <div class="note info" data-reveal><svg class="ic"><use href="#i-info"/></svg><span>Все настройки — оформление, доступность, статусы проверки, чек-лист документов и локальные новости — хранятся в <span class="mono">localStorage</span> этого браузера. Сайт ничего не отправляет на сервер.</span></div>
+    </section>
+  </div>
+</div>
+
+</main>
+
+<footer class="ft">
+  <svg class="delta" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M-20 80 C 220 140, 340 20, 560 100 S 940 200, 1220 120"/>
+    <path d="M-20 200 C 240 260, 380 140, 620 220 S 980 300, 1220 250"/>
+  </svg>
+  <div class="wrap">
+    <div class="ft-top"><button id="toTop">Вернуться к началу <svg class="ic"><use href="#i-up"/></svg></button></div>
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <a class="brand" href="#/"><span class="mark" aria-hidden="true">4</span><span><b>Гимназия № 4</b><small>Астрахань</small></span></a>
+        <p>Муниципальное бюджетное общеобразовательное учреждение г. Астрахани «Гимназия № 4». Демонстрационная версия сайта.</p>
+      </div>
+      <div>
+        <h4>Контакты</h4>
+        <ul class="ft-list">
+          <li>414024, г. Астрахань, ул. Б. Хмельницкого, д. 16, корп. 1</li>
+          <li><a href="tel:+78512500567">(8512) 50-05-67</a></li>
+          <li><a href="mailto:gimn4@obr.astrobl.ru">gimn4@obr.astrobl.ru</a></li>
+          <li><a href="mailto:gum4ast@30gorod.ru">gum4ast@30gorod.ru</a></li>
+          <li style="font-size:.79rem">Адреса опубликованы на gym4.net; подтвердить перед запуском.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Разделы</h4>
+        <ul class="ft-list">
+          <li><a href="#/sveden">Сведения</a></li>
+          <li><a href="#/parents">Родителям</a></li>
+          <li><a href="#/students">Обучающимся</a></li>
+          <li><a href="#/life">Школьная жизнь</a></li>
+          <li><a href="#/news">Новости</a></li>
+          <li><a href="#/priem">Приём</a></li>
+          <li><a href="#/contacts">Контакты</a></li>
+          <li><a href="#/upgrades">Что улучшено</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Цифровая среда</h4>
+        <div class="digital">
+          <a href="https://www.gosuslugi.ru/" target="_blank" rel="noopener"><span class="badge">Г</span><span><b>Госуслуги</b><small>Государственные сервисы</small></span><svg class="ic" style="margin-left:auto"><use href="#i-ext"/></svg></a>
+          <span class="soon"><span class="badge">VK</span><span><b>Сообщество гимназии</b><small>Ссылка после подтверждения</small></span><span class="st">Скоро</span></span>
+          <a href="news-editor.html"><span class="badge">✎</span><span><b>Редактор новостей</b><small>Черновики и экспорт JSON</small></span><svg class="ic" style="margin-left:auto"><use href="#i-ext"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="ft-theme">
+      <div class="txt"><span class="tag">Demo mode</span><h4>Выберите оформление</h4><p>Переключатель меняет только визуальную тему в этом браузере.</p></div>
+      <div style="display:flex;gap:.8rem;align-items:center;flex-wrap:wrap">
+        <select class="sel" id="themeSel2" aria-label="Тема демоверсии"></select>
+        <span class="now">Сейчас: <b id="themeNow">Обычная тема</b></span>
+      </div>
+    </div>
+    <div class="ft-partners">
+      <span class="tag">Партнёрство и поддержка</span><h4>Наши друзья</h4>
+      <p>Организации, компании и люди, поддерживающие образовательные, культурные и социальные инициативы гимназии.</p>
+      <div class="slot"><span class="plus" aria-hidden="true">+</span><span>Место для партнёра. Логотип, название и ссылка добавляются после согласования с администрацией.</span></div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 МБОУ г. Астрахани «Гимназия № 4» · <a href="admin.html">Техническая часть · тестовая админ-панель</a></span>
+      <span>Демо не принимает и не сохраняет обращения. Настройки хранятся в браузере посетителя.</span>
+    </div>
+  </div>
+</footer>
+
+<nav class="mobbar" aria-label="Быстрые действия">
+  <button data-action="cmd"><svg class="ic"><use href="#i-search"/></svg>Поиск</button>
+  <a href="tel:+78512500567"><svg class="ic"><use href="#i-phone"/></svg>Позвонить</a>
+  <button data-action="menu"><svg class="ic"><use href="#i-menu"/></svg>Меню</button>
+  <button data-action="review"><svg class="ic"><use href="#i-flag"/></svg>Проверка</button>
+  <button data-action="top"><svg class="ic"><use href="#i-up"/></svg>Наверх</button>
+</nav>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,c){return (c||document).querySelector(s)};
+var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var KEY="gym4_v3";
+var store={
+  read:function(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}},
+  write:function(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+};
+var S=store.read();
+S.settings=Object.assign({size:100,scheme:"light",density:"normal",spacing:"normal",images:"on",motion:reduced?"off":"on",links:"off",theme:"auto",review:"off"},S.settings||{});
+S.audit=S.audit||{}; S.docs=S.docs||{}; S.localNews=S.localNews||[]; S.recent=S.recent||[]; S.seen=!!S.seen;
+function save(){store.write(S)}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function pad(n){return String(n).padStart(2,"0")}
+function fmtDate(iso){var p=String(iso).split("-");return p.length===3?p[2]+"."+p[1]+"."+p[0]:iso}
+function download(name,text,type){
+  try{
+    var b=new Blob([text],{type:type||"text/plain;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
+    a.href=u;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(u)},1500);return true;
+  }catch(e){return false}
+}
+var toastTimer=0,toastUndo=null;
+function toast(msg,undo){
+  $("#toastText").textContent=msg;
+  var b=$("#toastAction");
+  if(undo){b.hidden=false;toastUndo=undo}else{b.hidden=true;toastUndo=null}
+  $("#toast").classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){$("#toast").classList.remove("show");toastUndo=null},undo?6000:2800);
+}
+$("#toastAction").addEventListener("click",function(){if(toastUndo){var f=toastUndo;toastUndo=null;$("#toast").classList.remove("show");f()}});
+
+/* ---------- ДАННЫЕ ---------- */
+var NEWS_SEED=[
+  {id:"n1",cat:"Мероприятия",date:"2026-11-09",title:"Знакомство с миром профессий: Городская неделя профориентации",lead:"Ученики гимназии приняли участие в городской неделе профориентации: встречи со специалистами, экскурсии и профессиональные пробы.",url:"https://gym4.net/%f0%9f%93%a2znakomstvo-s-mirom-professij-kak-proshla-gorodskaya-nedelya-proforientacii-v-nashej-gimnazii/",tags:["профориентация","старшие классы"]},
+  {id:"n2",cat:"Мероприятия",date:"2026-11-09",title:"«Мы — таланты»: яркий дебют на сцене гимназии",lead:"Творческий дебют обучающихся на сцене гимназии: музыкальные и театральные номера, подготовленные школьными студиями.",url:"https://gym4.net/my-talanty-yarkij-debyut-na-scene-nashej-gimnazii/",tags:["творчество","сцена"]},
+  {id:"n3",cat:"Новости",date:"2026-11-09",title:"Первое знакомство с книжным миром",lead:"Библиотечный центр гимназии провёл событие-знакомство с книгами для юных читателей.",url:"https://gym4.net/pervoe-znakomstvo-s-knizhnym-mirom/",tags:["библиотека","начальная школа"]}
+];
+var CATS=["Все","Новости","Мероприятия","Объявления"];
+var CATCLS={"Новости":"c","Мероприятия":"l","Объявления":"s"};
+var BELLS=[["08:00","08:45"],["08:55","09:40"],["09:55","10:40"],["10:55","11:40"],["11:55","12:40"],["12:50","13:35"],["13:45","14:30"]];
+var CLUBS=[
+  {n:"Плавание",g:"Спорт",d:"Секция плавания — одна из спортивных традиций гимназии."},
+  {n:"Футбол",g:"Спорт",d:"Школьная команда и тренировки на спортивных площадках."},
+  {n:"Волейбол",g:"Спорт",d:"Секция для разных возрастных групп."},
+  {n:"Баскетбол",g:"Спорт",d:"Тренировки в спортивных залах гимназии."},
+  {n:"Шахматы",g:"Спорт",d:"Интеллектуальный спорт и турниры."},
+  {n:"Музыкальная студия",g:"Творчество",d:"Вокал и инструментальные занятия."},
+  {n:"Театральные студии",g:"Творчество",d:"Постановки и сценическая речь."},
+  {n:"«Английский театр»",g:"Языки",d:"Спектакли на английском языке — визитная карточка гимназии."},
+  {n:"Английская библиотека",g:"Языки",d:"Чтение и языковые материалы в библиотечном центре."},
+  {n:"Cambridge English",g:"Языки",d:"Дополнительные языковые программы."},
+  {n:"Конференция «Мир вокруг нас»",g:"Наука",d:"Научно-практическая конференция и исследовательские работы."},
+  {n:"Проекты ЮНЕСКО",g:"Наука",d:"Работа в сети ассоциированных школ ЮНЕСКО."},
+  {n:"«Орлята России»",g:"Воспитание",d:"Флагманская школа области по программе с 2023 года."}
+];
+var CLUBCOLOR={"Спорт":"var(--volga)","Творчество":"var(--lotus)","Языки":"var(--caspian)","Наука":"var(--reed)","Воспитание":"var(--steppe)"};
+var SVEDEN=[
+  {k:"common",t:"Основные сведения",d:"Наименование, дата создания, учредитель, адреса, режим работы, контакты.",u:"https://gym4.net/sveden/common/"},
+  {k:"struct",t:"Структура и органы управления",d:"Структурные подразделения, положения, руководители, адреса и сайты.",u:"https://gym4.net/sveden/struct/"},
+  {k:"document",t:"Документы",d:"Устав, лицензия, свидетельство, план ФХД, локальные акты, отчёты и предписания.",u:"https://gym4.net/sveden/document/"},
+  {k:"education",t:"Образование",d:"Реализуемые уровни, формы обучения, сроки, языки, ОПОП, учебные планы, численность.",u:"https://gym4.net/sveden/education/"},
+  {k:"eduStandarts",t:"Образовательные стандарты и требования",d:"ФГОС по реализуемым уровням образования и ссылки на документы.",u:"https://gym4.net/sveden/eduStandarts/"},
+  {k:"employees",t:"Руководство. Педагогический состав",d:"Директор, заместители, педагоги: образование, квалификация, стаж, преподаваемые предметы.",u:"https://gym4.net/sveden/employees/"},
+  {k:"objects",t:"Материально-техническое обеспечение",d:"Кабинеты, спортзалы, библиотека, питание, средства обучения, доступная среда.",u:"https://gym4.net/sveden/objects/"},
+  {k:"grants",t:"Стипендии и меры поддержки",d:"Стипендии, общежитие, трудоустройство, меры социальной поддержки.",u:"https://gym4.net/sveden/grants/"},
+  {k:"paid_edu",t:"Платные образовательные услуги",d:"Договоры, стоимость, порядок оказания и оплаты услуг.",u:"https://gym4.net/sveden/paid_edu/"},
+  {k:"budget",t:"Финансово-хозяйственная деятельность",d:"Объём финансирования, поступление и расходование средств, план ФХД.",u:"https://gym4.net/sveden/budget/"},
+  {k:"vacant",t:"Вакантные места для приёма (перевода)",d:"Количество свободных мест по классам и программам за счёт бюджета и по договорам.",u:"https://gym4.net/sveden/vacant/"},
+  {k:"ovz",t:"Доступная среда",d:"Условия доступности здания, специальные средства обучения и сопровождение.",u:"https://gym4.net/sveden/ovz/"},
+  {k:"inter",t:"Международное сотрудничество",d:"Договоры с иностранными организациями, международные программы и мероприятия.",u:"https://gym4.net/sveden/inter/"}
+];
+var DOCS=[
+  {k:"d1",t:"Заявление о приёме",s:"Форма выдаётся в приёмной гимназии."},
+  {k:"d2",t:"Документ, удостоверяющий личность родителя",s:"Паспорт или иной документ."},
+  {k:"d3",t:"Свидетельство о рождении ребёнка",s:"Или паспорт обучающегося."},
+  {k:"d4",t:"Документ о регистрации",s:"По месту жительства или пребывания."},
+  {k:"d5",t:"Личное дело при переводе",s:"И документ об успеваемости из предыдущей школы."},
+  {k:"d6",t:"Медицинская карта",s:"Необходимость и форма уточняются в приёмной."},
+  {k:"d7",t:"СНИЛС при наличии",s:"Если запрашивается школой."},
+  {k:"d8",t:"Документы о льготах",s:"Если применимо к вашей ситуации."}
+];
+var YEAR=[
+  {m:"Сентябрь",t:"День знаний и старт года",d:"Торжественные линейки, знакомство с расписанием, запуск кружков и секций."},
+  {m:"Октябрь",t:"День учителя и осенние проекты",d:"Праздничные концерты, самоуправление, предметные недели."},
+  {m:"Ноябрь",t:"Профориентация",d:"Городская неделя профессий: встречи, экскурсии и профессиональные пробы."},
+  {m:"Декабрь",t:"Новогодние программы",d:"Творческие дебюты, школьные ёлки и итоги первого полугодия."},
+  {m:"Февраль–март",t:"Наука и творчество",d:"Конференция «Мир вокруг нас», спектакли «Английского театра», конкурсы."},
+  {m:"Апрель–май",t:"Итоги и выпуск",d:"Итоговая аттестация, последний звонок, спортивные старты и награждения."}
+];
+var THEMES=[
+  {k:"auto",t:"Автоматически по календарю"},
+  {k:"normal",t:"Обычная тема",a:"#0B4F8A",b:"#0FB5C9"},
+  {k:"newyear",t:"Новый год",a:"#0E6B3C",b:"#C8362B"},
+  {k:"feb23",t:"23 февраля",a:"#3F5A3A",b:"#8A6A1F"},
+  {k:"mar8",t:"8 марта",a:"#B4326E",b:"#D6247E"},
+  {k:"easter",t:"Пасха",a:"#6B4FD8",b:"#C9A227"},
+  {k:"may9",t:"9 мая",a:"#A32B22",b:"#E8A317"},
+  {k:"russia",t:"День России",a:"#12448F",b:"#C8362B"},
+  {k:"sep1",t:"1 сентября",a:"#0B4F8A",b:"#E8A317"},
+  {k:"teacher",t:"День учителя",a:"#8A5A00",b:"#2E9E5B"},
+  {k:"unity",t:"День народного единства",a:"#5A3FA0",b:"#0FB5C9"},
+  {k:"constitution",t:"День Конституции",a:"#1F4E9C",b:"#6B4FD8"}
+];
+var UPGRADES=[
+  {t:"Умный поиск Ctrl + K",d:"Палитра команд ищет по разделам, новостям, контактам и действиям, подсвечивает совпадения и запоминает последние переходы.",b:"Открыть поиск",a:"cmd"},
+  {t:"Живой статус «Сейчас в гимназии»",d:"Виджет считает время до открытия, до звонка и до конца урока, показывает приёмный день директора и режим работы.",b:"Показать виджет",a:"status"},
+  {t:"Режим проверки данных",d:"Все непроверенные факты подсвечиваются. Статусы «подтверждено / исправить» сохраняются, прогресс виден, чек-лист выгружается в Markdown.",b:"Включить режим",a:"review"},
+  {t:"Аудит-панель со списком задач",d:"Отдельная панель со всеми пунктами, требующими подтверждения, фильтрами и переходом к нужному месту на странице.",b:"Открыть панель",a:"audit"},
+  {t:"Лента новостей 2.0",d:"Поиск, категории со счётчиками, сортировка, два вида ленты и карточка публикации с метаданными и ссылкой на оригинал.",b:"Открыть ленту",a:"news"},
+  {t:"Связка с редактором новостей",d:"Черновики из news-editor.html подхватываются автоматически, помечаются как локальные и выгружаются в news.json.",b:"Подтянуть черновики",a:"import-editor"},
+  {t:"Расписание звонков с подсветкой",d:"Текущий урок и перемена определяются автоматически; демонстрационный режим времени позволяет проверить виджет в любой момент.",b:"Расписание",a:"bells"},
+  {t:"Чек-лист документов для приёма",d:"Интерактивный список с прогрессом, сохранением и печатью — родитель видит, что уже собрано.",b:"Открыть чек-лист",a:"docs"},
+  {t:"Расширенная доступность",d:"Шрифт до 200%, четыре схемы, плотность вёрстки, интервал, отключение изображений и анимаций, подчёркивание ссылок.",b:"Панель оформления",a:"dock"},
+  {t:"Праздничные темы с автокалендарём",d:"Одиннадцать тем меняют акценты сайта; автоматический режим сам выбирает оформление по дате.",b:"Следующая тема",a:"theme"},
+  {t:"Контакты в один клик",d:"Копирование адресов, телефонов и координат, скачивание vCard, маршрут в Яндекс Картах и печать раздела.",b:"Скачать vCard",a:"vcard"},
+  {t:"Статусы подразделов «Сведения»",d:"13 обязательных подразделов с составом, ссылками и отметкой готовности — видно, чего не хватает до запуска.",b:"Открыть сведения",a:"sveden"},
+  {t:"Клавиатура, хоткеи и печать",d:"Полная навигация с клавиатуры, горячие клавиши, аккуратная печатная версия любого раздела.",b:"Печать раздела",a:"print"},
+  {t:"Мобильная панель действий",d:"Внизу экрана на телефоне всегда доступны поиск, звонок, меню, режим проверки и возврат наверх.",b:"Что улучшено",a:"upgrades"}
+];
+
+/* ---------- ОФОРМЛЕНИЕ / ДОСТУПНОСТЬ ---------- */
+function fillRange(el){var p=(el.value-el.min)/(el.max-el.min)*100;el.style.setProperty("--fill","linear-gradient(90deg,var(--volga) "+p+"%,var(--line-2) "+p+"%)")}
+function autoThemeKey(){
+  var d=new Date(),md=(d.getMonth()+1)*100+d.getDate();
+  function r(a,b){return md>=a&&md<=b}
+  if(r(1215,1231)||r(101,110))return "newyear";
+  if(r(216,224))return "feb23";
+  if(r(301,309))return "mar8";
+  if(r(405,420)||r(426,504))return "easter";
+  if(r(505,510))return "may9";
+  if(r(605,613))return "russia";
+  if(r(825,902))return "sep1";
+  if(r(928,1006))return "teacher";
+  if(r(1028,1105))return "unity";
+  if(r(1205,1214))return "constitution";
+  return "normal";
+}
+function themeByKey(k){for(var i=0;i<THEMES.length;i++)if(THEMES[i].k===k)return THEMES[i];return THEMES[1]}
+function applyTheme(){
+  var st=S.settings, key=st.theme==="auto"?autoThemeKey():st.theme, th=themeByKey(key);
+  if(st.scheme==="light"||st.scheme==="dark"){
+    document.documentElement.style.setProperty("--volga",th.a||"#0B4F8A");
+    document.documentElement.style.setProperty("--caspian",th.b||"#0FB5C9");
+  }else{
+    document.documentElement.style.removeProperty("--volga");
+    document.documentElement.style.removeProperty("--caspian");
+  }
+  $("#themeNow").textContent=th.t+(st.theme==="auto"?" · авто":"");
+  $$("#themeSel,#themeSel2").forEach(function(s){s.value=st.theme});
+}
+function applySettings(){
+  var st=S.settings;
+  document.documentElement.style.fontSize=st.size+"%";
+  document.body.dataset.scheme=st.scheme;
+  document.body.dataset.density=st.density;
+  document.body.dataset.spacing=st.spacing;
+  document.body.dataset.images=st.images;
+  document.body.dataset.motion=st.motion;
+  document.body.dataset.links=st.links;
+  document.body.dataset.review=st.review;
+  $("#sizeOut").textContent=st.size+"%";
+  $("#sizeRange").value=st.size;fillRange($("#sizeRange"));
+  $$(".seg[data-set]").forEach(function(seg){
+    var k=seg.dataset.set;
+    $$("button",seg).forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.val===st[k]))});
+  });
+  $("#swImages").checked=st.images==="on";
+  $("#swMotion").checked=st.motion==="on";
+  $("#swLinks").checked=st.links==="on";
+  $("#swReview").checked=st.review==="on";
+  $("#reviewBtn").classList.toggle("on",st.review==="on");
+  $("#reviewBtn").setAttribute("aria-pressed",String(st.review==="on"));
+  applyTheme();save();
+}
+$$("#themeSel,#themeSel2").forEach(function(sel){
+  sel.innerHTML=THEMES.map(function(t){return '<option value="'+t.k+'">'+esc(t.t)+"</option>"}).join("");
+  sel.addEventListener("change",function(){S.settings.theme=sel.value;applySettings();toast("Тема: "+themeByKey(sel.value==="auto"?autoThemeKey():sel.value).t)});
+});
+$("#sizeRange").addEventListener("input",function(){S.settings.size=parseInt(this.value,10);applySettings()});
+$$(".seg[data-set]").forEach(function(seg){
+  seg.addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    S.settings[seg.dataset.set]=b.dataset.val;applySettings();
+  });
+});
+[["swImages","images"],["swMotion","motion"],["swLinks","links"],["swReview","review"]].forEach(function(p){
+  $("#"+p[0]).addEventListener("change",function(){S.settings[p[1]]=this.checked?"on":"off";applySettings();if(p[1]==="review"&&this.checked)openAudit()});
+});
+$("#settingsReset").addEventListener("click",function(){
+  S.settings={size:100,scheme:"light",density:"normal",spacing:"normal",images:"on",motion:reduced?"off":"on",links:"off",theme:"auto",review:"off"};
+  applySettings();toast("Оформление сброшено к обычному");
+});
+var dockOpen=false;
+function setDock(on){dockOpen=on;$("#dock").classList.toggle("open",on);$("#dockBtn").classList.toggle("on",on);$("#dockBtn").setAttribute("aria-expanded",String(on));if(on)setSheet(false)}
+$("#dockBtn").addEventListener("click",function(){setDock(!dockOpen)});
+$("#dockClose").addEventListener("click",function(){setDock(false)});
+$("#reviewBtn").addEventListener("click",function(){toggleReview()});
+$("#noticeReview").addEventListener("click",function(){openAudit()});
+function toggleReview(){
+  S.settings.review=S.settings.review==="on"?"off":"on";applySettings();
+  if(S.settings.review==="on"){openAudit();toast("Режим проверки включён: подсвечены непроверенные данные")}else toast("Режим проверки выключен");
+}
+
+/* ---------- МЕНЮ ---------- */
+var sheetOpen=false;
+function setSheet(on){sheetOpen=on;$("#sheet").classList.toggle("open",on);$("#burger").setAttribute("aria-expanded",String(on));if(on)setDock(false)}
+$("#burger").addEventListener("click",function(){setSheet(!sheetOpen)});
+$$("#sheet a").forEach(function(a){a.addEventListener("click",function(){setSheet(false)})});
+document.addEventListener("click",function(e){
+  var h=$("header.hdr");
+  if(sheetOpen&&!h.contains(e.target))setSheet(false);
+  if(dockOpen&&!$("#dock").contains(e.target)&&!$("#dockBtn").contains(e.target))setDock(false);
+});
+
+/* ---------- АУДИТ ---------- */
+var auditItems=[];
+function collectAudit(){
+  auditItems=$$("[data-audit]").map(function(el){
+    var v=el.closest(".view");
+    return {id:el.dataset.audit,el:el,note:el.dataset.auditNote||"Требует подтверждения администрацией.",view:v?v.dataset.view:"home",
+      label:(el.textContent||"").trim().replace(/\s+/g," ").slice(0,90)};
+  });
+  auditItems.forEach(function(it){
+    if($(".audit-badge",it.el))return;
+    var b=document.createElement("button");
+    b.className="audit-badge";b.type="button";b.dataset.for=it.id;
+    b.addEventListener("click",function(ev){ev.preventDefault();ev.stopPropagation();openAudit(it.id)});
+    it.el.appendChild(b);
+  });
+  renderAuditBadges();
+}
+function statusOf(id){return S.audit[id]||"todo"}
+function renderAuditBadges(){
+  auditItems.forEach(function(it){
+    var st=statusOf(it.id),b=$(".audit-badge",it.el);
+    it.el.dataset.st=st;
+    if(b){b.dataset.st=st;b.textContent=st==="ok"?"✓ проверено":st==="fix"?"! исправить":"⚑ проверить";b.title=it.note}
+  });
+  var svDone=SVEDEN.filter(function(s){return S.audit["sv-"+s.k]==="ok"}).length;
+  var pct=Math.round(svDone/SVEDEN.length*100);
+  $("#svRing").setAttribute("stroke-dasharray",pct+" 100");
+  $("#svReadyTitle").textContent=svDone+" из "+SVEDEN.length+" подтверждено";
+  $("#svReadyText").textContent=svDone===SVEDEN.length?"Все подразделы отмечены как проверенные. Не забудьте выгрузить чек-лист.":"Осталось проверить "+(SVEDEN.length-svDone)+" подразделов. Отметки хранятся в этом браузере.";
+}
+function setAudit(id,st){
+  var prev=statusOf(id);S.audit[id]=st;save();renderAuditBadges();renderAuditList();
+  toast("Статус обновлён",function(){S.audit[id]=prev;save();renderAuditBadges();renderAuditList();toast("Изменение отменено")});
+}
+var auditFilter="all";
+function renderAuditList(){
+  var body=$("#drawerBody");
+  var total=auditItems.length,ok=auditItems.filter(function(i){return statusOf(i.id)==="ok"}).length;
+  var pct=total?Math.round(ok/total*100):0;
+  var list=auditItems.filter(function(i){var st=statusOf(i.id);return auditFilter==="all"||(auditFilter==="todo"&&st!=="ok")||(auditFilter==="ok"&&st==="ok")});
+  body.innerHTML=
+    '<div style="display:flex;gap:1rem;align-items:center;margin-bottom:1rem">'+
+      '<svg class="ring" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" stroke-dasharray="'+pct+' 100"/></svg>'+
+      '<div><b style="font-family:var(--disp);font-size:1.05rem">'+ok+" из "+total+' проверено</b><div style="font-size:.84rem;color:var(--muted)">Отмечайте факты по мере сверки с документами гимназии.</div></div>'+
+    '</div>'+
+    '<div class="tabs" style="margin-bottom:.9rem">'+
+      ['all:Все','todo:Требуют проверки','ok:Подтверждённые'].map(function(x){var p=x.split(":");return '<button data-af="'+p[0]+'" aria-pressed="'+(auditFilter===p[0])+'">'+p[1]+"</button>"}).join("")+
+    '</div>'+
+    (list.length?list.map(function(i){
+      var st=statusOf(i.id);
+      return '<div class="audit-row" id="ar-'+i.id+'"><div class="t">'+esc(i.label||i.id)+'<button class="go" data-jump="'+i.id+'">перейти →</button></div>'+
+      '<div class="n">'+esc(i.note)+'</div>'+
+      '<div class="seg">'+
+        '<button data-as="todo" data-id="'+i.id+'" aria-pressed="'+(st==="todo")+'">Проверить</button>'+
+        '<button data-as="ok" data-id="'+i.id+'" aria-pressed="'+(st==="ok")+'">Подтверждено</button>'+
+        '<button data-as="fix" data-id="'+i.id+'" aria-pressed="'+(st==="fix")+'">Исправить</button>'+
+      "</div></div>";
+    }).join(""):'<div class="empty"><b>Здесь пусто</b><p>Нет пунктов с выбранным статусом.</p></div>');
+}
+function openAudit(focusId){
+  auditFilter="all";
+  openDrawer("Контроль качества","Что нужно подтвердить",renderAuditList,function(foot){
+    foot.innerHTML='<button class="btn btn-l btn-s" data-action="export-checklist"><svg class="ic"><use href="#i-dl"/></svg>Выгрузить чек-лист</button>'+
+      '<button class="btn btn-p btn-s" data-action="review-off">Выключить подсветку</button>';
+  });
+  if(focusId){
+    setTimeout(function(){
+      var row=$("#ar-"+focusId);
+      if(row){row.scrollIntoView({block:"center",behavior:reduced?"auto":"smooth"});row.style.borderColor="var(--caspian)"}
+    },260);
+  }
+}
+$("#drawerBody").addEventListener("click",function(e){
+  var af=e.target.closest("[data-af]");
+  if(af){auditFilter=af.dataset.af;renderAuditList();return}
+  var as=e.target.closest("[data-as]");
+  if(as){setAudit(as.dataset.id,as.dataset.as);return}
+  var jp=e.target.closest("[data-jump]");
+  if(jp){
+    var it=auditItems.filter(function(x){return x.id===jp.dataset.jump})[0];
+    if(it){closeDrawer();location.hash="#/"+it.view;setTimeout(function(){it.el.scrollIntoView({block:"center",behavior:reduced?"auto":"smooth"});it.el.style.transition="background .4s";it.el.style.background="var(--warn-soft)";setTimeout(function(){it.el.style.background=""},1400)},260)}
+    return;
+  }
+});
+function exportChecklist(){
+  var lines=["# Чек-лист проверки данных · Гимназия № 4","",
+    "Дата выгрузки: "+new Date().toLocaleString("ru-RU"),"",
+    "## Факты на сайте",""];
+  auditItems.forEach(function(i){
+    var st=statusOf(i.id);
+    lines.push("- ["+(st==="ok"?"x":" ")+"] **"+(i.label||i.id)+"** — "+i.note+(st==="fix"?" _(требует исправления)_":""));
+  });
+  lines.push("","## Подразделы «Сведения об образовательной организации»","");
+  SVEDEN.forEach(function(s){lines.push("- ["+(S.audit["sv-"+s.k]==="ok"?"x":" ")+"] "+s.t+" — "+s.u)});
+  lines.push("","## Документы для приёма (ориентировочно)","");
+  DOCS.forEach(function(d){lines.push("- ["+(S.docs[d.k]?"x":" ")+"] "+d.t+" — "+d.s)});
+  lines.push("","---","Демонстрационная версия. Отметки хранятся локально и не заменяют официальную сверку документов.");
+  if(download("gym4-checklist.md",lines.join("\n"),"text/markdown;charset=utf-8"))toast("Чек-лист выгружен в Markdown");
+  else toast("Не удалось выгрузить файл");
+}
+
+/* ---------- DRAWER ---------- */
+var drawerOpen=false,lastFocus=null;
+function openDrawer(kick,title,renderBody,renderFoot){
+  lastFocus=document.activeElement;
+  $("#drawerKick").textContent=kick;$("#drawerTitle").textContent=title;
+  $("#drawerBody").innerHTML="";$("#drawerFoot").innerHTML="";
+  if(renderBody)renderBody();
+  if(renderFoot)renderFoot($("#drawerFoot"));
+  $("#drawer").classList.add("open");drawerOpen=true;
+  document.body.style.overflow="hidden";
+  setTimeout(function(){var b=$(".drawer-head .iconbtn");if(b)b.focus()},60);
+}
+function closeDrawer(){
+  if(!drawerOpen)return;
+  $("#drawer").classList.remove("open");drawerOpen=false;document.body.style.overflow="";
+  if(lastFocus&&lastFocus.focus)lastFocus.focus();
+}
+$$("#drawer [data-close]").forEach(function(el){el.addEventListener("click",closeDrawer)});
+
+/* ---------- НОВОСТИ ---------- */
+var newsState={q:"",cat:"Все",sort:"desc",view:"list"};
+function importEditor(silent){
+  var keys=["gym4_news_drafts","gym4_news","news_drafts","gym4.news","gym4_editor_news"],found=[];
+  keys.forEach(function(k){
+    try{
+      var raw=localStorage.getItem(k);if(!raw)return;
+      var arr=JSON.parse(raw);
+      if(arr&&arr.items)arr=arr.items;
+      if(!Array.isArray(arr))return;
+      arr.forEach(function(x){
+        if(!x||!(x.title||x.text))return;
+        found.push({
+          id:"loc-"+(x.id||Math.random().toString(36).slice(2,8)),
+          cat:x.category||x.cat||"Новости",
+          date:(x.date||x.publishedAt||"").slice(0,10)||new Date().toISOString().slice(0,10),
+          title:x.title||"Без заголовка",
+          lead:x.summary||x.excerpt||x.lead||(x.text||"").slice(0,160),
+          text:x.text||x.body||"",
+          url:x.sourceUrl||x.url||x.link||"",
+          local:true
+        });
+      });
+    }catch(e){}
+  });
+  if(found.length){
+    var ids={};S.localNews.forEach(function(n){ids[n.id]=1});
+    var added=0;
+    found.forEach(function(n){if(!ids[n.id]){S.localNews.push(n);added++}});
+    save();renderNews();renderHomeNews();
+    if(!silent)toast(added?"Добавлено материалов из редактора: "+added:"Новых материалов в редакторе нет");
+  }else if(!silent){
+    toast("В этом браузере черновиков редактора не найдено");
+  }
+}
+function allNews(){return NEWS_SEED.concat(S.localNews)}
+function renderNewsTabs(){
+  var all=allNews();
+  $("#newsTabs").innerHTML=CATS.map(function(c){
+    var n=c==="Все"?all.length:all.filter(function(x){return x.cat===c}).length;
+    return '<button data-cat="'+esc(c)+'" aria-pressed="'+(newsState.cat===c)+'">'+esc(c)+"<em>"+n+"</em></button>";
+  }).join("");
+}
+function renderNews(){
+  renderNewsTabs();
+  var q=newsState.q.trim().toLowerCase(),all=allNews();
+  var list=all.filter(function(n){
+    return (newsState.cat==="Все"||n.cat===newsState.cat)&&(!q||(n.title+" "+n.lead+" "+(n.tags||[]).join(" ")).toLowerCase().indexOf(q)>=0);
+  });
+  list.sort(function(a,b){var d=a.date<b.date?-1:a.date>b.date?1:(a.id<b.id?-1:1);return newsState.sort==="desc"?-d:d});
+  var feed=$("#newsFeed");
+  feed.className="feed"+(newsState.view==="cards"?" cards":"");
+  feed.innerHTML=list.map(function(n,i){
+    return '<button class="ncard" data-news="'+esc(n.id)+'" style="--d:'+i+'">'+
+      '<div class="meta"><span class="chip '+(CATCLS[n.cat]||"")+'">'+esc(n.cat)+"</span><time>"+fmtDate(n.date)+"</time>"+(n.local?'<span class="chip s">локально</span>':"")+"</div>"+
+      "<h3>"+esc(n.title)+"</h3><p>"+esc(n.lead)+"</p>"+
+      '<div class="foot"><span>'+(n.url?"gym4.net":"черновик редакции")+'</span><span class="go">Подробнее <svg class="ic"><use href="#i-arrow"/></svg></span></div></button>';
+  }).join("");
+  $("#newsEmpty").hidden=list.length>0;
+  feed.hidden=list.length===0;
+}
+function renderHomeNews(){
+  var list=allNews().slice().sort(function(a,b){return a.date<b.date?1:-1}).slice(0,3);
+  $("#homeNews").innerHTML=list.map(function(n){
+    return '<button class="nrow" data-news="'+esc(n.id)+'"><time>'+fmtDate(n.date)+"</time><b>"+esc(n.title)+'</b><span class="t">'+esc(n.cat)+"</span></button>";
+  }).join("");
+}
+function openNews(id){
+  var n=allNews().filter(function(x){return x.id===id})[0];if(!n)return;
+  pushRecent({t:n.title,s:"Новость",a:"news:"+n.id,i:"i-doc"});
+  openDrawer(n.cat+" · "+fmtDate(n.date),n.title,function(){
+    var body=$("#drawerBody");
+    body.innerHTML=
+      '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem"><span class="chip '+(CATCLS[n.cat]||"")+'">'+esc(n.cat)+"</span><time class='chip'>"+fmtDate(n.date)+"</time>"+(n.local?'<span class="chip s">локальный материал</span>':'<span class="chip g">перенесено с gym4.net</span>')+"</div>"+
+      "<p style='font-size:1rem;font-weight:600;margin-bottom:.9rem'>"+esc(n.lead)+"</p>"+
+      (n.text?"<p style='color:var(--muted);white-space:pre-wrap;margin-bottom:.9rem'>"+esc(n.text)+"</p>":"")+
+      (n.tags&&n.tags.length?"<div style='display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem'>"+n.tags.map(function(t){return '<span class="chip">'+esc(t)+"</span>"}).join("")+"</div>":"")+
+      '<div class="note info"><svg class="ic"><use href="#i-info"/></svg><span>'+(n.local?"Материал хранится только в этом браузере. Чтобы его увидели посетители, выгрузите news.json и замените файл в репозитории.":"Полный текст и фотографии публикации размещены на официальном сайте гимназии. Кнопка ниже откроет оригинал.")+"</span></div>";
+  },function(foot){
+    foot.innerHTML=(n.url?'<a class="btn btn-p btn-s" href="'+esc(n.url)+'" target="_blank" rel="noopener">Читать на gym4.net <svg class="ic"><use href="#i-ext"/></svg></a>':"")+
+      '<button class="btn btn-l btn-s" data-share="'+esc(n.id)+'"><svg class="ic"><use href="#i-copy"/></svg>Скопировать ссылку</button>'+
+      (n.local?'<button class="btn btn-danger btn-s" data-del="'+esc(n.id)+'">Удалить локально</button>':"");
+  });
+}
+document.addEventListener("click",function(e){
+  var nb=e.target.closest("[data-news]");
+  if(nb){openNews(nb.dataset.news);return}
+  var sh=e.target.closest("[data-share]");
+  if(sh){
+    var url=location.href.split("#")[0]+"#/news?n="+sh.dataset.share;
+    copyText(url,"Ссылка на публикацию скопирована");return;
+  }
+  var del=e.target.closest("[data-del]");
+  if(del){
+    var id=del.dataset.del,idx=-1;
+    S.localNews.forEach(function(x,i){if(x.id===id)idx=i});
+    if(idx>=0){
+      var removed=S.localNews.splice(idx,1)[0];save();renderNews();renderHomeNews();closeDrawer();
+      toast("Локальный материал удалён",function(){S.localNews.splice(idx,0,removed);save();renderNews();renderHomeNews();toast("Материал восстановлен")});
+    }
+    return;
+  }
+  var tab=e.target.closest("#newsTabs [data-cat]");
+  if(tab){newsState.cat=tab.dataset.cat;renderNews();return}
+  var cp=e.target.closest("[data-copy]");
+  if(cp){copyText(cp.dataset.copy,"Скопировано: "+cp.dataset.copy);return}
+  var act=e.target.closest("[data-action]");
+  if(act){doAction(act.dataset.action);return}
+});
+function copyText(text,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg||"Скопировано")}).catch(function(){fallbackCopy(text,msg)});
+  }else fallbackCopy(text,msg);
+}
+function fallbackCopy(text,msg){
+  try{
+    var ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
+    toast(msg||"Скопировано");
+  }catch(e){toast("Скопируйте вручную: "+text)}
+}
+var newsTimer=0;
+$("#newsSearch").addEventListener("input",function(e){var v=e.target.value;clearTimeout(newsTimer);newsTimer=setTimeout(function(){newsState.q=v;renderNews()},130)});
+$("#newsSort").addEventListener("change",function(){newsState.sort=this.value;renderNews()});
+$("#newsView").addEventListener("click",function(){
+  newsState.view=newsState.view==="list"?"cards":"list";
+  this.innerHTML='<svg class="ic"><use href="#'+(newsState.view==="list"?"i-grid":"i-list")+'"/></svg>';
+  renderNews();
+});
+$("#newsReset").addEventListener("click",function(){
+  newsState={q:"",cat:"Все",sort:"desc",view:newsState.view};
+  $("#newsSearch").value="";$("#newsSort").value="desc";renderNews();
+});
+function exportNews(){
+  var data=allNews().map(function(n){
+    return {id:n.id,title:n.title,category:n.cat,date:n.date,summary:n.lead,text:n.text||"",sourceUrl:n.url||"",local:!!n.local};
+  });
+  if(download("news.json",JSON.stringify({updated:new Date().toISOString(),items:data},null,2),"application/json"))toast("news.json выгружен — замените файл в репозитории");
+  else toast("Не удалось выгрузить файл");
+}
+
+/* ---------- СВЕДЕНИЯ ---------- */
+function renderSveden(){
+  var q=($("#svSearch").value||"").trim().toLowerCase();
+  var list=SVEDEN.filter(function(s){return !q||(s.t+" "+s.d).toLowerCase().indexOf(q)>=0});
+  $("#svList").innerHTML=list.map(function(s){
+    var ok=S.audit["sv-"+s.k]==="ok";
+    return '<details class="acc"><summary><span class="chip '+(ok?"g":"s")+'">'+(ok?"✓":"⚑")+"</span>"+esc(s.t)+'<span class="plus">+</span></summary>'+
+      '<div class="body"><p>'+esc(s.d)+'</p>'+
+      '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;align-items:center">'+
+        '<a class="btn btn-l btn-s" href="'+esc(s.u)+'" target="_blank" rel="noopener">Источник на gym4.net <svg class="ic"><use href="#i-ext"/></svg></a>'+
+        '<button class="btn '+(ok?"btn-l":"btn-p")+' btn-s" data-sv="'+s.k+'">'+(ok?"Снять отметку":"Отметить проверенным")+"</button>"+
+      "</div></div></details>";
+  }).join("");
+  $("#svEmpty").hidden=list.length>0;
+  $("#svList").hidden=list.length===0;
+}
+$("#svSearch").addEventListener("input",renderSveden);
+$("#svReset").addEventListener("click",function(){$("#svSearch").value="";renderSveden()});
+$("#svExpand").addEventListener("click",function(){
+  var open=this.dataset.open!=="1";this.dataset.open=open?"1":"0";
+  this.textContent=open?"Свернуть все":"Раскрыть все";
+  $$("#svList .acc").forEach(function(d){d.open=open});
+});
+$("#svList").addEventListener("click",function(e){
+  var b=e.target.closest("[data-sv]");if(!b)return;
+  var k="sv-"+b.dataset.sv,prev=S.audit[k];
+  S.audit[k]=prev==="ok"?"todo":"ok";save();renderSveden();renderAuditBadges();
+  toast(S.audit[k]==="ok"?"Подраздел отмечен как проверенный":"Отметка снята",function(){S.audit[k]=prev;save();renderSveden();renderAuditBadges()});
+});
+
+/* ---------- КРУЖКИ ---------- */
+var clubFilter="Все";
+function renderClubs(){
+  var groups=["Все"].concat(Object.keys(CLUBCOLOR));
+  $("#clubTabs").innerHTML=groups.map(function(g){
+    var n=g==="Все"?CLUBS.length:CLUBS.filter(function(c){return c.g===g}).length;
+    return '<button data-club="'+esc(g)+'" aria-pressed="'+(clubFilter===g)+'">'+esc(g)+"<em>"+n+"</em></button>";
+  }).join("");
+  var list=CLUBS.filter(function(c){return clubFilter==="Все"||c.g===clubFilter});
+  $("#clubList").innerHTML=list.map(function(c){
+    return '<div class="club"><span class="dot" style="background:'+CLUBCOLOR[c.g]+'"></span><div><b>'+esc(c.n)+'</b><p>'+esc(c.d)+'</p><span class="chip" style="margin-top:.4rem">'+esc(c.g)+" · расписание уточняется</span></div></div>";
+  }).join("");
+}
+$("#clubTabs").addEventListener("click",function(e){var b=e.target.closest("[data-club]");if(!b)return;clubFilter=b.dataset.club;renderClubs()});
+
+/* ---------- ЧЕК-ЛИСТ ДОКУМЕНТОВ ---------- */
+function renderDocs(){
+  $("#prList").innerHTML=DOCS.map(function(d){
+    var on=!!S.docs[d.k];
+    return '<li class="'+(on?"done":"")+'"><input type="checkbox" id="'+d.k+'" '+(on?"checked":"")+' data-doc="'+d.k+'"><label for="'+d.k+'">'+esc(d.t)+"<small>"+esc(d.s)+"</small></label></li>";
+  }).join("");
+  var done=DOCS.filter(function(d){return S.docs[d.k]}).length,pct=Math.round(done/DOCS.length*100);
+  $("#prRing").setAttribute("stroke-dasharray",pct+" 100");
+  $("#prTitle").textContent="Собрано "+done+" из "+DOCS.length;
+  $("#prSub").textContent=done===DOCS.length?"Всё собрано. Уточните в приёмной требования к копиям.":"Перечень ориентировочный — точный список подтверждает приёмная.";
+}
+$("#prList").addEventListener("change",function(e){
+  var i=e.target.closest("[data-doc]");if(!i)return;
+  S.docs[i.dataset.doc]=i.checked;save();renderDocs();
+});
+$("#prReset").addEventListener("click",function(){
+  var prev=JSON.parse(JSON.stringify(S.docs));S.docs={};save();renderDocs();
+  toast("Чек-лист очищен",function(){S.docs=prev;save();renderDocs()});
+});
+$("#prPrint").addEventListener("click",function(){window.print()});
+
+/* ---------- КАЛЕНДАРЬ ---------- */
+function renderYear(){
+  $("#yearGrid").innerHTML=YEAR.map(function(y,i){
+    return '<div class="dir" data-reveal style="--d:'+i+'"><span class="t">'+esc(y.m)+"</span><h3>"+esc(y.t)+"</h3><p>"+esc(y.d)+"</p></div>";
+  }).join("");
+}
+
+/* ---------- ДОРАБОТКИ ---------- */
+function renderUpgrades(){
+  $("#upList").innerHTML=UPGRADES.map(function(u,i){
+    return '<div class="up" data-reveal style="--d:'+(i%2)+'"><span class="n">'+pad(i+1)+"</span><h3>"+esc(u.t)+'</h3><p>'+esc(u.d)+'</p>'+
+      '<div class="row"><span class="chip g">✓ работает</span><button class="btn btn-l btn-s" data-action="'+u.a+'" style="margin-left:auto">'+esc(u.b)+"</button></div></div>";
+  }).join("");
+}
+$("#heroUpgrades").addEventListener("click",function(){location.hash="#/upgrades"});
+
+/* ---------- ЖИВОЙ СТАТУС ---------- */
+var demo=false,demoBase=0,DEMO_START=new Date(2026,10,18,10,47,0).getTime();
+function nowDate(){return demo?new Date(DEMO_START+(performance.now()-demoBase)):new Date()}
+function toSec(t){var p=t.split(":");return parseInt(p[0],10)*3600+parseInt(p[1],10)*60}
+function dur(s){s=Math.max(0,Math.round(s));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h>0?h+":"+pad(m)+":"+pad(x):pad(m)+":"+pad(x)}
+function openState(now){
+  var day=now.getDay(),sec=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+  var o=toSec("07:30"),c=toSec("18:30");
+  if(day===0)return{open:false,left:(86400-sec)+o,label:"Воскресенье — выходной"};
+  if(sec<o)return{open:false,left:o-sec,label:"До открытия"};
+  if(sec<c)return{open:true,left:c-sec,label:"До конца рабочего дня"};
+  var add=day===6?2:1;
+  return{open:false,left:add*86400-sec+o,label:day===6?"До понедельника":"До открытия завтра"};
+}
+function lessonState(now){
+  var day=now.getDay(),sec=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+  if(day===0)return{type:"weekend"};
+  if(sec<toSec(BELLS[0][0]))return{type:"before",left:toSec(BELLS[0][0])-sec};
+  for(var i=0;i<BELLS.length;i++){
+    var s=toSec(BELLS[i][0]),e=toSec(BELLS[i][1]);
+    if(sec>=s&&sec<e)return{type:"lesson",idx:i,left:e-sec,prog:(sec-s)/(e-s)};
+    if(i<BELLS.length-1&&sec>=e&&sec<toSec(BELLS[i+1][0]))return{type:"break",next:i+1,left:toSec(BELLS[i+1][0])-sec};
+  }
+  return{type:"after"};
+}
+function priemState(now){
+  var day=now.getDay(),sec=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+  var s=toSec("14:00"),e=toSec("18:00");
+  if(day===3&&sec>=s&&sec<e)return{now:true,text:"идёт сейчас",left:e-sec};
+  var days=(3-day+7)%7;
+  if(days===0&&sec>=e)days=7;
+  if(days===0&&sec<s)return{now:false,text:"сегодня в 14:00",left:s-sec};
+  return{now:false,text:"среда, 14:00",left:days*86400-sec+s};
+}
+function renderBells(){
+  var now=nowDate(),ls=lessonState(now);
+  $("#bellsBody").innerHTML=BELLS.map(function(b,i){
+    var isNow=ls.type==="lesson"&&ls.idx===i;
+    var brk=i<BELLS.length-1?(function(){
+      var a=toSec(b[1]),c=toSec(BELLS[i+1][0]);return Math.round((c-a)/60)+" мин";
+    })():"—";
+    return '<tr class="'+(isNow?"now":"")+'"><td class="n">'+(i+1)+'</td><td class="t">'+b[0]+'</td><td class="t">'+b[1]+'</td><td>'+brk+'</td><td>'+(isNow?'<span class="chip s">идёт сейчас</span>':'<span class="chip">по расписанию</span>')+"</td></tr>";
+  }).join("");
+}
+function tick(){
+  var now=nowDate();
+  $("#clock").textContent=pad(now.getHours())+":"+pad(now.getMinutes())+":"+pad(now.getSeconds())+(demo?" · демо":"");
+  var os=openState(now),ls=lessonState(now),ps=priemState(now);
+  $("#stOpen").textContent=os.open?"открыто":"закрыто";
+  $("#stPriem").textContent=ps.now?"идёт сейчас":"среда 14:00";
+  var label,big,bar=0,lesson;
+  if(ls.type==="lesson"){label="ИДЁТ "+(ls.idx+1)+"-Й УРОК · ДО ЗВОНКА";big=dur(ls.left);bar=ls.prog*100;lesson=(ls.idx+1)+"-й урок"}
+  else if(ls.type==="break"){label="ПЕРЕМЕНА · ДО "+(ls.next+1)+"-ГО УРОКА";big=dur(ls.left);lesson="перемена"}
+  else if(ls.type==="before"){label="ДО ПЕРВОГО УРОКА";big=dur(ls.left);lesson="ещё не начался"}
+  else if(ls.type==="weekend"){label="ВЫХОДНОЙ · ДО ПОНЕДЕЛЬНИКА";big=dur(openState(now).left);lesson="выходной"}
+  else{label=os.label.toUpperCase();big=dur(os.left);lesson="завершён"}
+  $("#stLabel").textContent=label;$("#stBig").textContent=big;$("#stBar").style.width=bar.toFixed(1)+"%";
+  $("#stLesson").textContent=lesson;
+  $("#utilStatus").textContent=os.open?"Сейчас открыто · до 18:30":"Сейчас закрыто · "+os.label.toLowerCase()+" "+dur(os.left);
+  $("#utilDot").classList.toggle("closed",!os.open);
+  var cd=$("#cDot");if(cd)cd.classList.toggle("closed",!os.open);
+  var cs=$("#cStatus");if(cs)cs.textContent=os.open?"Гимназия открыта":"Гимназия закрыта";
+  var css=$("#cStatusSub");if(css)css.textContent=(os.open?"До конца рабочего дня ":"До открытия ")+dur(os.left)+(ps.now?" · идёт приём директора":"");
+  renderBells();
+}
+$("#demoTime").addEventListener("change",function(){
+  demo=this.checked;demoBase=performance.now();$("#demoFlag").hidden=!demo;tick();
+  toast(demo?"Демо-время: среда, 10:47 — идёт 3-й урок":"Показано реальное время");
+});
+
+/* ---------- ПОИСК ---------- */
+var cmdOpen=false,cmdIndex=[],cmdSel=0,cmdResults=[];
+function buildIndex(){
+  cmdIndex=[];
+  var views=[["home","Главная","Живой статус, навигация, цифры и новости","i-grid"],["history","История гимназии","Летопись с 1964 года и источники","i-book"],
+    ["sveden","Сведения об организации","13 обязательных подразделов и статусы","i-doc"],["parents","Родителям","Питание, безопасность, поддержка, сервисы","i-users"],
+    ["students","Обучающимся","Расписание звонков, кружки, библиотека","i-bell"],["news","Новости и объявления","Лента с поиском и фильтрами","i-mega"],
+    ["priem","Приём в гимназию","Порядок и чек-лист документов","i-check"],["life","Школьная жизнь","Год гимназии, фотолетопись, достижения","i-spark"],
+    ["contacts","Контакты","Адрес, телефоны, маршрут, обращения","i-pin"],["upgrades","Что улучшено","Журнал доработок этой версии","i-spark"]];
+  views.forEach(function(v){cmdIndex.push({g:"Разделы",t:v[1],s:v[2],a:"go:"+v[0],i:v[3],k:(v[1]+" "+v[2]).toLowerCase()})});
+  allNews().forEach(function(n){cmdIndex.push({g:"Новости",t:n.title,s:n.cat+" · "+fmtDate(n.date),a:"news:"+n.id,i:"i-doc",k:(n.title+" "+n.lead+" "+n.cat).toLowerCase()})});
+  [["Приёмная директора","(8512) 50-05-67","+78512500567"],["Учительская и библиотечный центр","(8512) 24-34-04","+78512243404"],
+   ["Медицинский кабинет","(8512) 33-62-22","+78512336222"],["Электронная почта","gimn4@obr.astrobl.ru","gimn4@obr.astrobl.ru"],
+   ["Адрес гимназии","ул. Б. Хмельницкого, 16, корп. 1","414024, г. Астрахань, ул. Б. Хмельницкого, д. 16, корп. 1"]].forEach(function(c){
+    cmdIndex.push({g:"Контакты",t:c[0],s:c[1],a:"copy:"+c[2],i:"i-copy",k:(c[0]+" "+c[1]).toLowerCase()});
+  });
+  CLUBS.forEach(function(c){cmdIndex.push({g:"Кружки",t:c.n,s:c.g+" · "+c.d,a:"go:students",i:"i-spark",k:(c.n+" "+c.g+" "+c.d).toLowerCase()})});
+  SVEDEN.forEach(function(s){cmdIndex.push({g:"Сведения",t:s.t,s:s.d,a:"go:sveden",i:"i-doc",k:(s.t+" "+s.d).toLowerCase()})});
+  [["Умный поиск","Открыть палитру команд","cmd","i-search"],["Режим проверки данных","Подсветить непроверенные факты","review","i-flag"],
+   ["Панель проверки","Список задач и выгрузка чек-листа","audit","i-flag"],["Оформление и доступность","Шрифт, схема, интервал, анимации","dock","i-eye"],
+   ["Следующая тема оформления","Переключить праздничную тему","theme","i-spark"],["Демо-время","Показать виджет в разгар учебного дня","demo","i-clock"],
+   ["Скачать vCard","Сохранить контакт гимназии","vcard","i-dl"],["Выгрузить news.json","Экспорт ленты новостей","export-news","i-dl"],
+   ["Выгрузить чек-лист","Markdown со всеми пунктами проверки","export-checklist","i-dl"],["Печать раздела","Печатная версия текущей страницы","print","i-print"],
+   ["Позвонить в приёмную","(8512) 50-05-67","call","i-phone"],["Наверх","Вернуться к началу страницы","top","i-up"]].forEach(function(a){
+    cmdIndex.push({g:"Действия",t:a[0],s:a[1],a:"act:"+a[2],i:a[3],k:(a[0]+" "+a[1]).toLowerCase()});
+  });
+}
+function highlight(text,q){
+  if(!q)return esc(text);
+  var i=text.toLowerCase().indexOf(q);
+  if(i<0)return esc(text);
+  return esc(text.slice(0,i))+"<mark>"+esc(text.slice(i,i+q.length))+"</mark>"+esc(text.slice(i+q.length));
+}
+function renderCmd(){
+  var q=$("#cmdInput").value.trim().toLowerCase(),out=[],groups={};
+  if(!q){
+    S.recent.slice(0,4).forEach(function(r){out.push({g:"Недавнее",t:r.t,s:r.s,a:r.a,i:r.i,k:""})});
+    cmdIndex.filter(function(x){return x.g==="Разделы"}).slice(0,5).forEach(function(x){out.push(x)});
+    cmdIndex.filter(function(x){return x.g==="Действия"}).slice(0,4).forEach(function(x){out.push(x)});
+  }else{
+    var scored=cmdIndex.map(function(x){
+      var i=x.k.indexOf(q);if(i<0)return null;
+      var score=i+(x.t.toLowerCase().indexOf(q)>=0?0:40);
+      return {x:x,score:score};
+    }).filter(Boolean).sort(function(a,b){return a.score-b.score}).slice(0,24);
+    out=scored.map(function(s){return s.x});
+  }
+  cmdResults=out;cmdSel=Math.min(cmdSel,Math.max(0,out.length-1));
+  var html="",last="";
+  out.forEach(function(x,i){
+    if(x.g!==last){html+='<div class="cmdk-group">'+esc(x.g)+"</div>";last=x.g}
+    html+='<button class="cmdk-item" role="option" data-i="'+i+'" aria-selected="'+(i===cmdSel)+'">'+
+      '<span class="ico"><svg class="ic"><use href="#'+x.i+'"/></svg></span>'+
+      "<span><b>"+highlight(x.t,q)+"</b><small>"+highlight(x.s,q)+"</small></span>"+
+      '<span class="tail">'+(i===cmdSel?"↵":"")+"</span></button>";
+  });
+  if(!out.length)html='<div class="cmdk-empty"><b>Ничего не найдено</b><p style="font-size:.87rem;margin-top:.3rem">Попробуйте «расписание», «приём», «телефон», «ЮНЕСКО» или «проверка».</p></div>';
+  $("#cmdList").innerHTML=html;
+}
+function pushRecent(r){
+  S.recent=S.recent.filter(function(x){return x.a!==r.a});
+  S.recent.unshift(r);S.recent=S.recent.slice(0,6);save();
+}
+function setCmd(on){
+  cmdOpen=on;$("#cmdk").classList.toggle("open",on);
+  if(on){setDock(false);setSheet(false);buildIndex();$("#cmdInput").value="";cmdSel=0;renderCmd();setTimeout(function(){$("#cmdInput").focus()},60);document.body.style.overflow="hidden"}
+  else if(!drawerOpen)document.body.style.overflow="";
+}
+$("#openCmd").addEventListener("click",function(){setCmd(true)});
+$("#cmdk").addEventListener("click",function(e){if(e.target===$("#cmdk"))setCmd(false)});
+$("#cmdInput").addEventListener("input",function(){cmdSel=0;renderCmd()});
+$("#cmdList").addEventListener("click",function(e){
+  var it=e.target.closest("[data-i]");if(!it)return;cmdSel=parseInt(it.dataset.i,10);runCmd();
+});
+$("#cmdList").addEventListener("mousemove",function(e){
+  var it=e.target.closest("[data-i]");if(!it)return;
+  var i=parseInt(it.dataset.i,10);if(i!==cmdSel){cmdSel=i;$$(".cmdk-item").forEach(function(b,j){b.setAttribute("aria-selected",String(j===i))})}
+});
+function runCmd(){
+  var r=cmdResults[cmdSel];if(!r)return;
+  pushRecent({t:r.t,s:r.s,a:r.a,i:r.i});
+  setCmd(false);
+  var p=r.a.split(":");
+  if(p[0]==="go"){location.hash="#/"+p[1]}
+  else if(p[0]==="news"){location.hash="#/news";setTimeout(function(){openNews(p[1])},220)}
+  else if(p[0]==="copy"){copyText(p.slice(1).join(":"),"Скопировано")}
+  else if(p[0]==="act"){doAction(p[1])}
+}
+document.addEventListener("keydown",function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();setCmd(!cmdOpen);return}
+  if(e.altKey&&e.key.toLowerCase()==="a"){e.preventDefault();setDock(!dockOpen);return}
+  if(e.altKey&&e.key.toLowerCase()==="r"){e.preventDefault();toggleReview();return}
+  if(e.altKey&&e.key.toLowerCase()==="t"){e.preventDefault();doAction("theme");return}
+  if(e.key==="Escape"){
+    if(cmdOpen)setCmd(false);
+    else if(drawerOpen)closeDrawer();
+    else if(dockOpen)setDock(false);
+    else if(sheetOpen)setSheet(false);
+    return;
+  }
+  if(cmdOpen){
+    if(e.key==="ArrowDown"){e.preventDefault();cmdSel=Math.min(cmdSel+1,cmdResults.length-1);renderCmd();scrollSel()}
+    else if(e.key==="ArrowUp"){e.preventDefault();cmdSel=Math.max(cmdSel-1,0);renderCmd();scrollSel()}
+    else if(e.key==="Enter"){e.preventDefault();runCmd()}
+  }
+});
+function scrollSel(){var el=$('.cmdk-item[data-i="'+cmdSel+'"]');if(el)el.scrollIntoView({block:"nearest"})}
+
+/* ---------- ДЕЙСТВИЯ ---------- */
+function doAction(a){
+  switch(a){
+    case "cmd":setCmd(true);break;
+    case "menu":setSheet(!sheetOpen);break;
+    case "top":window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});break;
+    case "review":if(S.settings.review!=="on")toggleReview();else openAudit();break;
+    case "review-off":S.settings.review="off";applySettings();toast("Подсветка выключена");break;
+    case "audit":openAudit();break;
+    case "dock":setDock(true);break;
+    case "news":location.hash="#/news";break;
+    case "sveden":location.hash="#/sveden";break;
+    case "upgrades":location.hash="#/upgrades";break;
+    case "bells":location.hash="#/students";setTimeout(function(){var el=$("#st-bells");if(el)el.scrollIntoView({behavior:reduced?"auto":"smooth"})},240);break;
+    case "docs":location.hash="#/priem";setTimeout(function(){var el=$("#pr-docs");if(el)el.scrollIntoView({behavior:reduced?"auto":"smooth"})},240);break;
+    case "status":location.hash="#/";setTimeout(function(){window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});var c=$("#statusCard");c.style.transition="box-shadow .4s";c.style.boxShadow="0 0 0 3px var(--caspian)";setTimeout(function(){c.style.boxShadow=""},1600)},240);break;
+    case "demo":demo=!demo;demoBase=performance.now();$("#demoTime").checked=demo;$("#demoFlag").hidden=!demo;tick();toast(demo?"Демо-время включено: среда, 10:47":"Показано реальное время");break;
+    case "theme":
+      var keys=THEMES.map(function(t){return t.k}),i=keys.indexOf(S.settings.theme);
+      S.settings.theme=keys[(i+1)%keys.length];applySettings();toast("Тема: "+themeByKey(S.settings.theme).t);break;
+    case "import-editor":importEditor(false);break;
+    case "export-news":exportNews();break;
+    case "export-checklist":exportChecklist();break;
+    case "print":window.print();break;
+    case "call":location.href="tel:+78512500567";break;
+    case "vcard":
+      var v=["BEGIN:VCARD","VERSION:3.0","N:;Гимназия № 4;;;","FN:Гимназия № 4 · Астрахань","ORG:МБОУ г. Астрахани «Гимназия № 4»",
+        "TEL;TYPE=WORK,VOICE:+78512500567","TEL;TYPE=WORK:+78512243404","EMAIL;TYPE=WORK:gimn4@obr.astrobl.ru",
+        "ADR;TYPE=WORK:;;ул. Б. Хмельницкого, 16, корп. 1;Астрахань;;414024;Россия","GEO:48.014738;46.335291",
+        "URL:https://gym4.net/","NOTE:Приёмная директора. Пн–Сб 07:30–18:30. Приём директора — среда 14:00–18:00.","END:VCARD"].join("\r\n");
+      if(download("gimnaziya-4.vcf",v,"text/vcard;charset=utf-8"))toast("Контакт гимназии сохранён (.vcf)");else toast("Не удалось сохранить файл");
+      break;
+  }
+}
+$("#toTop").addEventListener("click",function(){doAction("top")});
+
+/* ---------- РОУТЕР ---------- */
+var TITLES={home:"Гимназия № 4 · Астрахань",history:"История гимназии — Гимназия № 4",sveden:"Сведения об организации — Гимназия № 4",
+  parents:"Родителям — Гимназия № 4",students:"Обучающимся — Гимназия № 4",news:"Новости и объявления — Гимназия № 4",
+  priem:"Приём в гимназию — Гимназия № 4",life:"Школьная жизнь — Гимназия № 4",contacts:"Контакты — Гимназия № 4",upgrades:"Что улучшено — Гимназия № 4"};
+var pendingNews=null;
+function route(){
+  var h=location.hash||"#/",key="home",q=null;
+  if(h.indexOf("#/")===0){
+    var parts=h.slice(2).split("?");key=parts[0]||"home";
+    if(parts[1]){parts[1].split("&").forEach(function(p){var kv=p.split("=");if(kv[0]==="n")q=kv[1]})}
+  }
+  if(!TITLES[key])key="home";
+  $$(".view").forEach(function(v){v.hidden=v.dataset.view!==key});
+  $$("[data-nav]").forEach(function(a){if(a.dataset.nav===key)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  document.title=TITLES[key];
+  setSheet(false);
+  window.scrollTo(0,0);
+  if(key==="news"){renderNews()}
+  if(q){pendingNews=q;setTimeout(function(){openNews(pendingNews)},260)}
+  updateSpy();
+}
+window.addEventListener("hashchange",route);
+
+/* ---------- SCROLLSPY / ПРОГРЕСС / ТОН ---------- */
+var ticking=false;
+function onScroll(){
+  if(ticking)return;ticking=true;
+  requestAnimationFrame(function(){
+    ticking=false;
+    var h=document.documentElement,max=h.scrollHeight-window.innerHeight;
+    $("#progress").style.transform="scaleX("+(max>0?Math.min(1,window.scrollY/max):0)+")";
+    updateSpy();updateRail();
+    if(!reduced&&S.settings.motion==="on"&&window.scrollY<window.innerHeight){
+      $$(".hero-bg .blob").forEach(function(b,i){b.style.transform="translateY("+(window.scrollY*(0.06+i*0.03)).toFixed(1)+"px)"});
+    }
+  });
+}
+window.addEventListener("scroll",onScroll,{passive:true});
+function updateSpy(){
+  var view=$(".view:not([hidden])");if(!view)return;
+  var secs=$$("[data-spy-section]",view),best=null,mid=window.innerHeight*0.32;
+  secs.forEach(function(s){var r=s.getBoundingClientRect();if(r.top<=mid&&r.bottom>0)best=s});
+  if(!best)best=secs[0];
+  if(best){
+    var nav=$('.subnav[data-spy="'+view.dataset.view+'"]');
+    if(nav)$$("button",nav).forEach(function(b){b.classList.toggle("active",b.dataset.go===best.id)});
+    var tone=best.dataset.tone;
+    if(tone&&(S.settings.scheme==="light"||S.settings.scheme==="dark"))document.documentElement.style.setProperty("--tone",tone);
+  }else{
+    var hero=$(".hero",view);
+    if(hero&&hero.getBoundingClientRect().bottom>0)document.documentElement.style.setProperty("--tone","#0FB5C9");
+  }
+}
+function updateRail(){
+  var tl=$("#homeTl");if(!tl||$(".view[data-view='home']").hidden)return;
+  var rail=$(".rail",tl),r=tl.getBoundingClientRect(),mid=window.innerHeight*0.6;
+  var p=Math.max(0,Math.min(1,(mid-r.top)/r.height));
+  rail.style.height=(p*(r.height-16))+"px";
+  $$("li",tl).forEach(function(li){var lr=li.getBoundingClientRect();li.classList.toggle("hit",lr.top<mid)});
+}
+$$(".subnav button[data-go]").forEach(function(b){
+  b.addEventListener("click",function(){var el=document.getElementById(b.dataset.go);if(el)el.scrollIntoView({behavior:reduced?"auto":"smooth",block:"start"})});
+});
+
+/* ---------- REVEAL / СЧЁТЧИКИ ---------- */
+var revealIO=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("in");revealIO.unobserve(en.target)}})},{threshold:.08});
+function observeReveals(){$$("[data-reveal]").forEach(function(el){if(!el.classList.contains("in"))revealIO.observe(el)})}
+function animate(el){
+  var target=parseInt(el.dataset.count,10),pre=el.dataset.prefix||"";
+  function f(v){return pre+v.toLocaleString("ru-RU")}
+  if(reduced||S.settings.motion==="off"){el.textContent=f(target);return}
+  var t0=performance.now();
+  function step(t){var p=Math.min(1,(t-t0)/1200),e=1-Math.pow(1-p,3);el.textContent=f(Math.round(target*e));if(p<1)requestAnimationFrame(step)}
+  requestAnimationFrame(step);
+}
+var cntIO=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){animate(en.target);cntIO.unobserve(en.target)}})},{threshold:.5});
+
+/* ---------- СТАРТ ---------- */
+function init(){
+  applySettings();
+  renderSveden();renderClubs();renderDocs();renderYear();renderUpgrades();
+  importEditor(true);renderNews();renderHomeNews();
+  collectAudit();
+  observeReveals();
+  $$("[data-count]").forEach(function(el){cntIO.observe(el)});
+  route();tick();setInterval(tick,1000);
+  onScroll();
+  window.addEventListener("resize",function(){updateSpy();updateRail()});
+  setTimeout(function(){document.body.classList.add("booted")},60);
+  if(!S.seen){
+    S.seen=true;save();
+    setTimeout(function(){
+      toast("Новая версия: поиск Ctrl+K, живой статус и режим проверки данных",function(){location.hash="#/upgrades"});
+      $("#toastAction").textContent="Что нового";
+      setTimeout(function(){$("#toastAction").textContent="Отменить"},6200);
+    },1400);
+  }
+}
+init();
+})();
+</script>
+</body>
+</html>
