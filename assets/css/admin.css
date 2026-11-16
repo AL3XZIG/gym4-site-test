@@ -40,3 +40,7 @@
 @media(max-width:700px){.editor-warning{align-items:flex-start;flex-direction:column;gap:.2rem;padding:.65rem 1rem}.editor-header{padding:0 1rem}.editor-header-actions>span{display:none}.editor-shell{display:flex;flex-direction:column}.editor-sidebar,.editor-inspector{border:0;border-bottom:1px solid #dce3e9}.editor-workspace{padding:.8rem}.editor-toolbar{align-items:flex-start;flex-direction:column}.editor-toolbar-actions{width:100%}.editor-toolbar-actions button{flex:1}#siteFrame{height:70vh;min-height:480px}.editor-bottom{flex-direction:column}.editor-footer{padding:1rem;flex-direction:column}}
 
 .editor-empty-mark{display:block;width:1.35rem;height:1.35rem;margin:0 auto .7rem;border:2px solid #c18a2d;border-radius:50%;box-shadow:0 0 0 6px #f5ecd9, inset 0 0 0 4px #fff;background:#c18a2d}
+
+.editor-theme-panel{margin-top:1.25rem;padding:1rem;background:#f4f6f8;border:1px solid #dce3e9}
+.editor-theme-panel .editor-label{margin-top:0}
+.editor-theme-note{margin:.55rem 0 0;color:#657386;font-size:.7rem;line-height:1.5}
