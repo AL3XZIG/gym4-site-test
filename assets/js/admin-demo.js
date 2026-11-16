@@ -42,6 +42,9 @@
     clone.querySelectorAll("[data-editor-selected]").forEach(function (el) {
       el.removeAttribute("data-editor-selected");
     });
+    clone.querySelectorAll("[data-editor-hover]").forEach(function (el) {
+      el.removeAttribute("data-editor-hover");
+    });
     var overlay = clone.querySelector("#editorOverlayStyle");
     if (overlay) overlay.remove();
     clone.querySelectorAll("[contenteditable]").forEach(function (el) {
@@ -120,7 +123,7 @@
     if (!doc.getElementById("editorOverlayStyle")) {
       var style = doc.createElement("style");
       style.id = "editorOverlayStyle";
-      style.textContent = "[data-editor-selected] { outline: 2px solid #bd8b3b !important; outline-offset: 2px !important; }";
+      style.textContent = "[data-editor-selected] { outline: 2px solid #bd8b3b !important; outline-offset: 2px !important; } [data-editor-hover] { cursor: crosshair !important; }";
       (doc.head || doc.documentElement).appendChild(style);
     }
 
@@ -140,8 +143,14 @@
       if (!editMode || !event.target || !event.target.closest) return;
       var el = event.target.closest(selectable);
       if (el && !el.hasAttribute("data-editor-selected")) {
-        el.style.cursor = "crosshair";
+        el.setAttribute("data-editor-hover", "true");
       }
+    }, true);
+
+    doc.addEventListener("mouseout", function (event) {
+      if (!event.target || !event.target.closest) return;
+      var el = event.target.closest("[data-editor-hover]");
+      if (el) el.removeAttribute("data-editor-hover");
     }, true);
 
     doc.addEventListener("keydown", function (event) {
