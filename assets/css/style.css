@@ -1395,3 +1395,17 @@ html[data-scheme="bw"] .home-profile::before,
 html[data-scheme="wb"] .home-profile::before,
 html[data-scheme="bw"] .home-directions::before,
 html[data-scheme="wb"] .home-directions::before{display:none!important}
+
+
+/* Animated Gymnasium No. 4 mark: silent particle morph, with a static fallback. */
+.brand-mark{position:relative;overflow:hidden}
+.brand-mark.brand-mark--animated{color:transparent}
+.brand-mark__canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+@media(prefers-reduced-motion:reduce){
+  .brand-mark.brand-mark--animated{color:#fff}
+  .brand-mark__canvas{display:none}
+}
+html[data-scheme="bw"] .brand-mark__canvas,
+html[data-scheme="wb"] .brand-mark__canvas{display:none}
+html[data-scheme="bw"] .brand-mark.brand-mark--animated,
+html[data-scheme="wb"] .brand-mark.brand-mark--animated{color:#fff}
