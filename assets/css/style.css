@@ -1531,6 +1531,7 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
     width:42px;min-width:42px;height:42px;min-height:42px;
     padding:0;border-radius:8px;font-size:0;line-height:1;
   }
+  .header-tools .tool-btn:after{content:none!important}
   .header-tools #a11yToggle::before{content:"Aa";font-size:.9rem;font-weight:800}
   .header-tools .theme-toggle::before{content:"◐";font-size:1.2rem}
   .header-tools .theme-toggle[data-mode="dark"]::before{content:"☀";font-size:1.15rem}
