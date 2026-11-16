@@ -243,7 +243,7 @@ function chooseTheme(now){
  var y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
  if((m===11&&d>=20)||(m===0&&d<=10))return "new-year";
  if(m===1&&d>=15&&d<=24)return "defender";
- if(m===2&&d>=1&&d<=9)return "women";
+ if(m===2&&d>=1&&d<=9)return "women";\n if(m===5&&d>=10&&d<=13)return "russia";\n if(m===9&&d>=1&&d<=7)return "teacher";\n if(m===10&&d>=1&&d<=5)return "unity";\n if(m===11&&d>=10&&d<=13)return "constitution";
  var easter=orthodoxEaster(y),from=new Date(easter),to=new Date(easter);
  from.setUTCDate(from.getUTCDate()-3);to.setUTCDate(to.getUTCDate()+1);
  var today=new Date(Date.UTC(y,m,d));
@@ -255,7 +255,8 @@ function chooseTheme(now){
 var root=document.documentElement;
 if(!root.hasAttribute("data-season-theme"))root.setAttribute("data-season-theme",chooseTheme(new Date()));
 })();
-\n/* Theme preference and partner directory */
+
+/* Theme preference and partner directory */
 (function(){
 "use strict";
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
