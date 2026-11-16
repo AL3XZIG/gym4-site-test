@@ -1017,3 +1017,12 @@ html[data-season-theme="women"] .site-nav{background:linear-gradient(90deg,#3d20
 html[data-season-theme="easter"] .site-nav{background:linear-gradient(90deg,#302447,#5b4b7b)}
 html[data-season-theme="victory"] .site-nav{background:linear-gradient(90deg,#2c2028,#68414a)}
 html[data-season-theme="knowledge"] .site-nav{background:linear-gradient(90deg,#0b2748,#245587)}
+
+html[data-season-theme="russia"]{--navy:#244d75;--navy-deep:#142e4b;--blue:#477ba9;--blue-soft:#edf3f9;--accent:#c65c5c;--accent-soft:#f8eaea;--focus:#8b3030}
+html[data-season-theme="teacher"]{--navy:#4d4934;--navy-deep:#302d21;--blue:#82764b;--blue-soft:#f5f2e8;--accent:#b18b42;--accent-soft:#f7f0dd;--focus:#71551d}
+html[data-season-theme="unity"]{--navy:#31513d;--navy-deep:#1c3427;--blue:#557c61;--blue-soft:#edf4ef;--accent:#bd9651;--accent-soft:#f6f0e1;--focus:#6c4d1c}
+html[data-season-theme="constitution"]{--navy:#34465e;--navy-deep:#1e2d42;--blue:#536f94;--blue-soft:#eef2f7;--accent:#c19a4e;--accent-soft:#f7f0df;--focus:#74561d}
+html[data-season-theme="russia"] .site-nav{background:linear-gradient(90deg,#142e4b,#477ba9)}
+html[data-season-theme="teacher"] .site-nav{background:linear-gradient(90deg,#302d21,#6b6240)}
+html[data-season-theme="unity"] .site-nav{background:linear-gradient(90deg,#1c3427,#476a50)}
+html[data-season-theme="constitution"] .site-nav{background:linear-gradient(90deg,#1e2d42,#536f94)}
