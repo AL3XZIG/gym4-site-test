@@ -1,66 +1,51 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<meta name="color-scheme" content="light">
-<title>Тестовая админ-панель — Гимназия № 4</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light">
+<title>Редактор сайта — Гимназия № 4</title>
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/style.css">
-<script src="assets/js/admin-demo.js" defer></script>
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="assets/js/admin-editor.js" defer></script>
 </head>
-<body>
-<a class="skip-link" href="#main">Перейти к панели</a>
-<div class="demo-strip" role="note">Тестовый интерфейс. Это не настоящая система управления сайтом: авторизации, серверного хранения и публикации нет.</div>
-<header class="site-header">
-  <div class="wrap header-in">
-    <a class="brand" href="index.html" aria-label="Вернуться на сайт гимназии">
-      <span class="brand-mark" aria-hidden="true">4</span>
-      <span class="brand-text"><span class="brand-name">Гимназия № 4</span><span class="brand-sub">Техническая часть · демонстрация</span></span>
-    </a>
-    <div class="header-tools"><a class="tool-btn" href="index.html">← На главную</a></div>
-  </div>
-</header>
-<main id="main" tabindex="-1">
-  <section class="admin-demo wrap" aria-labelledby="admin-demo-title">
-    <div class="admin-demo__intro">
-      <p class="eyebrow eyebrow--dark">Для администрации · демонстрация</p>
-      <h1 id="admin-demo-title">Тестовая админ-панель</h1>
-      <p>Отдельная демонстрационная страница будущего рабочего кабинета. Здесь можно проверить редактирование объявления, предпросмотр и сохранение черновика. Данные сохраняются только в локальном хранилище этого браузера и не публикуются на сайте.</p>
-    </div>
-    <div class="admin-demo__panel">
-      <div class="admin-demo__top">
-        <div><span class="admin-demo__overline">GYMNASIUM № 4</span><strong>Управление сайтом</strong></div>
-        <span class="admin-demo__demo">DEMO · НЕ ДЛЯ ПУБЛИКАЦИИ</span>
-      </div>
-      <div class="admin-demo__body">
-        <aside class="admin-demo__side" aria-label="Разделы панели">
-          <span class="is-current">Обзор</span><span>Новости и объявления</span><span>Страницы сайта</span><span>Документы</span><span>Настройки</span>
-        </aside>
-        <div class="admin-demo__workspace">
-          <div class="admin-demo__stats" aria-label="Пример показателей панели">
-            <div><strong>7</strong><span>Разделов сайта</span></div>
-            <div><strong>1</strong><span>Тестовый черновик</span></div>
-            <div><strong>0</strong><span>Опубликовано из демо</span></div>
-          </div>
-          <form id="adminDemoForm" class="admin-demo__form">
-            <div class="admin-demo__form-head"><div><span class="admin-demo__overline">РЕДАКТОР ОБЪЯВЛЕНИЯ</span><h2>Новое объявление</h2></div><span class="admin-demo__draft" id="adminDemoStatus" role="status" aria-live="polite">Не сохранено</span></div>
-            <label for="adminDemoTitle">Заголовок</label>
-            <input id="adminDemoTitle" name="title" maxlength="100" value="Объявление для родителей" required>
-            <label for="adminDemoText">Текст объявления</label>
-            <textarea id="adminDemoText" name="body" rows="4" maxlength="1000">Здесь можно разместить важную информацию для родителей и обучающихся.</textarea>
-            <div class="admin-demo__actions"><button class="button button--primary" type="submit">Сохранить черновик</button><button class="admin-demo__reset" type="button" id="adminDemoReset">Сбросить</button></div>
-          </form>
-          <div class="admin-demo__preview"><span class="admin-demo__overline">ПРЕДПРОСМОТР</span><h2 id="adminDemoPreviewTitle">Объявление для родителей</h2><p id="adminDemoPreviewText">Здесь можно разместить важную информацию для родителей и обучающихся.</p></div>
-        </div>
-      </div>
-      <div class="admin-demo__foot"><span>Демо без авторизации, сервера и публикации</span><span id="adminDemoSaved">Черновик не сохранён</span></div>
-    </div>
-  </section>
+<body class="editor-body">
+<a class="skip-link" href="#editorMain">Перейти к редактору</a>
+<div class="editor-warning"><strong>Режим редактора · DEMO</strong><span>Изменения пока сохраняются в этом браузере. Для публикации скачайте HTML и передайте администратору.</span></div>
+<header class="editor-header"><a class="editor-brand" href="index.html"><span class="editor-brand-mark">4</span><span><b>Гимназия № 4</b><small>Система управления содержимым</small></span></a><div class="editor-header-actions"><span id="editorStatus" role="status">Загрузка редактора…</span><a class="button button--secondary" href="index.html">Открыть сайт ↗</a></div></header>
+<main id="editorMain" class="editor-shell">
+<aside class="editor-sidebar">
+<div class="editor-sidebar-title"><span class="admin-demo__overline">WORKSPACE</span><h1>Редактор сайта</h1><p>Выберите страницу и редактируйте её прямо в макете.</p></div>
+<label class="editor-label" for="pageSelect">Страница</label>
+<select id="pageSelect" class="editor-select">
+<option value="index.html">Главная</option><option value="news.html">Новости</option><option value="parents.html">Родителям</option><option value="students.html">Обучающимся</option><option value="priem.html">Приём</option><option value="contacts.html">Контакты</option><option value="sveden.html">Сведения об образовательной организации</option>
+</select>
+<div class="editor-tools">
+<button type="button" class="editor-tool is-active" id="editModeBtn">↖ Режим выбора</button>
+<button type="button" class="editor-tool" id="undoBtn" disabled>↶ Отменить действие</button>
+<button type="button" class="editor-tool" id="redoBtn" disabled>↷ Повторить действие</button>
+<button type="button" class="editor-tool" id="reloadBtn">⟳ Перезагрузить страницу</button>
+</div>
+<div class="editor-help"><b>Как редактировать</b><ol><li>Включите режим выбора.</li><li>Нажмите на текст или изображение в макете.</li><li>Измените содержимое в панели справа.</li><li>Сохраните черновик или экспортируйте HTML.</li></ol></div>
+<div class="editor-sidebar-bottom"><span class="editor-dot"></span> Локальный черновик · не опубликовано</div>
+</aside>
+<section class="editor-workspace">
+<div class="editor-toolbar"><div><span class="admin-demo__overline">LIVE CANVAS</span><strong id="currentPageName">Главная</strong></div><div class="editor-toolbar-actions"><button type="button" class="editor-button editor-button--quiet" id="saveDraftBtn">Сохранить черновик</button><button type="button" class="editor-button editor-button--primary" id="exportBtn">Экспорт HTML ↓</button></div></div>
+<div class="editor-canvas-wrap"><div class="editor-canvas-top"><span>ПРЕДПРОСМОТР СТРАНИЦЫ</span><span id="canvasHint">Выберите элемент для редактирования</span></div><iframe id="siteFrame" title="Предпросмотр редактируемой страницы" src="index.html"></iframe></div>
+<div class="editor-bottom"><span id="selectionInfo">Элемент не выбран</span><span>Изменения не влияют на опубликованный сайт</span></div>
+</section>
+<aside class="editor-inspector">
+<div class="editor-inspector-head"><span class="admin-demo__overline">PROPERTIES</span><h2>Свойства элемента</h2><p id="inspectorDescription">Выберите текст, изображение или ссылку в макете.</p></div>
+<div id="emptyInspector" class="editor-empty"><span>✳</span><b>Ничего не выбрано</b><p>Кликните по элементу в окне предпросмотра. Для удобства можно выбирать заголовки, абзацы, ссылки и изображения.</p></div>
+<form id="elementForm" class="editor-element-form" hidden>
+<label class="editor-label" for="elementText">Текст / содержимое</label><textarea id="elementText" rows="7"></textarea>
+<div id="imageFields" hidden><label class="editor-label" for="imageUrl">Адрес изображения</label><input id="imageUrl" type="url" placeholder="assets/img/photo.jpg"><label class="editor-label" for="imageAlt">Описание изображения (alt)</label><input id="imageAlt" type="text" maxlength="250"></div>
+<div id="linkFields" hidden><label class="editor-label" for="linkUrl">Адрес ссылки</label><input id="linkUrl" type="text" placeholder="https://… или page.html"></div>
+<p class="editor-field-note">Для сложных компонентов (таблиц, меню, юридических документов) рекомендуется ручная проверка HTML после экспорта.</p>
+<button class="editor-button editor-button--primary editor-apply" type="submit">Применить изменения</button>
+</form>
+<div class="editor-inspector-footer"><button type="button" class="editor-button editor-button--quiet" id="clearSelectionBtn">Снять выделение</button></div>
+</aside>
 </main>
-<footer class="site-footer">
-  <div class="wrap footer-bottom"><p>Тестовая административная панель · <a href="index.html">Вернуться на сайт гимназии</a></p><p>Не вводите реальные пароли и персональные данные.</p></div>
-</footer>
-</body>
-</html>
+<footer class="editor-footer"><a href="index.html">← Вернуться на сайт</a><span>GYM4 · редактор демонстрационной версии</span><span>Не вводите реальные пароли и персональные данные</span></footer>
+</body></html>
