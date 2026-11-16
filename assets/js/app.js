@@ -469,6 +469,7 @@ function initSchoolMark(){
   if(raf)cancelAnimationFrame(raf);
   raf=0;
   if(observer)observer.disconnect();
+  if(resizeObserver)resizeObserver.disconnect();
   canvas.remove();
   mark.classList.remove("brand-mark--animated");
   delete mark.dataset.markReady;
@@ -502,10 +503,10 @@ function initSchoolMark(){
  window.addEventListener("storage",function(e){if(e.key!=="gym4-season-demo")return;var theme=e.newValue==="auto"?(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):"default"):(e.newValue||"default");document.documentElement.setAttribute("data-season-theme",theme);if(e.newValue==="auto")document.documentElement.setAttribute("data-season-auto","true");else document.documentElement.removeAttribute("data-season-auto");setSeasonSymbols(theme);});
  function start(){if(!raf&&visible&&!document.hidden){last=0;raf=requestAnimationFrame(frame);}}
  function stop(){if(raf){cancelAnimationFrame(raf);raf=0;}}
- var observer=("IntersectionObserver"in window)?new IntersectionObserver(function(entries){visible=entries[0].isIntersecting;if(visible)start();else stop();},{threshold:.01}):null;
+ var observer=("IntersectionObserver"in window)?new IntersectionObserver(function(entries){visible=entries[0].isIntersecting;if(visible)start();else stop();},{threshold:.01}):null,resizeObserver=null;
  try{
   if(observer)observer.observe(mark);
-  if("ResizeObserver"in window)new ResizeObserver(function(){try{resize();}catch(error){restoreStaticMark();}}).observe(mark);
+  if("ResizeObserver"in window){resizeObserver=new ResizeObserver(function(){try{resize();}catch(error){restoreStaticMark();}});resizeObserver.observe(mark);}
   else window.addEventListener("resize",function(){try{resize();}catch(error){restoreStaticMark();}});
   document.addEventListener("visibilitychange",function(){if(document.hidden)stop();else start();});
   resize();start();mark.dataset.markReady="true";
