@@ -13,7 +13,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 (function () {
   "use strict";
 
-  var pages = ["index.html", "news.html", "parents.html", "students.html", "priem.html", "contacts.html", "sveden.html"];
+  var pages = ["index.html", "news.html", "parents.html", "students.html", "priem.html", "contacts.html", "sveden.html", "school-life.html"];
   var entries = [
     { title: "Главная", description: "О гимназии, история, направления и новости.", href: "index.html", keywords: "школа гимназия" },
     { title: "Новости и объявления", description: "Публикации, события, объявления и школьная жизнь.", href: "news.html", keywords: "новости мероприятия" },
