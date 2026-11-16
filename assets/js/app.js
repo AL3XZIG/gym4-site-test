@@ -275,10 +275,69 @@ function initSeasonDemo(){
   else document.documentElement.removeAttribute("data-season-auto");
   select.value=value;
   try{localStorage.setItem(key,value);}catch(e){}
+  document.dispatchEvent(new CustomEvent("gym4:seasonchange",{detail:{value:value,theme:theme}}));
  }
  apply(saved);select.addEventListener("change",function(){apply(select.value);});
 }
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
 function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var el=document.createElement(p.url?"a":"article");el.className="friend-card";if(p.url){el.href=p.url;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
 document.addEventListener("DOMContentLoaded",function(){initTheme();initPartners();initSeasonDemo();});
+})();
+
+
+/* Homepage holiday greetings and restrained seasonal decorations. */
+(function(){
+"use strict";
+var events={
+ "new-year":{eyebrow:"С НОВЫМ ГОДОМ",title:"Пусть новый год принесёт открытия!",message:"Желаем ученикам, родителям и педагогам вдохновения, добрых событий, интересных идей и новых достижений.",art:"❄️ ✨ 🎄",ornaments:["❄","✦","❅","✧"],effect:"snow"},
+ "defender":{eyebrow:"23 ФЕВРАЛЯ",title:"С Днём защитника Отечества!",message:"Желаем мужества, ответственности, уверенности в своих силах и мирного неба над головой.",art:"★ ✦ ★",ornaments:["★","✦","✧"],effect:"stars"},
+ "women":{eyebrow:"8 МАРТА",title:"С праздником весны!",message:"Пусть каждый день будет наполнен теплом, вниманием, радостью, вдохновением и прекрасными открытиями.",art:"🌷 🌸 🌷",ornaments:["✿","❀","✧","❋"],effect:"petals"},
+ "easter":{eyebrow:"СВЕТЛАЯ ПАСХА",title:"С праздником Светлой Пасхи!",message:"Пусть в каждом доме будут мир, тепло, надежда и доброта. Светлых и радостных праздничных дней!",art:"🥚 🐣 🥮",ornaments:["✿","✧","❀","✦"],effect:"easter"},
+ "victory":{eyebrow:"9 МАЯ · ДЕНЬ ПОБЕДЫ",title:"Помним. Гордимся. Благодарим.",message:"В этот памятный день мы отдаём дань уважения поколению победителей и сохраняем память о подвиге народа.",art:"✦ ★ ✦",ornaments:["★","✦","✧"],effect:"stars"},
+ "russia":{eyebrow:"12 ИЮНЯ · ДЕНЬ РОССИИ",title:"С Днём России!",message:"Желаем мира, единства, созидания и уверенности в будущем. Пусть знания и талант помогают менять мир к лучшему.",art:"🇷🇺 ✦",ornaments:["✦","✧","★"],effect:"ribbons"},
+ "knowledge":{eyebrow:"1 СЕНТЯБРЯ",title:"С Днём знаний!",message:"Пусть новый учебный год будет полон интересных задач, смелых вопросов, открытий и достижений!",art:"📚 ✏️ ✨",ornaments:["✦","✧","✎"],effect:"leaves"},
+ "teacher":{eyebrow:"5 ОКТЯБРЯ · ДЕНЬ УЧИТЕЛЯ",title:"Спасибо за знания и вдохновение!",message:"Желаем педагогам благодарных учеников, профессиональных успехов, сил и радости от каждого достижения!",art:"📚 🌿 ✨",ornaments:["✦","❧","✧"],effect:"leaves"},
+ "unity":{eyebrow:"4 НОЯБРЯ",title:"С Днём народного единства!",message:"Пусть уважение, взаимопонимание и общие добрые дела объединяют людей.",art:"✦ ★ ✦",ornaments:["✦","★","✧"],effect:"ribbons"},
+ "constitution":{eyebrow:"12 ДЕКАБРЯ · ДЕНЬ КОНСТИТУЦИИ",title:"День прав и ответственности",message:"Знание законов, уважение к правам человека и ответственность — важная основа гражданского общества.",art:"§ ⚖ ✦",ornaments:["§","✦","✧"],effect:"stars"}
+};
+function orthodoxEaster(year){
+ var a=year%4,b=year%7,c=year%19,x=(19*c+15)%30,y=(2*a+4*b-x+34)%7;
+ var month=Math.floor((x+y+114)/31),day=((x+y+114)%31)+1;
+ var result=new Date(Date.UTC(year,month-1,day));result.setUTCDate(result.getUTCDate()+(year>=2100?14:13));return result;
+}
+function choose(now){
+ var y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
+ if((m===11&&d>=20)||(m===0&&d<=10))return "new-year";
+ if(m===1&&d>=20&&d<=23)return "defender";
+ if(m===2&&d>=6&&d<=9)return "women";
+ if(m===4&&d===9)return "victory";
+ if(m===5&&d===12)return "russia";
+ if(m===8&&d>=1&&d<=3)return "knowledge";
+ if(m===9&&d===5)return "teacher";
+ if(m===10&&d===4)return "unity";
+ if(m===11&&d===12)return "constitution";
+ var easter=orthodoxEaster(y),today=new Date(Date.UTC(y,m,d));
+ var from=new Date(easter),to=new Date(easter);from.setUTCDate(from.getUTCDate()-2);to.setUTCDate(to.getUTCDate()+1);
+ if(today>=from&&today<=to)return "easter";
+ return null;
+}
+function render(value){
+ var root=document.getElementById("holidayGreeting");if(!root)return;
+ var theme=value&&value!=="auto"&&value!=="default"?value:choose(new Date());
+ var data=events[theme];
+ if(!data){root.hidden=true;document.documentElement.removeAttribute("data-holiday-effect");return;}
+ document.documentElement.setAttribute("data-holiday-effect",data.effect);
+ root.hidden=false;root.setAttribute("data-holiday",theme);
+ document.getElementById("holidayEyebrow").textContent=data.eyebrow;
+ document.getElementById("holidayTitle").textContent=data.title;
+ document.getElementById("holidayMessage").textContent=data.message;
+ document.getElementById("holidayArt").textContent=data.art;
+ var host=document.getElementById("holidayOrnaments");host.textContent="";
+ data.ornaments.forEach(function(symbol,i){var el=document.createElement("span");el.textContent=symbol;el.className="holiday-greeting__ornament holiday-greeting__ornament--"+i;host.appendChild(el);});
+}
+document.addEventListener("DOMContentLoaded",function(){
+ var select=document.getElementById("seasonDemoSelect");
+ render(select?select.value:"auto");
+ document.addEventListener("gym4:seasonchange",function(e){render(e.detail.value);});
+});
 })();
