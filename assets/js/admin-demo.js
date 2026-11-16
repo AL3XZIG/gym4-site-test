@@ -48,6 +48,25 @@
     status.textContent = message;
   }
 
+  function safeLink(value) {
+    var v = String(value || "").trim();
+    if (!v) return true;
+    if (v.charAt(0) === "#") return /^#[A-Za-z0-9_-]+$/.test(v);
+    try {
+      var parsed = new URL(v, window.location.href);
+      return ["http:", "https:", "mailto:", "tel:"].indexOf(parsed.protocol) >= 0;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function safeImage(value) {
+    var v = String(value || "").trim();
+    if (!v) return true;
+    if (/^https:\/\//i.test(v)) return true;
+    return /^\/?assets\/[A-Za-z0-9_./-]+$/.test(v) && !v.split("/").some(function (part) { return part === ".."; });
+  }
+
   function readDrafts() {
     try {
       return JSON.parse(localStorage.getItem(draftKey) || "{}");
@@ -242,17 +261,28 @@
     event.preventDefault();
     if (!current || !currentDoc) return;
 
+    if (current.tagName === "IMG" && !safeImage(imageUrl.value)) {
+      say("Недопустимый адрес изображения. Используйте HTTPS или файл из assets/.");
+      return;
+    }
+    if (current.tagName === "A" && !safeLink(linkUrl.value)) {
+      say("Недопустимая ссылка. Разрешены HTTP(S), mailto, tel и якоря страницы.");
+      return;
+    }
     snapshot();
     if (current.tagName === "IMG") {
-      current.setAttribute("src", imageUrl.value.trim());
+      if (imageUrl.value.trim()) current.setAttribute("src", imageUrl.value.trim());
+      else current.removeAttribute("src");
       current.setAttribute("alt", imageAlt.value.trim());
     } else {
-      // Do not replace an image nested inside a link with plain text.
       if (!(current.tagName === "A" && current.querySelector("img"))) {
         current.textContent = textField.value;
       }
     }
-    if (current.tagName === "A") current.setAttribute("href", linkUrl.value.trim());
+    if (current.tagName === "A") {
+      if (linkUrl.value.trim()) current.setAttribute("href", linkUrl.value.trim());
+      else current.removeAttribute("href");
+    }
 
     say("Изменение применено · сохраните черновик или экспортируйте HTML");
     selectElement(current);
