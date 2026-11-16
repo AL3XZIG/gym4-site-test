@@ -1253,3 +1253,145 @@ html.js .site-nav.open{display:block}
 @media(prefers-reduced-motion:reduce){
   .quick-card,.home-direction,.home-news-card{transition:none!important}
 }
+
+
+/* Seasonal atmosphere across the whole site: themed hero panels, soft page tints and holiday motifs. */
+.inner-hero{
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 82% 18%,var(--season-glow,rgba(91,154,190,.2)),transparent 34rem),
+    linear-gradient(112deg,var(--navy-deep),var(--navy) 72%,var(--blue));
+}
+.inner-hero::before{
+  content:"";position:absolute;z-index:0;pointer-events:none;right:8%;top:-7rem;width:27rem;height:27rem;
+  border:1px solid rgba(255,255,255,.11);border-radius:50%;
+  box-shadow:0 0 0 26px rgba(255,255,255,.025),0 0 0 56px rgba(255,255,255,.018),0 0 80px var(--season-glow,rgba(91,154,190,.12));
+}
+.inner-hero__grid{position:relative;z-index:1}
+.site-footer{
+  background:
+    radial-gradient(ellipse at 92% 0%,var(--season-glow,rgba(91,154,190,.14)),transparent 34rem),
+    var(--navy-deep);
+}
+.home-profile,.home-directions{
+  position:relative;isolation:isolate;
+}
+.home-profile::before,.home-directions::before{
+  content:"";position:absolute;z-index:-1;pointer-events:none;inset:0;
+  background:radial-gradient(ellipse at 92% 12%,var(--season-wash,rgba(80,130,160,.055)),transparent 42rem);
+}
+.quick-card,.home-direction,.home-news-card,.friend-card{
+  border-color:color-mix(in srgb,var(--blue) 14%,#e5e9eb);
+}
+html[data-season-theme="new-year"]{
+  --season-glow:rgba(99,207,226,.3);--season-wash:rgba(70,166,192,.11);
+}
+html[data-season-theme="defender"]{
+  --season-glow:rgba(157,178,112,.27);--season-wash:rgba(104,140,92,.10);
+}
+html[data-season-theme="women"]{
+  --season-glow:rgba(239,166,195,.32);--season-wash:rgba(205,125,158,.10);
+}
+html[data-season-theme="easter"]{
+  --season-glow:rgba(204,177,238,.32);--season-wash:rgba(163,133,205,.11);
+}
+html[data-season-theme="victory"]{
+  --season-glow:rgba(205,151,94,.28);--season-wash:rgba(176,116,83,.09);
+}
+html[data-season-theme="russia"]{
+  --season-glow:rgba(117,174,224,.3);--season-wash:rgba(89,142,194,.10);
+}
+html[data-season-theme="knowledge"]{
+  --season-glow:rgba(231,187,104,.29);--season-wash:rgba(201,160,81,.10);
+}
+html[data-season-theme="teacher"]{
+  --season-glow:rgba(208,177,112,.28);--season-wash:rgba(176,151,88,.10);
+}
+html[data-season-theme="unity"]{
+  --season-glow:rgba(135,185,137,.27);--season-wash:rgba(104,157,111,.10);
+}
+html[data-season-theme="constitution"]{
+  --season-glow:rgba(143,177,219,.29);--season-wash:rgba(108,143,187,.10);
+}
+
+/* Distinct seasonal palettes for the main and inner-page mastheads. */
+html[data-season-theme="new-year"] .home-hero,
+html[data-season-theme="new-year"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(85,190,207,.32),transparent 36%),linear-gradient(118deg,#092b3c,#15566a 60%,#24758a);
+}
+html[data-season-theme="defender"] .home-hero,
+html[data-season-theme="defender"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(143,170,104,.25),transparent 36%),linear-gradient(118deg,#142b23,#34513c 62%,#54734f);
+}
+html[data-season-theme="women"] .home-hero,
+html[data-season-theme="women"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(228,151,183,.3),transparent 36%),linear-gradient(118deg,#3d2034,#75445e 62%,#a65f7d);
+}
+html[data-season-theme="easter"] .home-hero,
+html[data-season-theme="easter"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(195,169,228,.32),transparent 36%),linear-gradient(118deg,#302447,#5b4b7b 62%,#8875a7);
+}
+html[data-season-theme="victory"] .home-hero,
+html[data-season-theme="victory"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(191,139,87,.28),transparent 36%),linear-gradient(118deg,#2c2028,#68414a 62%,#895653);
+}
+html[data-season-theme="russia"] .home-hero,
+html[data-season-theme="russia"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(112,169,220,.3),transparent 36%),linear-gradient(118deg,#142e4b,#315f8b 62%,#7a4657);
+}
+html[data-season-theme="knowledge"] .home-hero,
+html[data-season-theme="knowledge"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(225,181,100,.29),transparent 36%),linear-gradient(118deg,#0b2748,#245587 62%,#47769a);
+}
+html[data-season-theme="teacher"] .home-hero,
+html[data-season-theme="teacher"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(209,177,105,.27),transparent 36%),linear-gradient(118deg,#302d21,#6b6240 62%,#8a8055);
+}
+html[data-season-theme="unity"] .home-hero,
+html[data-season-theme="unity"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(134,179,132,.27),transparent 36%),linear-gradient(118deg,#1c3427,#476a50 62%,#638267);
+}
+html[data-season-theme="constitution"] .home-hero,
+html[data-season-theme="constitution"] .inner-hero{
+  background:radial-gradient(ellipse at 78% 22%,rgba(138,171,211,.29),transparent 36%),linear-gradient(118deg,#1e2d42,#536f94 62%,#7188a8);
+}
+
+/* Holiday-specific ornamental details, kept subtle behind readable content. */
+html[data-season-theme="new-year"] .home-hero::after,
+html[data-season-theme="new-year"] .inner-hero::before{
+  box-shadow:0 0 0 28px rgba(218,246,255,.055),0 0 0 62px rgba(218,246,255,.035),0 0 90px rgba(137,225,242,.18);
+}
+html[data-season-theme="women"] .home-hero::after,
+html[data-season-theme="women"] .inner-hero::before{
+  border-color:rgba(255,218,233,.22);box-shadow:0 0 0 28px rgba(255,218,233,.055),0 0 0 62px rgba(255,218,233,.035);
+}
+html[data-season-theme="easter"] .home-hero::after,
+html[data-season-theme="easter"] .inner-hero::before{
+  border-style:dashed;border-color:rgba(244,224,255,.23);box-shadow:0 0 0 28px rgba(244,224,255,.05),0 0 0 62px rgba(244,224,255,.03);
+}
+html[data-season-theme="victory"] .home-hero::after,
+html[data-season-theme="victory"] .inner-hero::before{
+  border-color:rgba(255,221,166,.24);box-shadow:0 0 0 28px rgba(255,221,166,.05),0 0 0 62px rgba(255,221,166,.03);
+}
+html[data-season-theme="knowledge"] .home-hero::after,
+html[data-season-theme="teacher"] .home-hero::after,
+html[data-season-theme="knowledge"] .inner-hero::before,
+html[data-season-theme="teacher"] .inner-hero::before{
+  border-color:rgba(255,222,158,.2);box-shadow:0 0 0 28px rgba(255,222,158,.045),0 0 0 62px rgba(255,222,158,.03);
+}
+html[data-season-theme="new-year"] .home-hero__bottom{border-top-color:rgba(220,246,255,.2)}
+html[data-season-theme="women"] .home-hero__bottom{border-top-color:rgba(255,224,237,.22)}
+html[data-season-theme="easter"] .home-hero__bottom{border-top-color:rgba(245,230,255,.2)}
+html[data-season-theme="victory"] .home-hero__bottom{border-top-color:rgba(255,224,180,.2)}
+@media(max-width:680px){
+  .inner-hero::before{width:17rem;height:17rem;right:-8rem;top:-6rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .inner-hero::before,.home-profile::before,.home-directions::before{animation:none!important}
+}
+html[data-scheme="bw"] .inner-hero::before,
+html[data-scheme="wb"] .inner-hero::before,
+html[data-scheme="bw"] .home-profile::before,
+html[data-scheme="wb"] .home-profile::before,
+html[data-scheme="bw"] .home-directions::before,
+html[data-scheme="wb"] .home-directions::before{display:none!important}
