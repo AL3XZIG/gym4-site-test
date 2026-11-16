@@ -1047,3 +1047,14 @@ html[data-season-theme="constitution"] .site-nav{background:linear-gradient(90de
 .season-demo-control label{color:var(--muted);font-weight:600}
 .season-demo-control select{max-width:100%;min-width:210px;padding:.48rem .72rem;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:.82rem}
 .season-demo-control select:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+
+/* Seasonal demo switch placed directly below the footer's social resources. */
+.footer-season{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-block:1.15rem 1.35rem;border-bottom:1px solid rgba(255,255,255,.14)}
+.footer-season__copy{display:grid;gap:.2rem}
+.footer-season__copy strong{color:#f4f0e9;font-size:.96rem}
+.footer-season__copy p{margin:0;color:#b9c7d1;font-size:.78rem}
+.footer-season .season-demo-control{margin:0;justify-content:flex-end}
+.footer-season .season-demo-control label{color:#d4dee6}
+.footer-season .season-demo-control select{min-width:240px;color:#f4f0e9;background:#172b3b;border-color:#536779}
+@media(max-width:650px){.footer-season{align-items:flex-start;flex-direction:column;gap:.8rem}.footer-season .season-demo-control{width:100%;justify-content:flex-start}.footer-season .season-demo-control select{width:100%;min-width:0}}
