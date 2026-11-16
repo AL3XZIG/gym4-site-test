@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;500;600;700&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/admin.css">
+<script src="assets/js/content-review.js" defer></script>
 <script src="assets/js/admin-demo.js" defer></script>
 </head>
 <body class="editor-body">
@@ -29,6 +30,7 @@
 <button type="button" class="editor-tool" id="redoBtn" disabled>↷ Повторить действие</button>
 <button type="button" class="editor-tool" id="reloadBtn">⟳ Перезагрузить страницу</button>
 </div>
+<div class="editor-review-entry"><span class="admin-demo__overline">SITE READINESS</span><p>Проверьте актуальность сведений и готовность материалов к передаче администратору.</p><button type="button" class="editor-tool" id="openReviewBtn">Проверить готовность сайта →</button></div>
 <div class="editor-help"><b>Как редактировать</b><ol><li>Включите режим выбора.</li><li>Нажмите на текст или изображение в макете.</li><li>Измените содержимое в панели справа.</li><li>Сохраните черновик или экспортируйте HTML.</li></ol></div>
 <div class="editor-sidebar-bottom"><span class="editor-dot"></span> Локальный черновик · не опубликовано</div>
 </aside>
@@ -50,5 +52,25 @@
 <div class="editor-inspector-footer"><button type="button" class="editor-button editor-button--quiet" id="clearSelectionBtn">Снять выделение</button></div>
 </aside>
 </main>
+<dialog id="contentReviewDialog" class="review-dialog" aria-labelledby="reviewTitle">
+<div class="review-dialog__shell">
+  <header class="review-dialog__head">
+    <div><span class="admin-demo__overline">SITE READINESS · LOCAL CHECKLIST</span><h2 id="reviewTitle">Контроль готовности сайта</h2><p>Отмечайте пункты после проверки источников и согласования с администрацией.</p></div>
+    <button type="button" class="review-close" id="closeReviewBtn" aria-label="Закрыть чек-лист">×</button>
+  </header>
+  <div class="review-progress"><progress id="reviewProgress" max="21" value="0"></progress><div><strong id="reviewProgressLabel">Подтверждено: 0 из 21</strong><span id="reviewStatusLabel">Нужна проверка</span></div></div>
+  <div class="review-filters" role="group" aria-label="Фильтр пунктов чек-листа">
+    <button type="button" data-review-filter="all" aria-pressed="true">Все</button>
+    <button type="button" data-review-filter="todo" aria-pressed="false">Не проверено</button>
+    <button type="button" data-review-filter="ok" aria-pressed="false">Подтверждено</button>
+    <button type="button" data-review-filter="fix" aria-pressed="false">Исправить</button>
+  </div>
+  <div id="reviewItemList" class="review-items"></div>
+  <footer class="review-dialog__foot">
+    <p id="reviewStorageNote">Отметки хранятся только в localStorage этого браузера. Они не отправляются на сервер.</p>
+    <div><button type="button" class="editor-button editor-button--quiet" id="resetReviewBtn">Сбросить отметки</button><button type="button" class="editor-button editor-button--primary" id="exportReviewBtn">Экспорт отчёта .md ↓</button></div>
+  </footer>
+</div>
+</dialog>
 <footer class="editor-footer"><a href="index.html">← Вернуться на сайт</a><span>GYM4 · редактор демонстрационной версии</span><span>Не вводите реальные пароли и персональные данные</span></footer>
 </body></html>
