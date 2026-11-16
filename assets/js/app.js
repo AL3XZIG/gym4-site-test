@@ -263,7 +263,21 @@ if(!root.hasAttribute("data-season-theme")){root.setAttribute("data-season-theme
 /* Theme preference and partner directory */
 (function(){
 "use strict";
+function initSeasonDemo(){
+ var select=document.getElementById("seasonDemoSelect");if(!select)return;
+ var key="gym4-season-demo",saved="auto";
+ try{saved=localStorage.getItem(key)||"auto";}catch(e){}
+ function apply(value){
+  var theme=value==="auto"?(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):"default"):value;
+  document.documentElement.setAttribute("data-season-theme",theme);
+  if(value==="auto")document.documentElement.setAttribute("data-season-auto","true");
+  else document.documentElement.removeAttribute("data-season-auto");
+  select.value=value;
+  try{localStorage.setItem(key,value);}catch(e){}
+ }
+ apply(saved);select.addEventListener("change",function(){apply(select.value);});
+}
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
 function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var el=document.createElement(p.url?"a":"article");el.className="friend-card";if(p.url){el.href=p.url;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
-document.addEventListener("DOMContentLoaded",function(){initTheme();initPartners();});
+document.addEventListener("DOMContentLoaded",function(){initTheme();initPartners();initSeasonDemo();});
 })();
