@@ -3,7 +3,7 @@
 var list=document.getElementById("newsList");if(!list)return;
 var search=document.getElementById("newsSearch"),sort=document.getElementById("newsSort"),count=document.getElementById("newsCount"),empty=document.getElementById("newsEmpty"),buttons=[].slice.call(document.querySelectorAll("[data-filter]")),active="all",posts=[];
 function safeHttpUrl(value){try{var u=new URL(value,window.location.href);return (u.protocol==="http:"||u.protocol==="https:")?u.href:""}catch(e){return ""}}
-function safeImageUrl(value){var v=String(value||"").trim();if(!v||v.startsWith("//"))return "";if(/^https:\/\//i.test(v))return safeHttpUrl(v);if(/^\/?assets\/[a-z0-9_./-]+$/i.test(v))return v;return ""}
+function safeImageUrl(value){var v=String(value||"").trim();if(!v||v.startsWith("//"))return "";if(/^https:\/\//i.test(v))return safeHttpUrl(v);if(!/^\/?assets\/[a-z0-9_./-]+$/i.test(v))return "";if(v.split("/").some(function(part){return part==="..";}))return "";return v}
 function render(){
  var q=search?search.value.trim().toLocaleLowerCase("ru"):"",ordered=posts.slice().sort(function(a,b){return sort&&sort.value==="asc"?a.date.localeCompare(b.date):b.date.localeCompare(a.date)}),shown=0;
  list.textContent="";
