@@ -12,15 +12,17 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 (function () {
   "use strict";
 
-  var pages = ["index.html", "news.html", "parents.html", "students.html", "priem.html", "contacts.html", "sveden.html", "school-life.html"];
+  var pages = ["index.html", "history.html", "news.html", "parents.html", "students.html", "priem.html", "contacts.html", "sveden.html", "school-life.html"];
   var entries = [
     { title: "Главная", description: "О гимназии, история, направления и новости.", href: "index.html", keywords: "школа гимназия" },
+    { title: "История гимназии", description: "История школы № 46 и становление гимназии № 4.", href: "history.html", keywords: "история основание 1964 1997" },
     { title: "Новости и объявления", description: "Публикации, события, объявления и школьная жизнь.", href: "news.html", keywords: "новости мероприятия" },
     { title: "Родителям", description: "Питание, безопасность, поддержка ребёнка и обращения.", href: "parents.html", keywords: "семья питание безопасность" },
     { title: "Обучающимся", description: "Учебный процесс, расписание, проекты, олимпиады и кружки.", href: "students.html", keywords: "ученики расписание олимпиады" },
     { title: "Приём в гимназию", description: "Порядок зачисления, документы и ответы на вопросы.", href: "priem.html", keywords: "поступление зачисление первый класс" },
     { title: "Контакты", description: "Адрес, телефоны, электронная почта и как добраться.", href: "contacts.html", keywords: "адрес телефон почта" },
-    { title: "Сведения об образовательной организации", description: "Документы, образование, руководство, питание и материальная база.", href: "sveden.html", keywords: "сведения документы образование устав" }
+    { title: "Сведения об образовательной организации", description: "Документы, образование, руководство, питание и материальная база.", href: "sveden.html", keywords: "сведения документы образование устав" },
+    { title: "Школьная жизнь", description: "События, достижения, школьные проекты и внеурочная деятельность.", href: "school-life.html", keywords: "календарь мероприятия достижения кружки" }
   ];
   var indexed = false;
   var searchDialog, searchInput, resultList, searchButton;
