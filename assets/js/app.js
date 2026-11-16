@@ -257,6 +257,7 @@ function chooseTheme(now){
  return "default";
 }
 var root=document.documentElement;
+window.gym4ChooseSeasonTheme=chooseTheme;
 if(!root.hasAttribute("data-season-theme")){root.setAttribute("data-season-theme",chooseTheme(new Date()));root.setAttribute("data-season-auto","true");}
 })();
 
