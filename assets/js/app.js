@@ -257,7 +257,7 @@ function chooseTheme(now){
  return "default";
 }
 var root=document.documentElement;
-if(!root.hasAttribute("data-season-theme"))root.setAttribute("data-season-theme",chooseTheme(new Date()));
+if(!root.hasAttribute("data-season-theme")){root.setAttribute("data-season-theme",chooseTheme(new Date()));root.setAttribute("data-season-auto","true");}
 })();
 
 /* Theme preference and partner directory */
