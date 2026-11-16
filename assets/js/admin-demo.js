@@ -95,8 +95,11 @@
       el.classList.remove("brand-mark--animated");
       el.removeAttribute("data-mark-ready");
     });
-    clone.querySelectorAll(".motion-reveal,.is-visible,.is-active").forEach(function (el) {
-      el.classList.remove("motion-reveal","is-visible","is-active");
+    clone.querySelectorAll(".motion-reveal,.is-visible").forEach(function (el) {
+      el.classList.remove("motion-reveal","is-visible");
+    });
+    clone.querySelectorAll(".aside-panel a.is-active").forEach(function (el) {
+      el.classList.remove("is-active");
     });
     ["data-theme","data-season-theme","data-season-auto","data-holiday-effect","data-scheme","data-spacing","data-images"].forEach(function (attr) {
       clone.removeAttribute(attr);
