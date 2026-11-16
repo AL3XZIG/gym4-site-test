@@ -1026,3 +1026,18 @@ html[data-season-theme="russia"] .site-nav{background:linear-gradient(90deg,#142
 html[data-season-theme="teacher"] .site-nav{background:linear-gradient(90deg,#302d21,#6b6240)}
 html[data-season-theme="unity"] .site-nav{background:linear-gradient(90deg,#1c3427,#476a50)}
 html[data-season-theme="constitution"] .site-nav{background:linear-gradient(90deg,#1e2d42,#536f94)}
+
+/* Историческая страница */
+.history-page{padding-block:2rem 4rem}
+.history-intro{max-width:850px;padding:1.4rem 1.6rem;margin:0 0 2rem;background:var(--blue-soft);border-left:4px solid var(--accent)}
+.history-intro p{margin:0;font-size:1.08rem}
+.history-timeline{max-width:920px;margin:0 auto 3rem}
+.history-timeline .history-item{display:grid;grid-template-columns:130px minmax(0,1fr);gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid var(--line)}
+.history-timeline .history-year{font-size:1.55rem;font-weight:800;color:var(--blue)}
+.history-timeline h2{font-size:1.25rem;margin:0 0 .5rem}
+.history-timeline p{margin:0;color:var(--muted)}
+.history-context,.history-sources{max-width:900px;margin:0 auto 2.5rem}
+.history-context h2,.history-sources h2{font-size:1.65rem}
+.history-context p{max-width:820px}
+.history-sources{padding:1.5rem;background:var(--surface);border:1px solid var(--line)}
+@media(max-width:600px){.history-timeline .history-item{grid-template-columns:1fr;gap:.35rem;padding:1.1rem 0}.history-timeline .history-year{font-size:1.25rem}.history-page{padding-block:1.25rem 2.5rem}}
