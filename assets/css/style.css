@@ -1134,3 +1134,31 @@ html[data-holiday-effect="easter"] .holiday-particle{color:#f7e4b5}
 @keyframes holiday-twinkle{0%,100%{filter:brightness(.8)}50%{filter:brightness(1.6)}}
 @keyframes holiday-copy-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.holiday-greeting__text{animation:none!important}.quick-card,.block,.news-placeholder,.home-news-card,.photo-frame{transition:none!important}}
+
+
+/* Compact utility strip and universal dropdown navigation. */
+.util-bar{min-height:27px}
+.util-in{min-height:27px;padding-block:.18rem}
+.util-contacts,.util-links{font-size:.72rem}
+.site-header{z-index:40}
+.header-in{min-height:72px;padding-block:.55rem}
+.brand-mark{width:2.8rem;height:2.8rem;font-size:1.65rem}
+.brand-name{font-size:1.12rem}
+.header-tools{gap:.5rem}
+.tool-btn,.menu-btn{min-height:36px;padding:.42rem .72rem;font-size:.78rem;border-radius:5px}
+.menu-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem}
+.menu-btn:before{content:"☰";font-size:1rem;line-height:1}
+html.js .site-nav{display:none;position:absolute;top:100%;right:max(16px,calc((100vw - var(--wrap))/2));width:min(360px,calc(100vw - 32px));background:var(--navy);box-shadow:0 16px 34px #071a2b35;border:1px solid #ffffff20;border-radius:0 0 10px 10px;overflow:hidden}
+html.js .site-nav.open{display:block}
+.site-nav ul{display:flex;flex-direction:column}
+.site-nav a{padding:.72rem 1rem;font-size:.88rem;border-bottom:1px solid #ffffff18;border-left:3px solid transparent}
+.site-nav a[aria-current="page"]{border-left-color:var(--accent);border-bottom-color:#ffffff18}
+@media(max-width:680px){
+ .header-in{min-height:66px;flex-wrap:nowrap;gap:.5rem}
+ .header-tools{width:auto;flex:0 0 auto}
+ .header-tools .tool-btn{font-size:0;min-width:40px}
+ .header-tools .tool-btn:after{content:"Aa";font-size:.78rem}
+ .header-tools .menu-btn{width:42px;font-size:0;padding:.4rem}
+ html.js .site-nav{left:0;right:0;top:100%;width:100%;max-width:none;border-radius:0 0 10px 10px}
+ .util-links{gap:.6rem}
+}
