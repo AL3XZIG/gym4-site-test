@@ -1,5 +1,4 @@
-/* Гимназия № 4 — единая дизайн-система.
-   Статический сайт: без внешних шрифтов, библиотек, изображений и сборщика. */
+/* Гимназия № 4 — единая дизайн-система. */
 :root {
   --navy: #102b49;
   --navy-deep: #0a1e34;
@@ -13,7 +12,7 @@
   --accent: #c18a2d;
   --accent-soft: #f5ecd9;
   --focus: #a45b00;
-  --font: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font: "PT Sans", "Segoe UI", Arial, sans-serif;
   --wrap: 1200px;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -25,7 +24,7 @@ a:hover { color: var(--navy-deep); }
 button, input, select, textarea { font: inherit; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 h1, h2, h3, p { margin-top: 0; }
-h1, h2, h3 { color: var(--navy); line-height: 1.16; letter-spacing: -.025em; }
+h1, h2, h3 { color: var(--navy); font-family: "PT Serif", Georgia, serif; font-weight: 700; line-height: 1.18; letter-spacing: -.018em; }
 h1 { font-size: clamp(2rem, 4.5vw, 3.65rem); }
 h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
 h3 { font-size: 1.15rem; }
@@ -113,7 +112,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .home-hero__content { position: relative; z-index: 1; max-width: 760px; }
 .eyebrow { margin-bottom: .9rem; color: #e2bd78; font-size: .76rem; font-weight: 800; letter-spacing: .16em; line-height: 1.4; text-transform: uppercase; }
 .eyebrow--dark { color: var(--blue); }
-.home-hero h1 { max-width: 760px; margin-bottom: 1.2rem; color: #fff; font-size: clamp(2.7rem, 5.5vw, 5.1rem); line-height: .99; letter-spacing: -.055em; }
+.home-hero h1 { max-width: 760px; margin-bottom: 1.2rem; color: #fff; font-family: "PT Serif", Georgia, serif; font-size: clamp(2.7rem, 5.5vw, 5.1rem); font-weight: 700; line-height: 1.04; letter-spacing: -.035em; }
 .home-hero h1 span { color: #e5bd75; }
 .home-hero__lead { max-width: 660px; margin-bottom: 1.8rem; color: #d4dfeb; font-size: clamp(1rem, 1.5vw, 1.16rem); line-height: 1.7; }
 .home-hero__actions { display: flex; flex-wrap: wrap; gap: .7rem; }
@@ -1106,3 +1105,32 @@ html[data-images="hide"] .holiday-greeting__art,html[data-scheme="bw"] .holiday-
 .holiday-particle{position:absolute;top:-12%;z-index:1;color:#ffffffb8;pointer-events:none;animation:holiday-fall linear infinite;text-shadow:0 1px 8px #ffffff55}
 @keyframes holiday-fall{0%{transform:translate3d(0,-10px,0) rotate(0);opacity:0}12%{opacity:.85}88%{opacity:.8}100%{transform:translate3d(28px,260px,0) rotate(240deg);opacity:0}}
 @media(prefers-reduced-motion:reduce){.holiday-particle{display:none!important}}
+
+
+/* Typography refresh: a warmer editorial character instead of the generic geometric UI look. */
+body{font-family:"PT Sans","Segoe UI",Arial,sans-serif;letter-spacing:.002em}
+.brand-name,.footer-title,.quick-card strong,.button,.site-nav a{font-family:"PT Sans","Segoe UI",Arial,sans-serif}
+h1,h2,h3,.holiday-greeting h2{font-family:"PT Serif",Georgia,serif}
+h1,h2{letter-spacing:-.018em}
+.eyebrow,.home-hero__bottom .wrap,.footer-social__eyebrow{letter-spacing:.11em}
+.home-hero{background:radial-gradient(ellipse at 76% 28%,rgba(61,112,145,.36),transparent 38%),linear-gradient(115deg,#0b2036 0%,#153e60 62%,#1b5271 100%)}
+.home-hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(rgba(255,255,255,.5) .7px,transparent .7px);background-size:19px 19px;mask-image:linear-gradient(90deg,transparent,black)}
+.home-hero__inner{position:relative;z-index:1}
+.quick-card,.block,.news-placeholder,.home-news-card,.photo-frame{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.quick-card:hover,.block:hover,.home-news-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(16,43,73,.09)}
+.holiday-greeting{box-shadow:inset 0 1px rgba(255,255,255,.15),inset 0 -1px rgba(255,255,255,.12)}
+.holiday-greeting__text{animation:holiday-copy-in .65s ease both}
+.holiday-greeting__art{transform-origin:center}
+.holiday-greeting__ornament{user-select:none}
+html[data-season-theme="women"] .holiday-greeting{background:radial-gradient(ellipse at 78% 22%,#e6a7bd 0,transparent 40%),linear-gradient(115deg,#6d354f,#a65f7d 58%,#c17b91)}
+html[data-season-theme="women"] .holiday-greeting:before{border-color:#ffe5ed66;box-shadow:0 0 0 30px #ffe5ed14,0 0 0 64px #ffe5ed0b}
+html[data-season-theme="easter"] .holiday-greeting{background:radial-gradient(ellipse at 78% 22%,#c6a7d7 0,transparent 40%),linear-gradient(115deg,#55416f,#8875a7 60%,#aa93bd)}
+html[data-holiday-effect="stars"] .holiday-particle{color:#ffe3a1;text-shadow:0 0 12px #ffe3a1aa}
+html[data-holiday-effect="petals"] .holiday-particle{color:#ffd6e6;text-shadow:0 0 10px #ffd6e688}
+html[data-holiday-effect="leaves"] .holiday-particle{color:#e8d6a6}
+html[data-holiday-effect="ribbons"] .holiday-particle{color:#f4d8a3}
+html[data-holiday-effect="easter"] .holiday-particle{color:#f7e4b5}
+.holiday-particle--stars{animation-name:holiday-fall,holiday-twinkle;animation-duration:11s,2.8s;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite}
+@keyframes holiday-twinkle{0%,100%{filter:brightness(.8)}50%{filter:brightness(1.6)}}
+@keyframes holiday-copy-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.holiday-greeting__text{animation:none!important}.quick-card,.block,.news-placeholder,.home-news-card,.photo-frame{transition:none!important}}
