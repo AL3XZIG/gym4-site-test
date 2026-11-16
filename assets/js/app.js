@@ -230,7 +230,32 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   else init();
 })();
 
-/* Theme preference and partner directory */
+/* Seasonal event themes: automatic calendar + explicit HTML override. */
+(function(){
+"use strict";
+function orthodoxEaster(year){
+ var a=year%4,b=year%7,c=year%19,x=(19*c+15)%30,y=(2*a+4*b-x+34)%7;
+ var month=Math.floor((x+y+114)/31),day=((x+y+114)%31)+1;
+ var result=new Date(Date.UTC(year,month-1,day));
+ result.setUTCDate(result.getUTCDate()+(year>=2100?14:13));return result;
+}
+function chooseTheme(now){
+ var y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
+ if((m===11&&d>=20)||(m===0&&d<=10))return "new-year";
+ if(m===1&&d>=15&&d<=24)return "defender";
+ if(m===2&&d>=1&&d<=9)return "women";
+ var easter=orthodoxEaster(y),from=new Date(easter),to=new Date(easter);
+ from.setUTCDate(from.getUTCDate()-3);to.setUTCDate(to.getUTCDate()+1);
+ var today=new Date(Date.UTC(y,m,d));
+ if(today>=from&&today<=to)return "easter";
+ if(m===4&&d>=1&&d<=10)return "victory";
+ if((m===7&&d>=25)||(m===8&&d<=5))return "knowledge";
+ return "default";
+}
+var root=document.documentElement;
+if(!root.hasAttribute("data-season-theme"))root.setAttribute("data-season-theme",chooseTheme(new Date()));
+})();
+\n/* Theme preference and partner directory */
 (function(){
 "use strict";
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
