@@ -1,0 +1,34 @@
+{
+  "posts": [
+    {
+      "id": "news-2026-11-09-1",
+      "date": "2026-11-09",
+      "category": "events",
+      "title": "Знакомство с миром профессий: как прошла Городская неделя профориентации в нашей гимназии",
+      "excerpt": "Публикация размещена на официальном сайте гимназии. Полный материал открывается на gym4.net.",
+      "body": "",
+      "sourceUrl": "https://gym4.net/%f0%9f%93%a2znakomstvo-s-mirom-professij-kak-proshla-gorodskaya-nedelya-proforientacii-v-nashej-gimnazii/",
+      "sourceName": "gym4.net"
+    },
+    {
+      "id": "news-2026-11-09-2",
+      "date": "2026-11-09",
+      "category": "events",
+      "title": "«Мы — таланты»: яркий дебют на сцене нашей гимназии",
+      "excerpt": "Публикация размещена на официальном сайте гимназии. Полный материал открывается на gym4.net.",
+      "body": "",
+      "sourceUrl": "https://gym4.net/my-talanty-yarkij-debyut-na-scene-nashej-gimnazii/",
+      "sourceName": "gym4.net"
+    },
+    {
+      "id": "news-2026-11-09-3",
+      "date": "2026-11-09",
+      "category": "news",
+      "title": "Первое знакомство с книжным миром",
+      "excerpt": "Публикация размещена на официальном сайте гимназии. Полный материал открывается на gym4.net.",
+      "body": "",
+      "sourceUrl": "https://gym4.net/pervoe-znakomstvo-s-knizhnym-mirom/",
+      "sourceName": "gym4.net"
+    }
+  ]
+}
