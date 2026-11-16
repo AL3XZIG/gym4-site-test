@@ -44,3 +44,46 @@
 .editor-theme-panel{margin-top:1.25rem;padding:1rem;background:#f4f6f8;border:1px solid #dce3e9}
 .editor-theme-panel .editor-label{margin-top:0}
 .editor-theme-note{margin:.55rem 0 0;color:#657386;font-size:.7rem;line-height:1.5}
+
+
+/* Local content-readiness review, inspired by the audit workflow in shablon2. */
+.editor-review-entry{margin-top:1.25rem;padding:1rem;background:#f4f6f8;border:1px solid #dce3e9}
+.editor-review-entry p{margin:.45rem 0 .65rem;color:#657386;font-size:.74rem;line-height:1.5}
+.editor-review-entry .editor-tool{width:100%;padding:.7rem .55rem;background:#fff;border-color:#cbd5df;color:#102b49;font-weight:750}
+.review-dialog{width:min(980px,calc(100vw - 2rem));max-width:980px;max-height:min(88vh,900px);padding:0;border:1px solid #ccd6df;border-radius:8px;background:#f7f9fb;color:#182638;box-shadow:0 24px 80px #081d343d}
+.review-dialog::backdrop{background:#0b1b2dbb;backdrop-filter:blur(3px)}
+.review-dialog__shell{display:flex;max-height:min(88vh,900px);flex-direction:column}
+.review-dialog__head{display:flex;align-items:flex-start;justify-content:space-between;gap:1.5rem;padding:1.35rem 1.5rem;background:#102b49;color:#fff}
+.review-dialog__head h2{margin:.35rem 0;color:#fff;font-size:1.45rem}
+.review-dialog__head p{max-width:680px;margin:0;color:#cad7e3;font-size:.8rem;line-height:1.55}
+.review-dialog__head .admin-demo__overline{color:#e3c17e}
+.review-close{width:38px;height:38px;flex:0 0 auto;border:1px solid #ffffff55;background:#ffffff12;color:#fff;font-size:1.5rem;cursor:pointer}
+.review-progress{padding:.95rem 1.5rem .8rem;background:#fff;border-bottom:1px solid #dce3e9}
+.review-progress progress{display:block;width:100%;height:8px;accent-color:#9b7437}
+.review-progress>div{display:flex;justify-content:space-between;gap:1rem;margin-top:.4rem;color:#647488;font-size:.73rem}
+.review-progress strong{color:#233a52}
+.review-filters{display:flex;flex-wrap:wrap;gap:.4rem;padding:.85rem 1.5rem}
+.review-filters button{padding:.45rem .75rem;border:1px solid #cad4de;background:#fff;color:#40536a;font-size:.75rem;cursor:pointer}
+.review-filters button[aria-pressed="true"]{border-color:#102b49;background:#102b49;color:#fff}
+.review-items{overflow:auto;padding:0 1.5rem 1rem}
+.review-group-title{margin:1.1rem 0 .5rem;color:#8a672f;font-size:.68rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.review-item{display:grid;grid-template-columns:minmax(0,1fr) 175px;align-items:center;gap:1rem;padding:.85rem 1rem;background:#fff;border:1px solid #dce3e9;border-left:3px solid #c8d1da}
+.review-item+.review-item{margin-top:.45rem}
+.review-item[data-status="ok"]{border-left-color:#43816b}
+.review-item[data-status="fix"]{border-left-color:#bc654d}
+.review-item strong{display:block;color:#203750;font-size:.84rem}
+.review-item p{margin:.2rem 0 0;color:#69798b;font-size:.73rem;line-height:1.5}
+.review-item label{display:block;color:#69798b;font-size:.65rem;font-weight:750}
+.review-item select{width:100%;margin-top:.25rem;padding:.55rem .6rem;border:1px solid #cbd5df;border-radius:2px;background:#fff;color:#26384b;font:inherit;font-size:.75rem}
+.review-empty{padding:2rem;text-align:center;color:#68788c;font-size:.8rem;background:#fff;border:1px dashed #cbd5df}
+.review-dialog__foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.5rem;background:#fff;border-top:1px solid #dce3e9}
+.review-dialog__foot p{max-width:400px;margin:0;color:#718092;font-size:.68rem;line-height:1.5}
+.review-dialog__foot>div{display:flex;flex-wrap:wrap;gap:.45rem}
+@media(max-width:650px){
+ .review-dialog{width:calc(100vw - 1rem);max-height:94vh}
+ .review-dialog__shell{max-height:94vh}
+ .review-dialog__head,.review-progress,.review-items,.review-filters{padding-left:1rem;padding-right:1rem}
+ .review-item{grid-template-columns:1fr;gap:.6rem;padding:.75rem}
+ .review-dialog__foot{align-items:stretch;flex-direction:column;padding:1rem}
+ .review-dialog__foot>div{display:grid;grid-template-columns:1fr 1fr}
+}
