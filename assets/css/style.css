@@ -12,7 +12,7 @@
   --accent: #c18a2d;
   --accent-soft: #f5ecd9;
   --focus: #a45b00;
-  --font: "PT Sans", "Segoe UI", Arial, sans-serif;
+  --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --wrap: 1200px;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -24,7 +24,7 @@ a:hover { color: var(--navy-deep); }
 button, input, select, textarea { font: inherit; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 h1, h2, h3, p { margin-top: 0; }
-h1, h2, h3 { color: var(--navy); font-family: "PT Serif", Georgia, serif; font-weight: 700; line-height: 1.18; letter-spacing: -.018em; }
+h1, h2, h3 { color: var(--navy); font-family: Georgia,"Times New Roman",serif; font-weight: 700; line-height: 1.18; letter-spacing: -.018em; }
 h1 { font-size: clamp(2rem, 4.5vw, 3.65rem); }
 h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); }
 h3 { font-size: 1.15rem; }
@@ -112,7 +112,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .home-hero__content { position: relative; z-index: 1; max-width: 760px; }
 .eyebrow { margin-bottom: .9rem; color: #e2bd78; font-size: .76rem; font-weight: 800; letter-spacing: .16em; line-height: 1.4; text-transform: uppercase; }
 .eyebrow--dark { color: var(--blue); }
-.home-hero h1 { max-width: 760px; margin-bottom: 1.2rem; color: #fff; font-family: "PT Serif", Georgia, serif; font-size: clamp(2.7rem, 5.5vw, 5.1rem); font-weight: 700; line-height: 1.04; letter-spacing: -.035em; }
+.home-hero h1 { max-width: 760px; margin-bottom: 1.2rem; color: #fff; font-family: Georgia,"Times New Roman",serif; font-size: clamp(2.7rem, 5.5vw, 5.1rem); font-weight: 700; line-height: 1.04; letter-spacing: -.035em; }
 .home-hero h1 span { color: #e5bd75; }
 .home-hero__lead { max-width: 660px; margin-bottom: 1.8rem; color: #d4dfeb; font-size: clamp(1rem, 1.5vw, 1.16rem); line-height: 1.7; }
 .home-hero__actions { display: flex; flex-wrap: wrap; gap: .7rem; }
@@ -1108,9 +1108,9 @@ html[data-images="hide"] .holiday-greeting__art,html[data-scheme="bw"] .holiday-
 
 
 /* Typography refresh: a warmer editorial character instead of the generic geometric UI look. */
-body{font-family:"PT Sans","Segoe UI",Arial,sans-serif;letter-spacing:.002em}
-.brand-name,.footer-title,.quick-card strong,.button,.site-nav a{font-family:"PT Sans","Segoe UI",Arial,sans-serif}
-h1,h2,h3,.holiday-greeting h2{font-family:"PT Serif",Georgia,serif}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.002em}
+.brand-name,.footer-title,.quick-card strong,.button,.site-nav a{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+h1,h2,h3,.holiday-greeting h2{font-family:Georgia,"Times New Roman",serif}
 h1,h2{letter-spacing:-.018em}
 .eyebrow,.home-hero__bottom .wrap,.footer-social__eyebrow{letter-spacing:.11em}
 .home-hero{background:radial-gradient(ellipse at 76% 28%,rgba(61,112,145,.36),transparent 38%),linear-gradient(115deg,#0b2036 0%,#153e60 62%,#1b5271 100%)}
@@ -1434,7 +1434,7 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
 .admission-spotlight__link:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
 .admission-spotlight__eyebrow{grid-column:1/-1;color:#e8c989;font-size:.72rem;font-weight:800;letter-spacing:.14em}
 .admission-spotlight__copy{display:grid;gap:.35rem;max-width:760px}
-.admission-spotlight__copy strong{color:#fff;font-family:"PT Serif",Georgia,serif;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.15}
+.admission-spotlight__copy strong{color:#fff;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.15}
 .admission-spotlight__copy>span{color:#d5e2ed;font-size:.96rem;line-height:1.55}
 .admission-spotlight__action{display:inline-flex;align-items:center;gap:.7rem;justify-self:end;padding:.72rem 1rem;color:#102b49;background:#fff;border-radius:7px;font-size:.84rem;font-weight:800;white-space:nowrap}
 .admission-spotlight__action span{font-size:1.15rem}
@@ -1519,4 +1519,28 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .admission-spotlight__link{transition:none}
+}
+
+
+/* Compact, accessible header controls for narrow screens. */
+@media(max-width:760px){
+  .header-in{gap:.55rem}
+  .header-tools{flex:0 0 auto;gap:.35rem}
+  .header-tools .tool-btn,.header-tools .menu-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:42px;min-width:42px;height:42px;min-height:42px;
+    padding:0;border-radius:8px;font-size:0;line-height:1;
+  }
+  .header-tools #a11yToggle::before{content:"Aa";font-size:.9rem;font-weight:800}
+  .header-tools .theme-toggle::before{content:"◐";font-size:1.2rem}
+  .header-tools .theme-toggle[data-mode="dark"]::before{content:"☀";font-size:1.15rem}
+  .header-tools .search-trigger__mark{font-size:1.35rem}
+  .header-tools .search-trigger__label{display:none}
+  .header-tools .menu-btn::before{content:"☰";font-size:1.15rem}
+}
+@media(max-width:360px){
+  .brand-sub{display:none}
+  .brand-name{font-size:.88rem}
+  .header-tools{gap:.25rem}
+  .header-tools .tool-btn,.header-tools .menu-btn{width:38px;min-width:38px;height:40px;min-height:40px}
 }
