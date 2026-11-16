@@ -1162,3 +1162,7 @@ html.js .site-nav.open{display:block}
  html.js .site-nav{left:0;right:0;top:100%;width:100%;max-width:none;border-radius:0 0 10px 10px}
  .util-links{gap:.6rem}
 }
+
+
+/* Editorial news thumbnails: responsive and cropped consistently. */
+.news-entry__image{display:block;width:100%;max-height:340px;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:0 0 1rem;background:var(--blue-soft)}
