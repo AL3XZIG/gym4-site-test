@@ -85,6 +85,20 @@
     clone.querySelectorAll("[data-editor-hover]").forEach(function (el) {
       el.removeAttribute("data-editor-hover");
     });
+    clone.querySelectorAll(".brand-mark__canvas,.site-search-dialog,.reading-progress,.back-to-top,.holiday-particle,.holiday-greeting__ornament").forEach(function (el) {
+      el.remove();
+    });
+    clone.querySelectorAll(".brand-mark--animated").forEach(function (el) {
+      el.classList.remove("brand-mark--animated");
+      el.removeAttribute("data-mark-ready");
+    });
+    clone.querySelectorAll(".motion-reveal,.is-visible,.is-active").forEach(function (el) {
+      el.classList.remove("motion-reveal","is-visible","is-active");
+    });
+    ["data-theme","data-season-theme","data-season-auto","data-holiday-effect","data-scheme","data-spacing","data-images"].forEach(function (attr) {
+      clone.removeAttribute(attr);
+    });
+    clone.removeAttribute("style");
     var overlay = clone.querySelector("#editorOverlayStyle");
     if (overlay) overlay.remove();
     clone.querySelectorAll("[contenteditable]").forEach(function (el) {
