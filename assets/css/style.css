@@ -1058,3 +1058,38 @@ html[data-season-theme="constitution"] .site-nav{background:linear-gradient(90de
 .footer-season .season-demo-control label{color:#d4dee6}
 .footer-season .season-demo-control select{min-width:240px;color:#f4f0e9;background:#172b3b;border-color:#536779}
 @media(max-width:650px){.footer-season{align-items:flex-start;flex-direction:column;gap:.8rem}.footer-season .season-demo-control{width:100%;justify-content:flex-start}.footer-season .season-demo-control select{width:100%;min-width:0}}
+
+
+/* Homepage seasonal greeting panel and festive atmosphere. */
+.holiday-greeting{position:relative;isolation:isolate;overflow:hidden;padding:clamp(2.2rem,5vw,4.2rem) 0;background:linear-gradient(115deg,#102d46,#1d5270 58%,#27617a);color:#fff}
+.holiday-greeting[hidden]{display:none}
+.holiday-greeting:before,.holiday-greeting:after{content:"";position:absolute;z-index:-1;border:1px solid #ffffff20;border-radius:50%;pointer-events:none}
+.holiday-greeting:before{width:340px;height:340px;right:7%;top:-220px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff06}
+.holiday-greeting:after{width:220px;height:220px;left:-130px;bottom:-155px;box-shadow:0 0 0 24px #ffffff08,0 0 0 52px #ffffff05}
+.holiday-greeting__inner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.45fr);align-items:center;gap:2rem;min-height:190px}
+.holiday-greeting__text{position:relative;z-index:2;max-width:760px}
+.holiday-greeting__eyebrow{display:inline-block;margin-bottom:.65rem;color:#f0d69d;font-size:.72rem;font-weight:850;letter-spacing:.16em}
+.holiday-greeting h2{max-width:740px;margin:0 0 .7rem;color:#fff;font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,3.25rem);line-height:1.08}
+.holiday-greeting__text>p{max-width:650px;margin:0;color:#e1ebf1;font-size:1.02rem;line-height:1.7}
+.holiday-greeting__signature{display:inline-block;margin-top:1.1rem;color:#f0d69d;font-size:.78rem;font-weight:700;letter-spacing:.04em}
+.holiday-greeting__art{position:relative;z-index:1;display:grid;place-items:center;min-height:150px;color:#fff;font-size:clamp(2.2rem,5vw,4.2rem);letter-spacing:.08em;text-align:center;filter:drop-shadow(0 12px 18px #061c2b66);animation:holiday-float 5s ease-in-out infinite}
+.holiday-greeting__ornaments{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.holiday-greeting__ornament{position:absolute;color:#ffffffa6;font-size:1.35rem;animation:holiday-drift 7s ease-in-out infinite}
+.holiday-greeting__ornament--0{left:4%;top:18%}.holiday-greeting__ornament--1{left:47%;top:9%;animation-delay:-2s}.holiday-greeting__ornament--2{right:25%;bottom:13%;animation-delay:-4s}.holiday-greeting__ornament--3{right:4%;top:27%;animation-delay:-1s}
+html[data-season-theme="new-year"] .holiday-greeting{background:radial-gradient(ellipse at 80% 20%,#397e91 0,transparent 38%),linear-gradient(115deg,#092b3c,#15566a)}
+html[data-season-theme="easter"] .holiday-greeting{background:radial-gradient(ellipse at 80% 20%,#8b79b0 0,transparent 38%),linear-gradient(115deg,#382b56,#74639b)}
+html[data-season-theme="women"] .holiday-greeting{background:radial-gradient(ellipse at 80% 20%,#b67d9b 0,transparent 38%),linear-gradient(115deg,#542b45,#925b79)}
+html[data-season-theme="defender"] .holiday-greeting{background:radial-gradient(ellipse at 80% 20%,#718b70 0,transparent 38%),linear-gradient(115deg,#1b3429,#496a4d)}
+html[data-season-theme="victory"] .holiday-greeting{background:radial-gradient(ellipse at 80% 20%,#a47b54 0,transparent 38%),linear-gradient(115deg,#35242b,#75434a)}
+html[data-season-theme="russia"] .holiday-greeting{background:linear-gradient(115deg,#183d62,#315d89 55%,#8d3843)}
+html[data-season-theme="knowledge"] .holiday-greeting,html[data-season-theme="teacher"] .holiday-greeting{background:radial-gradient(ellipse at 80% 20%,#a28a53 0,transparent 38%),linear-gradient(115deg,#173b5b,#3d6680)}
+html[data-season-theme="unity"] .holiday-greeting{background:linear-gradient(115deg,#203d2d,#527254)}
+html[data-season-theme="constitution"] .holiday-greeting{background:linear-gradient(115deg,#26354b,#526b8a)}
+html[data-holiday-effect="snow"] .holiday-greeting__ornament{color:#e8f7ff;text-shadow:0 0 12px #d9f5ff}
+html[data-holiday-effect="petals"] .holiday-greeting__ornament{color:#ffd6e6}
+html[data-holiday-effect="easter"] .holiday-greeting__ornament{color:#f6dba0}
+@keyframes holiday-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+@keyframes holiday-drift{0%,100%{transform:translate3d(0,0,0) rotate(0);opacity:.45}50%{transform:translate3d(8px,-12px,0) rotate(18deg);opacity:1}}
+@media(max-width:650px){.holiday-greeting__inner{grid-template-columns:1fr;gap:.5rem}.holiday-greeting__art{min-height:65px;justify-content:start;font-size:2.4rem}.holiday-greeting__ornament--2{right:8%}.holiday-greeting{padding-block:2rem}}
+@media(prefers-reduced-motion:reduce){.holiday-greeting__art,.holiday-greeting__ornament{animation:none!important}}
+html[data-images="hide"] .holiday-greeting__art,html[data-scheme="bw"] .holiday-greeting__art,html[data-scheme="wb"] .holiday-greeting__art{display:none}
