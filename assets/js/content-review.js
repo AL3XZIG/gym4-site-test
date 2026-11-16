@@ -55,7 +55,7 @@ function render(){
   label.textContent="Статус проверки";label.htmlFor="review-"+item[0];select.id="review-"+item[0];select.setAttribute("aria-label","Статус: "+item[2]);
   Object.keys(LABELS).forEach(function(k){var option=document.createElement("option");option.value=k;option.textContent=LABELS[k];select.appendChild(option);});
   select.value=state[item[0]];
-  select.addEventListener("change",function(){state[item[0]]=select.value;save();card.dataset.status=select.value;updateProgress();});
+  select.addEventListener("change",function(){state[item[0]]=select.value;save();card.dataset.status=select.value;card.hidden=filter!=="all"&&filter!==select.value;updateProgress();});
   control.append(label,select);card.append(text,control);list.appendChild(card);
  });
  document.querySelectorAll("[data-review-filter]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.reviewFilter===filter));});
@@ -70,7 +70,7 @@ function exportReport(){
  ITEMS.forEach(function(x){if(group!==x[1]){group=x[1];lines.push("## "+group,"");}lines.push("- ["+(state[x[0]]==="ok"?"x":" ")+"] **"+x[2]+"** — "+LABELS[state[x[0]]]+". "+x[3]);});
  lines.push("","---","Отчёт сформирован демонстрационным инструментом в браузере. Для официальной приёмки приложите первоисточники и согласование ответственных сотрудников.");
  var blob=new Blob([lines.join("\n")],{type:"text/markdown;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
- a.href=url;a.download="gym4-content-readiness-"+new Date().toISOString().slice(0,10)+".md";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+ a.href=url;a.download="gym4-content-readiness-"+new Date().toISOString().slice(0,10)+".md";document.body.appendChild(a);a.click();a.remove();window.setTimeout(function(){URL.revokeObjectURL(url);},1000);
 }
 document.getElementById("openReviewBtn").addEventListener("click",open);
 document.getElementById("closeReviewBtn").addEventListener("click",close);
