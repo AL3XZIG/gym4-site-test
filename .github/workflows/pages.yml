@@ -28,7 +28,10 @@ jobs:
       - name: Check HTML, links and local assets
         run: python tools/check_site.py
       - name: Check JavaScript syntax
-        run: node --check assets/js/app.js
+        run: |
+          node --check assets/js/app.js
+          node --check assets/js/school-life.js
+          node --check assets/js/admin-demo.js
 
   build:
     name: Build Pages artifact
