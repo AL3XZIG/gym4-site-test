@@ -465,23 +465,33 @@ function initSchoolMark(){
  function nextShape(t){
   shapeIndex=(shapeIndex+1)%symbols.length;retarget(symbols[shapeIndex]);holdUntil=t+1750;
  }
+ function restoreStaticMark(){
+  if(raf)cancelAnimationFrame(raf);
+  raf=0;
+  if(observer)observer.disconnect();
+  canvas.remove();
+  mark.classList.remove("brand-mark--animated");
+  delete mark.dataset.markReady;
+ }
  function frame(t){
   raf=0;if(!visible||document.hidden)return;
-  if(!last)last=t;var dt=Math.min(2.2,Math.max(.35,(t-last)/16.67));last=t;
-  if(t>holdUntil)nextShape(t);
-  ctx.clearRect(0,0,w,h);
-  var accent=getComputedStyle(mark).borderBottomColor;
-  for(var i=0;i<particles.length;i++){
-   var p=particles[i];
-   p.vx+=(p.tx-p.x)*.055*dt;p.vy+=(p.ty-p.y)*.055*dt;
-   p.vx*=Math.pow(.78,dt);p.vy*=Math.pow(.78,dt);
-   p.x+=p.vx*dt;p.y+=p.vy*dt;
-   ctx.globalAlpha=.72+Math.sin(t*.002+p.phase)*.22;
-   ctx.fillStyle=i%7===0?accent:colors[i%colors.length];
-   ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
-  }
-  ctx.globalAlpha=1;
-  raf=requestAnimationFrame(frame);
+  try{
+   if(!last)last=t;var dt=Math.min(2.2,Math.max(.35,(t-last)/16.67));last=t;
+   if(t>holdUntil)nextShape(t);
+   ctx.clearRect(0,0,w,h);
+   var accent=getComputedStyle(mark).borderBottomColor;
+   for(var i=0;i<particles.length;i++){
+    var p=particles[i];
+    p.vx+=(p.tx-p.x)*.055*dt;p.vy+=(p.ty-p.y)*.055*dt;
+    p.vx*=Math.pow(.78,dt);p.vy*=Math.pow(.78,dt);
+    p.x+=p.vx*dt;p.y+=p.vy*dt;
+    ctx.globalAlpha=.72+Math.sin(t*.002+p.phase)*.22;
+    ctx.fillStyle=i%7===0?accent:colors[i%colors.length];
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+   }
+   ctx.globalAlpha=1;
+   raf=requestAnimationFrame(frame);
+  }catch(error){restoreStaticMark();}
  }
  function setSeasonSymbols(theme){
   var next=sequences[theme]||sequences["default"];
@@ -493,10 +503,13 @@ function initSchoolMark(){
  function start(){if(!raf&&visible&&!document.hidden){last=0;raf=requestAnimationFrame(frame);}}
  function stop(){if(raf){cancelAnimationFrame(raf);raf=0;}}
  var observer=("IntersectionObserver"in window)?new IntersectionObserver(function(entries){visible=entries[0].isIntersecting;if(visible)start();else stop();},{threshold:.01}):null;
- if(observer)observer.observe(mark);
- if("ResizeObserver"in window)new ResizeObserver(resize).observe(mark);else window.addEventListener("resize",resize);
- document.addEventListener("visibilitychange",function(){if(document.hidden)stop();else start();});
- resize();start();
+ try{
+  if(observer)observer.observe(mark);
+  if("ResizeObserver"in window)new ResizeObserver(function(){try{resize();}catch(error){restoreStaticMark();}}).observe(mark);
+  else window.addEventListener("resize",function(){try{resize();}catch(error){restoreStaticMark();}});
+  document.addEventListener("visibilitychange",function(){if(document.hidden)stop();else start();});
+  resize();start();mark.dataset.markReady="true";
+ }catch(error){restoreStaticMark();}
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSchoolMark);else initSchoolMark();
 })();
