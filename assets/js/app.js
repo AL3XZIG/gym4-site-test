@@ -304,25 +304,9 @@ function orthodoxEaster(year){
  var month=Math.floor((x+y+114)/31),day=((x+y+114)%31)+1;
  var result=new Date(Date.UTC(year,month-1,day));result.setUTCDate(result.getUTCDate()+(year>=2100?14:13));return result;
 }
-function choose(now){
- var y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
- if((m===11&&d>=20)||(m===0&&d<=10))return "new-year";
- if(m===1&&d>=20&&d<=23)return "defender";
- if(m===2&&d>=6&&d<=9)return "women";
- if(m===4&&d===9)return "victory";
- if(m===5&&d===12)return "russia";
- if(m===8&&d>=1&&d<=3)return "knowledge";
- if(m===9&&d===5)return "teacher";
- if(m===10&&d===4)return "unity";
- if(m===11&&d===12)return "constitution";
- var easter=orthodoxEaster(y),today=new Date(Date.UTC(y,m,d));
- var from=new Date(easter),to=new Date(easter);from.setUTCDate(from.getUTCDate()-2);to.setUTCDate(to.getUTCDate()+1);
- if(today>=from&&today<=to)return "easter";
- return null;
-}
 function render(value){
  var root=document.getElementById("holidayGreeting");if(!root)return;
- var theme=value&&value!=="auto"&&value!=="default"?value:(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):choose(new Date()));
+ var theme=value&&value!=="auto"&&value!=="default"?value:(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):"default");
  var data=events[theme];
  if(!data){root.hidden=true;document.documentElement.removeAttribute("data-holiday-effect");return;}
  document.documentElement.setAttribute("data-holiday-effect",data.effect);
