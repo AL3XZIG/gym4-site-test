@@ -9,6 +9,7 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="assets/js/app.js" defer></script>
+<script src="assets/js/admin-demo.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Перейти к основному содержанию</a>
@@ -171,6 +172,42 @@
     <div class="wrap documents-band__inner">
       <div><p class="eyebrow">Официальная информация</p><h2>Сведения об образовательной организации</h2><p>Основные сведения, документы, образовательные программы, руководство, материально-техническое обеспечение и другие обязательные разделы.</p></div>
       <a class="button button--light" href="sveden.html">Открыть раздел <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="admin-demo wrap" aria-labelledby="admin-demo-title">
+    <div class="admin-demo__intro">
+      <p class="eyebrow eyebrow--dark">Для администрации · демонстрация</p>
+      <h2 id="admin-demo-title">Тестовая админ-панель</h2>
+      <p>Макет будущего рабочего кабинета: здесь можно проверить редактирование объявления и сохранение черновика. Изменения остаются только в этом браузере и не публикуются на сайте.</p>
+    </div>
+    <div class="admin-demo__panel">
+      <div class="admin-demo__top">
+        <div><span class="admin-demo__overline">GYMNASIUM № 4</span><strong>Управление сайтом</strong></div>
+        <span class="admin-demo__demo">DEMO · НЕ ДЛЯ ПУБЛИКАЦИИ</span>
+      </div>
+      <div class="admin-demo__body">
+        <aside class="admin-demo__side" aria-label="Разделы панели">
+          <span class="is-current">Обзор</span><span>Новости и объявления</span><span>Страницы сайта</span><span>Документы</span><span>Настройки</span>
+        </aside>
+        <div class="admin-demo__workspace">
+          <div class="admin-demo__stats" aria-label="Пример показателей панели">
+            <div><strong>7</strong><span>Разделов сайта</span></div>
+            <div><strong>1</strong><span>Тестовый черновик</span></div>
+            <div><strong>0</strong><span>Опубликовано из демо</span></div>
+          </div>
+          <form id="adminDemoForm" class="admin-demo__form">
+            <div class="admin-demo__form-head"><div><span class="admin-demo__overline">РЕДАКТОР ОБЪЯВЛЕНИЯ</span><h3>Новое объявление</h3></div><span class="admin-demo__draft" id="adminDemoStatus" role="status" aria-live="polite">Не сохранено</span></div>
+            <label for="adminDemoTitle">Заголовок</label>
+            <input id="adminDemoTitle" name="title" maxlength="100" value="Объявление для родителей" required>
+            <label for="adminDemoText">Текст объявления</label>
+            <textarea id="adminDemoText" name="body" rows="3" maxlength="1000">Здесь можно разместить важную информацию для родителей и обучающихся.</textarea>
+            <div class="admin-demo__actions"><button class="button button--primary" type="submit">Сохранить черновик</button><button class="admin-demo__reset" type="button" id="adminDemoReset">Сбросить</button></div>
+          </form>
+          <div class="admin-demo__preview"><span class="admin-demo__overline">ПРЕДПРОСМОТР</span><h3 id="adminDemoPreviewTitle">Объявление для родителей</h3><p id="adminDemoPreviewText">Здесь можно разместить важную информацию для родителей и обучающихся.</p></div>
+        </div>
+      </div>
+      <div class="admin-demo__foot"><span>Демонстрационный интерфейс · без авторизации и серверного сохранения</span><span id="adminDemoSaved">Черновик не сохранён</span></div>
     </div>
   </section>
 </main>
