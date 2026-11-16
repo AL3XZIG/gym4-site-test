@@ -280,7 +280,7 @@ function initSeasonDemo(){
  }
  apply(saved);select.addEventListener("change",function(){apply(select.value);});
 }
-function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
+function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.dataset.mode=mode;b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-label",mode==="dark"?"Включить светлую тему":"Включить тёмную тему");b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
 function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var el=document.createElement(p.url?"a":"article");el.className="friend-card";if(p.url){el.href=p.url;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
 document.addEventListener("DOMContentLoaded",function(){initTheme();initPartners();initSeasonDemo();});
 })();
@@ -353,12 +353,14 @@ function initSchoolMark(){
  if(reduce||!window.requestAnimationFrame)return;
  var canvas=document.createElement("canvas"),ctx=canvas.getContext&&canvas.getContext("2d");
  if(!ctx)return;
+ var off=document.createElement("canvas"),offCtx=null;
+ try{offCtx=off.getContext("2d",{willReadFrequently:true});}catch(error){return;}
+ if(!offCtx)return;
  canvas.className="brand-mark__canvas";
  canvas.setAttribute("aria-hidden","true");
  mark.appendChild(canvas);
  mark.classList.add("brand-mark--animated");
  mark.dataset.markReady="true";
- var off=document.createElement("canvas"),offCtx=off.getContext("2d",{willReadFrequently:true});
  var w=0,h=0,dpr=1,particles=[],targets=[],shapeIndex=0,last=0,holdUntil=0,raf=0,visible=true;
  var sequences={
   "default":["4","book","atom","globe","pi","star","cap"],
