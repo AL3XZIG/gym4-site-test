@@ -3,7 +3,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var frame = $("siteFrame");
-  var page = $("pageSelect");
+  var page = $("pageSelect");\n  var themeSelect = $("seasonThemeSelect");
   var status = $("editorStatus");
   var form = $("elementForm");
   var textField = $("elementText");
