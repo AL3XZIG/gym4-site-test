@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""Проверка статического сайта: ссылки, якоря, id, заголовки и ресурсы.
-
-Python нужен только для этого инструмента, а не для работы сайта.
-"""
+"""Проверка production-страниц статического сайта: ссылки, якоря и ресурсы."""
 import re
 import sys
 import pathlib
@@ -10,10 +7,17 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse, unquote
 
 ROOT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
-REQUIRED = [
-    "index.html", "404.html", "assets/css/style.css", "assets/js/app.js",
-    "assets/img/favicon.svg", ".nojekyll",
+PUBLISHED_HTML = [
+    "index.html", "404.html", "history.html", "sveden.html", "parents.html",
+    "students.html", "news.html", "news-editor.html", "priem.html",
+    "contacts.html", "school-life.html", "admin.html",
 ]
+REQUIRED = PUBLISHED_HTML + [
+    "assets/css/style.css", "assets/js/app.js", "assets/img/favicon.svg",
+    "assets/js/news.js", "assets/js/news-editor.js", "assets/js/school-life.js",
+    "assets/js/admin-demo.js", "assets/js/content-review.js", ".nojekyll",
+]
+ALLOWED_FONT_HOSTS = {"fonts.googleapis.com", "fonts.gstatic.com"}
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F]")
 errors = []
 
@@ -69,12 +73,18 @@ for required_file in REQUIRED:
     if not (ROOT / required_file).is_file():
         err(required_file, "отсутствует обязательный файл")
 
-# Workflow обязателен в корне репозитория, но не входит в опубликованный _site.
 if (ROOT / "tools" / "check_site.py").is_file():
     if not (ROOT / ".github" / "workflows" / "pages.yml").is_file():
         err(".github/workflows/pages.yml", "нет workflow проверки и публикации")
 
-pages = sorted(ROOT.glob("*.html"))
+actual_root_html = {p.name for p in ROOT.glob("*.html")}
+allowed_root_html = set(PUBLISHED_HTML)
+for extra in sorted(actual_root_html - allowed_root_html):
+    err(extra, "не входит в список production-страниц; перенесите файл из корня или добавьте его осознанно")
+for missing in sorted(allowed_root_html - actual_root_html):
+    err(missing, "страница из списка публикации отсутствует")
+
+pages = [ROOT / name for name in PUBLISHED_HTML if (ROOT / name).is_file()]
 parsed = {}
 for page in pages:
     source = page.read_text(encoding="utf-8")
@@ -91,7 +101,7 @@ for page in pages:
     if parser.main != 1:
         err(page.name, f"ожидался один <main>, найдено {parser.main}")
     if not parser.has_skip_link:
-        err(page.name, "нет ссылки перехода к основному содержанию")
+        err(page.name, "нет ссылки перехода к основному содержимому")
     for image_src in parser.images_without_alt:
         err(page.name, f"изображение без alt: {image_src}")
     duplicates = {item for item in parser.ids if parser.ids.count(item) > 1}
@@ -99,15 +109,18 @@ for page in pages:
         err(page.name, f"повторяющиеся id: {sorted(duplicates)}")
     if EMOJI.search(source):
         err(page.name, "найден эмодзи или декоративный символ")
-    if "fonts.googleapis" in source or re.search(
-        r'<(script|link|img)[^>]+(src|href)="https?://', source
-    ):
-        err(page.name, "внешний шрифт, скрипт или изображение")
 
 for page_name, parser in parsed.items():
     for tag, reference in parser.refs:
         url = urlparse(reference)
-        if url.scheme in ("mailto", "tel", "http", "https") or reference.startswith("//"):
+        if url.scheme == "data":
+            continue
+        if tag == "a" and (url.scheme in ("mailto", "tel", "http", "https") or reference.startswith("//")):
+            continue
+        if tag == "link" and url.hostname in ALLOWED_FONT_HOSTS:
+            continue
+        if url.scheme in ("http", "https") or reference.startswith("//"):
+            err(page_name, f"внешний ресурс запрещён для {tag}: {reference}")
             continue
         target_name = page_name if not url.path else url.path
         target = (ROOT / unquote(target_name)).resolve()
