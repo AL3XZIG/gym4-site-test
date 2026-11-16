@@ -1166,3 +1166,90 @@ html.js .site-nav.open{display:block}
 
 /* Editorial news thumbnails: responsive and cropped consistently. */
 .news-entry__image{display:block;width:100%;max-height:340px;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:0 0 1rem;background:var(--blue-soft)}
+
+
+/* Visual language inspired by shablon.html, adapted to the real Gymnasium No. 4 content.
+   We reuse its restrained aurora lighting, technical grid, editorial labels and layered cards;
+   fictional NOVA branding, profiles, statistics and interactive lab are intentionally excluded. */
+.home-hero{
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 78% 24%,rgba(45,143,190,.28),transparent 34%),
+    radial-gradient(ellipse at 8% 92%,rgba(193,138,45,.13),transparent 38%),
+    linear-gradient(118deg,#0a1e34 0%,#123b5b 58%,#174b68 100%);
+}
+.home-hero::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(220,238,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(220,238,255,.055) 1px,transparent 1px);
+  background-size:42px 42px;
+  -webkit-mask-image:radial-gradient(ellipse 85% 78% at 72% 35%,#000 8%,transparent 100%);
+  mask-image:radial-gradient(ellipse 85% 78% at 72% 35%,#000 8%,transparent 100%);
+}
+.home-hero::after{
+  content:"";position:absolute;z-index:0;pointer-events:none;width:min(48vw,620px);aspect-ratio:1;right:-12%;top:-35%;
+  border:1px solid rgba(220,238,255,.09);border-radius:50%;
+  box-shadow:0 0 0 34px rgba(220,238,255,.025),0 0 0 72px rgba(220,238,255,.02),0 0 90px rgba(45,143,190,.12);
+}
+.home-hero__inner{position:relative;z-index:1}
+.home-hero__visual{
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.018));
+  border-color:rgba(224,239,255,.28);
+  box-shadow:0 24px 70px rgba(2,14,27,.22),inset 0 1px rgba(255,255,255,.12);
+  backdrop-filter:blur(5px);
+}
+.home-hero__visual::before{opacity:.75}
+.home-hero__visual::after{opacity:.55}
+.home-hero__bottom{position:relative;z-index:1}
+.eyebrow{display:flex;align-items:center;gap:.65rem}
+.eyebrow::before{content:"";display:inline-block;width:24px;height:2px;background:linear-gradient(90deg,#e5bd75,#75c4df);border-radius:2px}
+.section-heading .eyebrow,.profile-intro .eyebrow{width:fit-content}
+.quick-card{
+  border:1px solid #e0e6eb;
+  border-top:2px solid #b6c8d6;
+  box-shadow:0 5px 18px rgba(16,43,73,.035);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background-color .22s ease;
+}
+.quick-card:hover{
+  transform:translateY(-4px);
+  border-top-color:var(--accent);
+  box-shadow:0 16px 34px rgba(16,43,73,.11);
+}
+.home-direction{
+  position:relative;overflow:hidden;
+  border:1px solid #e0e6e3;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.home-direction::after{
+  content:"";position:absolute;right:-38px;top:-42px;width:120px;height:120px;border:1px solid rgba(28,91,145,.10);border-radius:50%;
+  box-shadow:0 0 0 16px rgba(28,91,145,.025),0 0 0 34px rgba(28,91,145,.018);
+  pointer-events:none;
+}
+.home-direction:hover{transform:translateY(-3px);border-color:#c4d1db;box-shadow:0 14px 30px rgba(16,43,73,.08)}
+.home-news-card{
+  position:relative;overflow:hidden;
+  border:1px solid #e0e6e8;
+  border-top:2px solid #c3d0d8;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .18s ease;
+}
+.home-news-card:hover{transform:translateY(-3px);border-top-color:var(--accent);box-shadow:0 14px 30px rgba(16,43,73,.09)}
+.school-fact{position:relative}
+.school-fact strong{font-variant-numeric:tabular-nums;letter-spacing:-.045em}
+.school-fact::before{content:"";display:block;width:28px;height:2px;margin-bottom:1rem;background:linear-gradient(90deg,var(--accent),#d9c49d)}
+.documents-band{
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 88% 20%,rgba(255,255,255,.14),transparent 34%),linear-gradient(110deg,#17466b,#1c5b91 68%,#246b91);
+}
+.documents-band::after{
+  content:"";position:absolute;right:-5rem;top:-9rem;width:25rem;height:25rem;border:1px solid rgba(255,255,255,.15);border-radius:50%;
+  box-shadow:0 0 0 28px rgba(255,255,255,.035),0 0 0 60px rgba(255,255,255,.025);
+  pointer-events:none;
+}
+.documents-band__inner{position:relative;z-index:1}
+@media(max-width:760px){
+  .home-hero::after{width:80vw;right:-38%;top:-12%}
+  .home-hero__visual{backdrop-filter:none}
+  .quick-card:hover,.home-direction:hover,.home-news-card:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .quick-card,.home-direction,.home-news-card{transition:none!important}
+}
