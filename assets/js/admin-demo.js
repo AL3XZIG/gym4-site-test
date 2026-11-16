@@ -24,6 +24,26 @@
   var maxHistory = 40;
   var selectable = "img,a,h1,h2,h3,h4,p,li,button,figcaption,blockquote,td,th,span,strong";
 
+  function automaticTheme() {
+    var now = new Date(), y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+    if ((m === 11 && d >= 20) || (m === 0 && d <= 10)) return "new-year";
+    if (m === 1 && d >= 15 && d <= 24) return "defender";
+    if (m === 2 && d >= 1 && d <= 9) return "women";
+    if (m === 5 && d >= 10 && d <= 13) return "russia";
+    if (m === 9 && d >= 1 && d <= 7) return "teacher";
+    if (m === 10 && d >= 1 && d <= 5) return "unity";
+    if (m === 11 && d >= 10 && d <= 13) return "constitution";
+    var a=y%4,b=y%7,c=y%19,x=(19*c+15)%30,z=(2*a+4*b-x+34)%7;
+    var easter=new Date(Date.UTC(y,Math.floor((x+z+114)/31)-1,((x+z+114)%31)+1));
+    easter.setUTCDate(easter.getUTCDate()+(y>=2100?14:13));
+    var today=new Date(Date.UTC(y,m,d)),from=new Date(easter),to=new Date(easter);
+    from.setUTCDate(from.getUTCDate()-3);to.setUTCDate(to.getUTCDate()+1);
+    if(today>=from&&today<=to)return "easter";
+    if(m===4&&d>=1&&d<=10)return "victory";
+    if((m===7&&d>=25)||(m===8&&d<=5))return "knowledge";
+    return "default";
+  }
+
   function say(message) {
     status.textContent = message;
   }
