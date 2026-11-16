@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded",function(){initTheme();initPartners
 var events={
  "new-year":{eyebrow:"С НОВЫМ ГОДОМ",title:"Пусть новый год принесёт открытия!",message:"Желаем ученикам, родителям и педагогам вдохновения, добрых событий, интересных идей и новых достижений.",art:"❄️ ✨ 🎄",ornaments:["❄","✦","❅","✧"],effect:"snow"},
  "defender":{eyebrow:"23 ФЕВРАЛЯ",title:"С Днём защитника Отечества!",message:"Желаем мужества, ответственности, уверенности в своих силах и мирного неба над головой.",art:"★ ✦ ★",ornaments:["★","✦","✧"],effect:"stars"},
- "women":{eyebrow:"8 МАРТА",title:"С праздником весны!",message:"Пусть каждый день будет наполнен теплом, вниманием, радостью, вдохновением и прекрасными открытиями.",art:"🌷 🌸 🌷",ornaments:["✿","❀","✧","❋"],effect:"petals"},
+ "women":{eyebrow:"8 МАРТА · МЕЖДУНАРОДНЫЙ ЖЕНСКИЙ ДЕНЬ",title:"С Международным женским днём!",message:"Поздравляем с 8 Марта! Желаем весеннего настроения, здоровья, радости, вдохновения и исполнения добрых желаний.",art:"🌷 🌼 🌷",ornaments:["✿","❀","✧","❋"],effect:"petals"},
  "easter":{eyebrow:"СВЕТЛАЯ ПАСХА",title:"С праздником Светлой Пасхи!",message:"Пусть в каждом доме будут мир, тепло, надежда и доброта. Светлых и радостных праздничных дней!",art:"<span class=\"easter-egg easter-egg--blue\">✦</span><span class=\"easter-kulich\"><i></i></span><span class=\"easter-egg easter-egg--pink\">✿</span>",ornaments:["✿","✧","❀","✦"],effect:"easter"},
  "victory":{eyebrow:"9 МАЯ · ДЕНЬ ПОБЕДЫ",title:"Помним. Гордимся. Благодарим.",message:"В этот памятный день мы отдаём дань уважения поколению победителей и сохраняем память о подвиге народа.",art:"✦ ★ ✦",ornaments:["★","✦","✧"],effect:"stars"},
  "russia":{eyebrow:"12 ИЮНЯ · ДЕНЬ РОССИИ",title:"С Днём России!",message:"Желаем мира, единства, созидания и уверенности в будущем. Пусть знания и талант помогают менять мир к лучшему.",art:"🇷🇺 ✦",ornaments:["✦","✧","★"],effect:"ribbons"},
@@ -334,9 +334,20 @@ function render(value){
  document.getElementById("holidayArt").innerHTML=data.art;
  var host=document.getElementById("holidayOrnaments");host.textContent="";
  data.ornaments.forEach(function(symbol,i){var el=document.createElement("span");el.textContent=symbol;el.className="holiday-greeting__ornament holiday-greeting__ornament--"+i;host.appendChild(el);});
- if(data.effect==="snow"||data.effect==="petals"){
-  var particleSymbols=data.effect==="snow"?["❄","❅","✻"]:["✿","❀","✽"];
-  for(var n=0;n<18;n++){var particle=document.createElement("span");particle.className="holiday-particle";particle.textContent=particleSymbols[n%particleSymbols.length];particle.style.left=((n*37)%100)+"%";particle.style.animationDelay=(-(n%9)*.8)+"s";particle.style.animationDuration=(7+(n%6))+"s";particle.style.fontSize=(.65+(n%4)*.22)+"rem";host.appendChild(particle);}
+ var particleSets={snow:["❄","❅","✻"],petals:["✿","❀","✽"],stars:["★","✦","✧"],ribbons:["✦","❋","✧"],leaves:["❧","✿","✦"],easter:["✿","✧","❀","✦"]};
+ var particleSymbols=particleSets[data.effect]||[];
+ if(particleSymbols.length){
+  var total=data.effect==="snow"||data.effect==="petals"?22:14;
+  for(var n=0;n<total;n++){
+   var particle=document.createElement("span");
+   particle.className="holiday-particle holiday-particle--"+data.effect;
+   particle.textContent=particleSymbols[n%particleSymbols.length];
+   particle.style.left=((n*37)%100)+"%";
+   particle.style.animationDelay=(-(n%9)*.8)+"s";
+   particle.style.animationDuration=(7+(n%6))+"s";
+   particle.style.fontSize=(.65+(n%4)*.22)+"rem";
+   host.appendChild(particle);
+  }
  }
 }
 document.addEventListener("DOMContentLoaded",function(){
