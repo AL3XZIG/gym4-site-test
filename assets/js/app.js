@@ -229,3 +229,11 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
+
+/* Theme preference and partner directory */
+(function(){
+"use strict";
+function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
+function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var el=document.createElement(p.url?"a":"article");el.className="friend-card";if(p.url){el.href=p.url;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
+document.addEventListener("DOMContentLoaded",function(){initTheme();initPartners();});
+})();
