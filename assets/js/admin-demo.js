@@ -63,7 +63,10 @@
   function safeImage(value) {
     var v = String(value || "").trim();
     if (!v) return true;
-    if (/^https:\/\//i.test(v)) return true;
+    if (/^https:\/\//i.test(v)) {
+      try { var parsed = new URL(v); return parsed.protocol === "https:" && !!parsed.hostname; }
+      catch (error) { return false; }
+    }
     return /^\/?assets\/[A-Za-z0-9_./-]+$/.test(v) && !v.split("/").some(function (part) { return part === ".."; });
   }
 
