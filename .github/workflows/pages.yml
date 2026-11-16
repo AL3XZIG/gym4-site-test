@@ -30,8 +30,11 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check assets/js/app.js
+          node --check assets/js/news.js
+          node --check assets/js/news-editor.js
           node --check assets/js/school-life.js
           node --check assets/js/admin-demo.js
+          node --check assets/js/content-review.js
 
   build:
     name: Build Pages artifact
@@ -48,7 +51,10 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p _site
-          cp ./*.html _site/
+          for page in index.html 404.html history.html sveden.html parents.html students.html news.html news-editor.html priem.html contacts.html school-life.html admin.html; do
+            test -f "$page"
+            cp "$page" _site/
+          done
           cp -R assets _site/assets
           cp robots.txt _site/robots.txt
           touch _site/.nojekyll
