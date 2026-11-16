@@ -322,7 +322,7 @@ function choose(now){
 }
 function render(value){
  var root=document.getElementById("holidayGreeting");if(!root)return;
- var theme=value&&value!=="auto"&&value!=="default"?value:choose(new Date());
+ var theme=value&&value!=="auto"&&value!=="default"?value:(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):choose(new Date()));
  var data=events[theme];
  if(!data){root.hidden=true;document.documentElement.removeAttribute("data-holiday-effect");return;}
  document.documentElement.setAttribute("data-holiday-effect",data.effect);
@@ -500,8 +500,8 @@ function initSchoolMark(){
   if(next.join("|")===symbols.join("|"))return;
   symbols=next;shapeIndex=0;retarget(symbols[shapeIndex]);holdUntil=0;
  }
- document.addEventListener("gym4:seasonchange",function(e){setSeasonSymbols(e.detail&&e.detail.theme);});
- window.addEventListener("storage",function(e){if(e.key==="gym4-season-demo")setSeasonSymbols(e.newValue==="auto"?(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):"default"):e.newValue);});
+ document.addEventListener("gym4:seasonchange",function(e){var detail=e.detail||{},theme=detail.theme||document.documentElement.getAttribute("data-season-theme")||"default";setSeasonSymbols(theme);});
+ window.addEventListener("storage",function(e){if(e.key!=="gym4-season-demo")return;var theme=e.newValue==="auto"?(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):"default"):(e.newValue||"default");document.documentElement.setAttribute("data-season-theme",theme);if(e.newValue==="auto")document.documentElement.setAttribute("data-season-auto","true");else document.documentElement.removeAttribute("data-season-auto");setSeasonSymbols(theme);});
  function start(){if(!raf&&visible&&!document.hidden){last=0;raf=requestAnimationFrame(frame);}}
  function stop(){if(raf){cancelAnimationFrame(raf);raf=0;}}
  var observer=("IntersectionObserver"in window)?new IntersectionObserver(function(entries){visible=entries[0].isIntersecting;if(visible)start();else stop();},{threshold:.01}):null;
