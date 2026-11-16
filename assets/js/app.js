@@ -243,7 +243,11 @@ function chooseTheme(now){
  var y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
  if((m===11&&d>=20)||(m===0&&d<=10))return "new-year";
  if(m===1&&d>=15&&d<=24)return "defender";
- if(m===2&&d>=1&&d<=9)return "women";\n if(m===5&&d>=10&&d<=13)return "russia";\n if(m===9&&d>=1&&d<=7)return "teacher";\n if(m===10&&d>=1&&d<=5)return "unity";\n if(m===11&&d>=10&&d<=13)return "constitution";
+ if(m===2&&d>=1&&d<=9)return "women";
+ if(m===5&&d>=10&&d<=13)return "russia";
+ if(m===9&&d>=1&&d<=7)return "teacher";
+ if(m===10&&d>=1&&d<=5)return "unity";
+ if(m===11&&d>=10&&d<=13)return "constitution";
  var easter=orthodoxEaster(y),from=new Date(easter),to=new Date(easter);
  from.setUTCDate(from.getUTCDate()-3);to.setUTCDate(to.getUTCDate()+1);
  var today=new Date(Date.UTC(y,m,d));
