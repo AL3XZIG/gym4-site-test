@@ -49,7 +49,7 @@ CORE_MICRODATA = {
     "numberBMVacant", "numberPVacant",
 }
 KNOWN_PENDING_MICRODATA = {
-    "languageEl", "educationRpd", "methodology", "paidSt", "purposeCab", "purposePrac", "purposeLibr", "comNetOvz", "erListOvz",
+    "languageEl", "educationRpd", "methodology", "paidSt", "purposeCab", "addressCab", "nameCab", "osnCab", "ovzCab", "purposePrac", "purposeLibr", "comNetOvz", "erListOvz",
     "finBFVolume", "finBRVolume", "finBMVolume", "finPVolume",
     "volume", "internationalDog",
 }
@@ -60,7 +60,7 @@ SECTION_ITEMPROPS = {
     "education": {"eduAccred", "eduName", "eduLevel", "eduProf", "eduForm", "learningTerm", "eduPred", "eduPrac", "eduOp", "opMain", "educationPlan", "educationShedule", "accreditationDocLink"},
     "management": {"rucovodstvo", "rucovodstvoZam", "fio", "post", "telephone", "email"},
     "teachers": {"teachingStaff"},
-    "facilities": {"purposeCab", "addressCab", "nameCab", "osnCab", "ovzCab", "purposeSport", "purposeLibr", "purposeFacil", "comNet", "erList", "ovz", "hostelInfo", "interInfo", "hostelNum", "interNum", "hostelNumOvz", "interNumOvz"},
+    "facilities": {"purposeSport", "purposeFacil", "purposeFacilOvz", "comNet", "erList", "ovz", "techOvz", "hostelInfo", "interInfo", "hostelNum", "interNum", "hostelNumOvz", "interNumOvz", "hostelInterOvz"},
     "paid": {"paidEdu", "paidDog"},
     "finance": {"finPlanDocLink"},
     "vacancies": {"vacant", "eduName", "eduLevel", "eduProf", "eduForm", "numberBFVacant", "numberBRVacant", "numberBMVacant", "numberPVacant"},
