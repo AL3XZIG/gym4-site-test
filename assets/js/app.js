@@ -256,7 +256,10 @@ function chooseTheme(now){
  if(today>=from&&today<=to)return "easter";
  if(m===4&&d>=1&&d<=10)return "victory";
  if((m===7&&d>=25)||(m===8&&d<=5))return "knowledge";
- return "default";
+ if(m===11||m===0||m===1)return "winter";
+ if(m>=2&&m<=4)return "spring";
+ if(m>=5&&m<=7)return "summer";
+ return "autumn";
 }
 var root=document.documentElement;
 window.gym4ChooseSeasonTheme=chooseTheme;
@@ -268,17 +271,46 @@ if(!root.hasAttribute("data-season-theme")){root.setAttribute("data-season-theme
 "use strict";
 function initSeasonDemo(){
  var select=document.getElementById("seasonDemoSelect");if(!select)return;
- var key="gym4-season-demo",saved="autumn";
- try{saved=localStorage.getItem(key)||"autumn";}catch(e){}
+ var key="gym4-season-demo",saved="auto";
+ try{saved=localStorage.getItem(key)||"auto";}catch(e){}
  function apply(value){
-  var theme=value||"autumn";
+  var mode=value||"auto",theme=mode==="auto"?window.gym4ChooseSeasonTheme(new Date()):mode;
+  if(!theme)theme="autumn";
   document.documentElement.setAttribute("data-season-theme",theme);
-  document.documentElement.removeAttribute("data-season-auto");
-  select.value=value;
-  try{localStorage.setItem(key,value);}catch(e){}
-  document.dispatchEvent(new CustomEvent("gym4:seasonchange",{detail:{value:value,theme:theme}}));
+  if(mode==="auto")document.documentElement.setAttribute("data-season-auto","true");
+  else document.documentElement.removeAttribute("data-season-auto");
+  select.value=mode;
+  try{localStorage.setItem(key,mode);}catch(e){}
+  document.dispatchEvent(new CustomEvent("gym4:seasonchange",{detail:{value:mode,theme:theme}}));
  }
- apply(saved);select.addEventListener("change",function(){apply(select.value);});
+ if(!select.querySelector('option[value="auto"]')){
+  var autoOption=document.createElement("option");autoOption.value="auto";autoOption.textContent="Автоматически по календарю";select.insertBefore(autoOption,select.firstChild);
+ }
+ if(!select.querySelector('option[value="winter"]')){
+  [["winter","Зима"],["spring","Весна"],["summer","Лето"],["autumn","Осень"]].forEach(function(pair){var o=document.createElement("option");o.value=pair[0];o.textContent=pair[1];select.appendChild(o);});
+ }
+ if(!select.querySelector('option[value="default"]')){var normal=document.createElement("option");normal.value="default";normal.textContent="Обычная тема";select.appendChild(normal);}
+ if(!select.querySelector('option[value="new-year"]'))return;
+ if(!select.querySelector('option[value="default"]'))return;
+ if(!select.querySelector('option[value="auto"]'))return;
+ if(!select.querySelector('option[value="autumn"]'))return;
+ if(!select.querySelector('option[value="winter"]'))return;
+ if(!select.querySelector('option[value="spring"]'))return;
+ if(!select.querySelector('option[value="summer"]'))return;
+ if(!select.querySelector('option[value="victory"]'))return;
+ if(!select.querySelector('option[value="teacher"]'))return;
+ if(!select.querySelector('option[value="constitution"]'))return;
+ if(!select.querySelector('option[value="unity"]'))return;
+ if(!select.querySelector('option[value="russia"]'))return;
+ if(!select.querySelector('option[value="knowledge"]'))return;
+ if(!select.querySelector('option[value="defender"]'))return;
+ if(!select.querySelector('option[value="women"]'))return;
+ if(!select.querySelector('option[value="easter"]'))return;
+ if(!select.querySelector('option[value="default"]'))return;
+ if(["auto","default","winter","spring","summer","autumn","new-year","defender","women","easter","victory","russia","knowledge","teacher","unity","constitution"].indexOf(saved)<0)saved="auto";
+ apply(saved);
+ select.addEventListener("change",function(){apply(select.value);});
+ window.setInterval(function(){if(select.value==="auto")apply("auto");},60000);
 }
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.dataset.mode=mode;b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-label",mode==="dark"?"Включить светлую тему":"Включить тёмную тему");b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
 function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var href="";try{var u=new URL(String(p.url||""));if(u.protocol==="https:"||u.protocol==="http:")href=u.href;}catch(e){}var el=document.createElement(href?"a":"article");el.className="friend-card";if(href){el.href=href;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
@@ -740,10 +772,13 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
       });
     }
   }
-  function applySeasonDecor(theme) {
+  function applySeasonDecor(value) {
+    var theme = value === "auto" ? (window.gym4ChooseSeasonTheme ? window.gym4ChooseSeasonTheme(new Date()) : "autumn") : value;
+    if (!labels[theme]) theme = "autumn";
     root.setAttribute("data-season-theme", theme);
-    root.removeAttribute("data-season-auto");
-    try { localStorage.setItem("gym4-season-demo", theme); } catch (error) {}
+    if (value === "auto") root.setAttribute("data-season-auto", "true");
+    else root.removeAttribute("data-season-auto");
+    try { localStorage.setItem("gym4-season-demo", value); } catch (error) {}
     renderSeasonGreeting(theme);
     updateButton();
   }
@@ -779,9 +814,6 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   document.addEventListener("DOMContentLoaded", function () {
     select = document.getElementById("seasonDemoSelect");
     if (!select) return;
-    Array.prototype.forEach.call(select.options, function (option) {
-      if (option.value === "auto") option.remove();
-    });
     ["winter", "spring", "summer", "autumn"].forEach(function (value) {
       if (!select.querySelector('option[value="' + value + '"]')) {
         var option = document.createElement("option");
@@ -790,16 +822,18 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
         select.insertBefore(option, select.options[1] || null);
       }
     });
-    var saved = "autumn";
-    try { saved = localStorage.getItem("gym4-season-demo") || "autumn"; } catch (error) {}
-    if (saved === "auto" || !labels[saved]) saved = "autumn";
+    var saved = "auto";
+    try { saved = localStorage.getItem("gym4-season-demo") || "auto"; } catch (error) {}
+    if (!labels[saved] && saved !== "auto") saved = "auto";
     select.value = saved;
     if (select.value !== saved) saved = "autumn";
     select.value = saved;
     applySeasonDecor(saved);
     select.addEventListener("change", function () {
       applySeasonDecor(select.value);
+      document.dispatchEvent(new CustomEvent("gym4:seasonchange", {detail:{value:select.value,theme:root.getAttribute("data-season-theme")}}));
     });
+    window.setInterval(function(){if(select.value==="auto")applySeasonDecor("auto");},60000);
 
     button = document.createElement("button");
     button.type = "button";
