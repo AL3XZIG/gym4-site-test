@@ -73,7 +73,8 @@ TIME_ZONE = "Europe/Astrakhan"
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = "/static/"
-STATIC_ROOT = "/app/staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT.mkdir(parents=True, exist_ok=True)
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_ROOT = "/app/private_media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
