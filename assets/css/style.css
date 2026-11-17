@@ -1577,3 +1577,5 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
 .election-vote-form button{margin-top:.25rem}
 .election-vote-status{margin:.85rem 0;color:#40576a;line-height:1.6}
 @media(max-width:760px){.election-candidate-grid{grid-template-columns:1fr}.election-candidate{padding:1rem}.election-demo-notice,.election-callout{padding:.95rem}}
+
+.election-materials__description{margin:.15rem 0 .65rem;color:#607487;font-size:.9rem;line-height:1.55}
