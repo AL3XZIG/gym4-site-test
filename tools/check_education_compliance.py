@@ -37,7 +37,7 @@ CORE_MICRODATA = {
     "address", "workTime", "telephone", "email", "licenseDocLink",
     "structOrgUprav", "rucovodstvo", "rucovodstvoZam",
     "eduAccred", "eduOp", "eduLevel", "eduForm", "learningTerm",
-    "accreditationDocLink",
+    "accreditationDocLink", "eduFedDoc",
 }
 MINISTRY_URLS = {"https://edu.gov.ru/", "https://minobrnauki.gov.ru/"}
 
