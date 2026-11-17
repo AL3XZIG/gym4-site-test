@@ -16,7 +16,17 @@ if ! command -v apt-get >/dev/null 2>&1; then echo "This installer currently sup
 export DEBIAN_FRONTEND=noninteractive
 if ! command -v nginx >/dev/null 2>&1 || ! command -v openssl >/dev/null 2>&1 || ! command -v python3 >/dev/null 2>&1; then apt-get update; apt-get install -y nginx openssl python3; fi
 if ! command -v docker >/dev/null 2>&1; then apt-get update; apt-get install -y docker.io; systemctl enable --now docker; fi
-if ! docker compose version >/dev/null 2>&1; then apt-get update; apt-get install -y docker-compose-v2; fi
+if ! docker compose version >/dev/null 2>&1; then
+  apt-get update
+  if apt-cache show docker-compose-v2 >/dev/null 2>&1; then
+    apt-get install -y docker-compose-v2
+  elif apt-cache show docker-compose-plugin >/dev/null 2>&1; then
+    apt-get install -y docker-compose-plugin
+  else
+    echo "Could not find a Docker Compose v2 package. Install the Docker Compose plugin and rerun." >&2
+    exit 1
+  fi
+fi
 if ! docker compose version >/dev/null 2>&1; then echo "Docker Compose v2 is required. Install the Docker Compose plugin and rerun." >&2; exit 1; fi
 systemctl enable --now docker
 if [[ -e "$SITE_LINK" ]] && { [[ ! -L "$SITE_LINK" ]] || [[ "$(readlink -f "$SITE_LINK")" != "$SITE_CONF" ]]; }; then echo "$SITE_LINK already exists and points elsewhere. Refusing to replace it." >&2; exit 1; fi
@@ -59,7 +69,10 @@ SITE_BACKUP=""; LIMITS_BACKUP=""
 if [[ -f "$SITE_CONF" ]]; then SITE_BACKUP="$SITE_CONF.bak.$(date +%Y%m%d%H%M%S)"; cp -a "$SITE_CONF" "$SITE_BACKUP"; fi
 if [[ -f "$LIMITS_CONF" ]]; then LIMITS_BACKUP="$LIMITS_CONF.bak.$(date +%Y%m%d%H%M%S)"; cp -a "$LIMITS_CONF" "$LIMITS_BACKUP"; fi
 install -m 644 "$TMP_CONF" "$SITE_CONF"; rm -f "$TMP_CONF"
-if [[ ! -e "$SITE_LINK" ]]; then ln -s "$SITE_CONF" "$SITE_LINK"; fi
+if [[ ! -e "$SITE_LINK" ]]; then
+  ln -s "$SITE_CONF" "$SITE_LINK"
+  SITE_LINK_CREATED=1
+fi
 install -m 644 "$DEPLOY_DIR/nginx/gym4-rate-limits.conf" "$LIMITS_CONF"
 if ! nginx -t; then
   echo "Nginx test failed; restoring the previous site configuration." >&2
