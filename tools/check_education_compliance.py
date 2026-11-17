@@ -49,10 +49,32 @@ CORE_MICRODATA = {
     "numberBMVacant", "numberPVacant",
 }
 KNOWN_PENDING_MICRODATA = {
-    "languageEl", "eduPred", "educationRpd", "methodology", "paidSt", "purposeCab", "purposePrac", "purposeLibr", "comNetOvz", "erListOvz",
+    "languageEl", "educationRpd", "methodology", "paidSt", "purposeCab", "purposePrac", "purposeLibr", "comNetOvz", "erListOvz",
     "finBFVolume", "finBRVolume", "finBMVolume", "finPVolume",
     "volume", "internationalDog",
 }
+SECTION_ITEMPROPS = {
+    "common": {"fullName", "shortName", "regDate", "nameUchred", "uchredLaw", "addressUchred", "telUchred", "mailUchred", "websiteUchred", "address", "workTime", "telephone", "email", "licenseDocLink"},
+    "structure": {"structOrgUprav", "name", "fio", "post", "addressStr", "email", "divisionClauseDocLink", "filInfo", "repInfo"},
+    "documents": {"ustavDocLink", "localActStud", "localActOrder", "localActCollec", "reportEduDocLink", "priemDocLink", "modeDocLink", "tekKontrolDocLink", "perevodDocLink", "vozDocLink"},
+    "education": {"eduAccred", "eduName", "eduLevel", "eduProf", "eduForm", "learningTerm", "eduPred", "eduPrac", "eduOp", "opMain", "educationPlan", "educationShedule", "accreditationDocLink"},
+    "management": {"rucovodstvo", "rucovodstvoZam", "fio", "post", "telephone", "email"},
+    "teachers": {"teachingStaff"},
+    "facilities": {"purposeCab", "addressCab", "nameCab", "osnCab", "ovzCab", "purposeSport", "purposeLibr", "purposeFacil", "comNet", "erList", "ovz", "hostelInfo", "interInfo", "hostelNum", "interNum", "hostelNumOvz", "interNumOvz"},
+    "paid": {"paidEdu", "paidDog"},
+    "finance": {"finPlanDocLink"},
+    "vacancies": {"vacant", "eduName", "eduLevel", "eduProf", "eduForm", "numberBFVacant", "numberBRVacant", "numberBMVacant", "numberPVacant"},
+    "grants": {"grant", "support"},
+    "food": {"meals", "health", "objName", "objAddress", "objOvz"},
+}
+LINK_ITEMPROPS = {
+    "licenseDocLink", "divisionClauseDocLink", "ustavDocLink", "localActStud",
+    "localActOrder", "localActCollec", "reportEduDocLink", "priemDocLink",
+    "modeDocLink", "tekKontrolDocLink", "perevodDocLink", "vozDocLink",
+    "opMain", "educationPlan", "educationShedule", "accreditationDocLink",
+    "teachingStaff", "paidEdu", "paidDog", "finPlanDocLink",
+}
+
 MINISTRY_URLS = {"https://edu.gov.ru/", "https://minobrnauki.gov.ru/"}
 
 
@@ -63,6 +85,7 @@ class AuditParser(HTMLParser):
         self.section_ids = set()
         self.section_links = set()
         self.itemprops = set()
+        self.itemprop_links = {}
         self.headings = {}
         self.current_h2 = None
         self.h2_text = []
@@ -90,6 +113,8 @@ class AuditParser(HTMLParser):
             self.links.add(attrs["href"])
         if attrs.get("itemprop"):
             self.itemprops.add(attrs["itemprop"])
+            if tag == "a" and attrs.get("href"):
+                self.itemprop_links[attrs["itemprop"]] = attrs["href"]
         if tag == "img" and "alt" not in attrs:
             self.images_without_alt += 1
         if tag == "h2":
@@ -141,6 +166,21 @@ for section_id, expected_title in REQUIRED.items():
 
 for itemprop in sorted(CORE_MICRODATA - parser.itemprops):
     errors.append(f"Нет обязательной/используемой микроразметки itemprop={itemprop}")
+
+for section_id, expected_props in SECTION_ITEMPROPS.items():
+    start = source.find(f'id="{section_id}"')
+    end = source.find("</section>", start) if start >= 0 else -1
+    section_html = source[start:end] if start >= 0 and end >= 0 else ""
+    for itemprop in sorted(expected_props):
+        if f'itemprop="{itemprop}"' not in section_html:
+            errors.append(f"#{section_id}: отсутствует itemprop={itemprop}")
+
+for itemprop in sorted(LINK_ITEMPROPS):
+    href = parser.itemprop_links.get(itemprop)
+    if not href:
+        errors.append(f"Нет ссылки с itemprop={itemprop}")
+    elif not href.lower().split("?", 1)[0].endswith((".pdf", ".doc", ".docx", ".zip", ".xlsx")):
+        errors.append(f"itemprop={itemprop}: ссылка не ведёт на файл ({href})")
 
 pending_microdata = sorted(KNOWN_PENDING_MICRODATA - parser.itemprops)
 
