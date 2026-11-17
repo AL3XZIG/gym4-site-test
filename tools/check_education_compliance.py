@@ -34,10 +34,23 @@ REQUIRED = {
 }
 CORE_MICRODATA = {
     "fullName", "shortName", "regDate", "nameUchred", "uchredLaw",
+    "addressUchred", "telUchred", "mailUchred", "websiteUchred",
     "address", "workTime", "telephone", "email", "licenseDocLink",
     "structOrgUprav", "rucovodstvo", "rucovodstvoZam",
-    "eduAccred", "eduOp", "eduLevel", "eduForm", "learningTerm",
-    "accreditationDocLink", "eduFedDoc",
+    "eduAccred", "eduOp", "eduName", "eduLevel", "eduProf",
+    "eduForm", "learningTerm", "eduPrac", "opMain",
+    "educationPlan", "educationShedule", "accreditationDocLink", "eduFedDoc",
+    "teachingStaff", "purposeFacil", "purposeSport", "ovz",
+    "hostelInfo", "interInfo", "hostelNum", "interNum",
+    "hostelNumOvz", "interNumOvz", "objName", "objAddress", "objOvz",
+    "meals", "health", "grant", "support", "paidEdu", "paidDog",
+    "finPlanDocLink", "vacant", "numberBFVacant", "numberBRVacant",
+    "numberBMVacant", "numberPVacant",
+}
+KNOWN_PENDING_MICRODATA = {
+    "languageEl", "eduPred", "educationRpd", "methodology", "paidSt",
+    "finBFVolume", "finBRVolume", "finBMVolume", "finPVolume",
+    "volume", "internationalDog",
 }
 MINISTRY_URLS = {"https://edu.gov.ru/", "https://minobrnauki.gov.ru/"}
 
@@ -126,7 +139,9 @@ for section_id, expected_title in REQUIRED.items():
         )
 
 for itemprop in sorted(CORE_MICRODATA - parser.itemprops):
-    errors.append(f"Нет базовой микроразметки itemprop={itemprop}")
+    errors.append(f"Нет обязательной/используемой микроразметки itemprop={itemprop}")
+
+pending_microdata = sorted(KNOWN_PENDING_MICRODATA - parser.itemprops)
 
 for url in sorted(MINISTRY_URLS - parser.links):
     errors.append(f"Нет обязательной ссылки на {url}")
@@ -177,9 +192,13 @@ if errors:
     raise SystemExit(1)
 
 print(
-    f"PASS: {len(REQUIRED)} подразделов, навигация, базовая микроразметка, "
+    f"PASS: {len(REQUIRED)} подразделов, навигация, расширенная микроразметка, "
     f"{len(PUBLIC_PAGES)} публичных страниц, масштаб 200% и отключение анимации."
 )
+if pending_microdata:
+    print("WARN: следующие сведения требуют отдельных подписанных документов или подтверждения:")
+    for itemprop in pending_microdata:
+        print(f"- itemprop={itemprop}")
 print(
     "NOTE: проверка не сертифицирует соответствие постановлению № 102. "
     "Нужны реальные тесты клавиатурой/экранным диктором, reflow при 200%, "
