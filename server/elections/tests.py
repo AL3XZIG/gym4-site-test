@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from .models import Candidate, Submission, UserProfile
+from .models import CampaignSettings, Candidate, Submission, UserProfile
 
 User = get_user_model()
 
@@ -55,12 +55,29 @@ class ElectionPortalTests(TestCase):
     def test_candidate_can_submit_own_draft_for_moderation(self):
         user, candidate = self.make_candidate("candidate-a", "candidate-a")
         draft = self.make_profile(candidate, Submission.Status.DRAFT)
+        CampaignSettings.objects.create(campaign_open=True)
         self.client.force_login(user)
         response = self.client.post(reverse("submission-submit", args=[draft.pk]))
         self.assertEqual(response.status_code, 302)
         draft.refresh_from_db()
         self.assertEqual(draft.status, Submission.Status.PENDING)
         self.assertIsNotNone(draft.submitted_at)
+
+    def test_candidate_cannot_open_moderation_queue(self):
+        user, candidate = self.make_candidate("candidate-a", "candidate-a")
+        self.client.force_login(user)
+        response = self.client.get(reverse("moderation-queue"))
+        self.assertEqual(response.status_code, 302)
+
+    def test_closed_campaign_does_not_accept_submission(self):
+        user, candidate = self.make_candidate("candidate-a", "candidate-a")
+        draft = self.make_profile(candidate, Submission.Status.DRAFT)
+        CampaignSettings.objects.create(campaign_open=False)
+        self.client.force_login(user)
+        response = self.client.post(reverse("submission-submit", args=[draft.pk]))
+        self.assertEqual(response.status_code, 302)
+        draft.refresh_from_db()
+        self.assertEqual(draft.status, Submission.Status.DRAFT)
 
     def test_unpublished_upload_is_not_publicly_accessible(self):
         user, candidate = self.make_candidate("candidate-a", "candidate-a")
