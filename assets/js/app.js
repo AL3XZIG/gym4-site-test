@@ -370,7 +370,7 @@ function render(value){
 document.addEventListener("DOMContentLoaded",function(){
  var select=document.getElementById("seasonDemoSelect");
  render(select?select.value:"auto");
- document.addEventListener("gym4:seasonchange",function(e){render(e.detail.value);});
+ document.addEventListener("gym4:seasonchange",function(e){render(e.detail.theme || e.detail.value);});
 });
 })();
 
@@ -622,7 +622,10 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   function render(theme) {
     activeTheme = theme || root.getAttribute("data-season-theme") || "default";
     var cornerSets = {
-      winter:["❄","✦"], spring:["✿","❀"], summer:["☀","✧"], autumn:["🍂","❧"]
+      winter:["❄","✦"], spring:["✿","❀"], summer:["☀","✧"], autumn:["🍂","❧"],
+      "new-year":["❄","✦"], defender:["★","✦"], women:["✿","❀"], easter:["✿","◌"],
+      victory:["★","✦"], russia:["✦","✧"], knowledge:["✎","✦"], teacher:["❧","✦"],
+      unity:["✦","★"], constitution:["§","⚖"]
     };
     var cornerHost = document.querySelector(".seasonal-corners");
     if (!cornerHost && document.body && !document.body.classList.contains("editor-body")) {
