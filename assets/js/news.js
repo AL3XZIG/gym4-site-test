@@ -5,9 +5,10 @@ var search=document.getElementById("newsSearch"),sort=document.getElementById("n
 function safeHttpUrl(value){try{var u=new URL(value,window.location.href);return (u.protocol==="http:"||u.protocol==="https:")?u.href:""}catch(e){return ""}}
 function safeImageUrl(value){var v=String(value||"").trim();if(!v||v.startsWith("//"))return "";if(/^https:\/\//i.test(v))return safeHttpUrl(v);if(!/^\/?assets\/[a-z0-9_./-]+$/i.test(v)&&!/^\/media\/[a-z0-9_./-]+$/i.test(v))return "";if(v.split("/").some(function(part){return part==="..";}))return "";return v}
 function currentTheme(){return document.documentElement.getAttribute("data-season-theme")||"autumn";}
+function seasonGroup(theme){if(["new-year","defender"].indexOf(theme)>=0)return "winter";if(["women","easter","victory"].indexOf(theme)>=0)return "spring";if(["russia"].indexOf(theme)>=0)return "summer";if(["knowledge","teacher","unity","constitution"].indexOf(theme)>=0)return "autumn";return theme;}
 function render(){
  var q=search?search.value.trim().toLocaleLowerCase("ru"):"",theme=currentTheme();
- var visiblePosts=posts.filter(function(p){return !p.season||p.season===theme;});
+ var group=seasonGroup(theme),visiblePosts=posts.filter(function(p){if(p.event)return p.event===theme;return !p.season||p.season===group;});
  var ordered=visiblePosts.slice().sort(function(a,b){return sort&&sort.value==="asc"?a.date.localeCompare(b.date):b.date.localeCompare(a.date)}),shown=0;
  list.textContent="";
  ordered.forEach(function(p){
