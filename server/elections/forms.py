@@ -73,8 +73,8 @@ class SubmissionForm(forms.ModelForm):
                 self.add_error("class_label", "Укажите класс или параллель.")
             if not cleaned.get("body"):
                 self.add_error("body", "Добавьте краткое представление кандидата.")
-        if kind == Submission.Kind.MATERIAL and not cleaned.get("attachment") and not cleaned.get("body"):
-            self.add_error("attachment", "Добавьте файл или текст материала.")
+        if kind == Submission.Kind.MATERIAL and not cleaned.get("attachment") and not cleaned.get("source_url"):
+            self.add_error("attachment", "Добавьте файл или ссылку на материал.")
         if kind == Submission.Kind.NEWS and not cleaned.get("summary"):
             self.add_error("summary", "Добавьте краткий анонс.")
         return cleaned
