@@ -63,6 +63,17 @@ class ElectionPortalTests(TestCase):
         self.assertEqual(draft.status, Submission.Status.PENDING)
         self.assertIsNotNone(draft.submitted_at)
 
+    def test_organizer_role_grants_only_scoped_admin_access(self):
+        organizer = User.objects.create_user(username="organizer", password="A-long-test-password-123")
+        organizer.profile.role = UserProfile.Role.ORGANIZER
+        organizer.profile.save()
+        organizer.refresh_from_db()
+        self.assertTrue(organizer.is_staff)
+        self.assertTrue(organizer.has_perm("auth.add_user"))
+        self.assertTrue(organizer.has_perm("elections.add_candidate"))
+        self.assertFalse(organizer.is_superuser)
+        self.assertFalse(organizer.has_perm("auth.delete_user"))
+
     def test_candidate_cannot_open_moderation_queue(self):
         user, candidate = self.make_candidate("candidate-a", "candidate-a")
         self.client.force_login(user)
