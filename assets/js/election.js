@@ -34,13 +34,18 @@
     materials.forEach(function (material) {
       if (!material || !safeMaterialUrl(material.url) || !text(material.title).trim()) return;
       var item = document.createElement("li");
-      var link = make("a", "", text(material.title).trim());
-      link.href = material.url;
-      if (/^https?:/i.test(material.url)) {
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
+      if (safeMaterialUrl(material.url)) {
+        var link = make("a", "", text(material.title).trim());
+        link.href = material.url;
+        if (/^https?:/i.test(material.url)) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
+        item.appendChild(link);
+      } else {
+        item.appendChild(make("span", "", text(material.title).trim()));
       }
-      item.appendChild(link);
+      if (text(material.description).trim()) item.appendChild(make("p", "election-materials__description", text(material.description).trim()));
       list.appendChild(item);
     });
     if (list.children.length) host.appendChild(list);
@@ -94,6 +99,8 @@
       voteStatus.textContent = "Публикация материалов работает. Электронное голосование пока не запущено.";
       if (portalLink) portalLink.hidden = false;
       var campaign = data.campaign || {};
+      var heroTitle = document.querySelector(".inner-hero h1");
+      if (heroTitle && text(campaign.title).trim()) heroTitle.textContent = campaign.title;
       var aboutLead = document.querySelector("#about .section-lead");
       if (aboutLead) aboutLead.textContent = text(campaign.intro).trim() || "Информация о сроках кампании, встречах и правилах публикуется организаторами после утверждения.";
       var callout = document.querySelector(".election-callout");
