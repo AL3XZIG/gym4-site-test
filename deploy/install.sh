@@ -14,10 +14,11 @@ BACKUP_SERVICE="/etc/systemd/system/gym4-site-backup.service"
 BACKUP_TIMER="/etc/systemd/system/gym4-site-backup.timer"
 if ! command -v apt-get >/dev/null 2>&1; then echo "This installer currently supports Debian/Ubuntu (apt)." >&2; exit 1; fi
 export DEBIAN_FRONTEND=noninteractive
-if ! command -v nginx >/dev/null 2>&1 || ! command -v openssl >/dev/null 2>&1; then apt-get update; apt-get install -y nginx openssl; fi
+if ! command -v nginx >/dev/null 2>&1 || ! command -v openssl >/dev/null 2>&1 || ! command -v python3 >/dev/null 2>&1; then apt-get update; apt-get install -y nginx openssl python3; fi
 if ! command -v docker >/dev/null 2>&1; then apt-get update; apt-get install -y docker.io; systemctl enable --now docker; fi
 if ! docker compose version >/dev/null 2>&1; then apt-get update; apt-get install -y docker-compose-v2; fi
 if ! docker compose version >/dev/null 2>&1; then echo "Docker Compose v2 is required. Install the Docker Compose plugin and rerun." >&2; exit 1; fi
+systemctl enable --now docker
 if [[ -e "$SITE_LINK" ]] && { [[ ! -L "$SITE_LINK" ]] || [[ "$(readlink -f "$SITE_LINK")" != "$SITE_CONF" ]]; }; then echo "$SITE_LINK already exists and points elsewhere. Refusing to replace it." >&2; exit 1; fi
 if [[ -e "$SITE_CONF" ]] && ! grep -q "Managed by gym4-site deploy/install.sh" "$SITE_CONF"; then echo "$SITE_CONF already exists and is not managed by this installer. No changes made." >&2; exit 1; fi
 if [[ -e "$SITE_CONF" ]] && grep -q "ssl_certificate " "$SITE_CONF"; then echo "HTTPS is already configured in Nginx. Use deploy/update.sh for code updates; do not rerun the installer." >&2; exit 1; fi
