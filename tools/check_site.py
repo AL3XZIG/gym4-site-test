@@ -12,14 +12,14 @@ ROOT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
 PUBLISHED_HTML = [
     "index.html", "404.html", "history.html", "sveden.html", "parents.html",
     "students.html", "news.html", "news-editor.html", "priem.html",
-    "contacts.html", "school-life.html", "admin.html",
+    "contacts.html", "school-life.html", "election.html", "admin.html",
 ]
 REQUIRED = PUBLISHED_HTML + [
     "assets/css/style.css", "assets/js/app.js", "assets/img/favicon.svg",
     "assets/js/news.js", "assets/js/news-editor.js", "assets/js/school-life.js",
     "assets/js/admin-demo.js", "assets/js/content-review.js",
     "assets/data/news.json", "assets/data/partners.json",
-    "assets/data/school-life.json", "robots.txt", ".nojekyll",
+    "assets/data/school-life.json", "assets/data/election.json", "assets/js/election.js", "robots.txt", ".nojekyll",
 ]
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F]")
 errors = []
@@ -154,7 +154,12 @@ for page_name, parser in parsed.items():
             continue
         target_name = page_name if not url.path else unquote(url.path).lstrip("/")
         target = (ROOT / target_name).resolve()
-        if not target.exists():
+        try:
+            target.relative_to(ROOT)
+        except ValueError:
+            err(page_name, f"ссылка выходит за пределы проекта: {reference}")
+            continue
+        if not target.is_file():
             err(page_name, f"битая ссылка или ресурс: {reference}")
             continue
         if url.fragment and target.suffix == ".html":
@@ -185,11 +190,18 @@ news = load_json("assets/data/news.json")
 if not isinstance(news.get("posts"), list):
     err("assets/data/news.json", "ожидается массив posts")
 else:
+    news_ids = set()
     for index, post in enumerate(news["posts"], 1):
         label = f"assets/data/news.json: posts[{index}]"
         if not isinstance(post, dict) or not str(post.get("title", "")).strip():
             err(label, "нет заголовка")
             continue
+        post_id = str(post.get("id", "")).strip()
+        if not post_id:
+            err(label, "нет идентификатора id")
+        elif post_id in news_ids:
+            err(label, f"повторяется идентификатор id: {post_id}")
+        news_ids.add(post_id)
         try:
             dt.date.fromisoformat(post.get("date", ""))
         except (TypeError, ValueError):
@@ -221,6 +233,40 @@ for field in ("events", "bellTimes", "achievements"):
         err("assets/data/school-life.json", f"{field} должен быть массивом")
 if not isinstance(life.get("classes", {}), dict):
     err("assets/data/school-life.json", "classes должен быть объектом")
+
+election = load_json("assets/data/election.json")
+if election.get("mode") != "demo" or election.get("demoOnly") is not True:
+    err("assets/data/election.json", "режим должен оставаться demo с demoOnly=true до подключения backend")
+if not isinstance(election.get("candidates"), list):
+    err("assets/data/election.json", "ожидается массив candidates")
+else:
+    candidate_ids = set()
+    for index, candidate in enumerate(election["candidates"], 1):
+        label = f"assets/data/election.json: candidates[{index}]"
+        if not isinstance(candidate, dict) or not str(candidate.get("name", "")).strip():
+            err(label, "нет имени или названия кандидата")
+            continue
+        candidate_id = str(candidate.get("id", "")).strip()
+        if not candidate_id or candidate_id in candidate_ids:
+            err(label, "пустой или повторяющийся id кандидата")
+        candidate_ids.add(candidate_id)
+        if not isinstance(candidate.get("program", []), list):
+            err(label, "program должен быть массивом")
+        if not isinstance(candidate.get("materials", []), list):
+            err(label, "materials должен быть массивом")
+        poster = str(candidate.get("poster", "")).strip()
+        if poster and (not poster.startswith("assets/") or ".." in poster.split("/")):
+            err(label, "poster должен быть локальным путём внутри assets/")
+        for material in candidate.get("materials", []) if isinstance(candidate.get("materials", []), list) else []:
+            if not isinstance(material, dict) or not str(material.get("title", "")).strip():
+                err(label, "каждый материал должен иметь title и url")
+                continue
+            material_url = str(material.get("url", "")).strip()
+            parsed_url = urlparse(material_url)
+            if parsed_url.scheme not in ("", "http", "https") or material_url.startswith("//"):
+                err(label, f"недопустимый URL материала: {material_url}")
+            elif not parsed_url.scheme and (not material_url.startswith("assets/") or ".." in material_url.split("/")):
+                err(label, f"локальный материал должен находиться внутри assets/: {material_url}")
 
 if errors:
     print("Найдены проблемы:")
