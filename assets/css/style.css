@@ -1583,7 +1583,7 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
 
 /* 2026 presentation polish: quiet seasonal layer, cross-page transitions and clearer navigation. */
 .seasonal-atmosphere{
-  position:fixed;inset:0;z-index:12;overflow:hidden;pointer-events:none;
+  position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;
   contain:layout paint;opacity:.32;mix-blend-mode:soft-light;
 }
 .seasonal-atmosphere[hidden]{display:none!important}
@@ -1606,7 +1606,7 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
 .seasonal-toggle{
   position:fixed;z-index:90;left:1rem;bottom:1rem;min-height:42px;padding:.55rem .85rem;
   border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(17,43,62,.92);
-  color:#fff;font:600 .78rem/1.2 inherit;box-shadow:0 8px 24px rgba(10,30,45,.18);
+  color:#fff;font:600 .78rem/1.2 system-ui,sans-serif;box-shadow:0 8px 24px rgba(10,30,45,.18);
   cursor:pointer;backdrop-filter:blur(10px);transition:background .2s ease,transform .2s ease;
 }
 .seasonal-toggle:hover{background:#245878;transform:translateY(-2px)}
@@ -1620,6 +1620,8 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
 .site-nav a:focus-visible,.footer-links a:focus-visible,.crumbs a:focus-visible{
   outline:3px solid var(--focus,#c69a42);outline-offset:3px;border-radius:4px
 }
+main{position:relative;z-index:2}
+.site-footer{z-index:2}
 :target{scroll-margin-top:6.5rem}
 @view-transition{navigation:auto}
 ::view-transition-old(root){animation:gym4-page-out .16s ease both}
