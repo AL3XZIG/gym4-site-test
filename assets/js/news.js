@@ -14,6 +14,7 @@ function render(){
   var hay=(p.title+" "+p.excerpt+" "+(p.body||"")).toLocaleLowerCase("ru");
   if((active!=="all"&&p.category!==active)||(q&&hay.indexOf(q)<0))return;
   shown++;var article=document.createElement("article");article.className="news-entry"+(p.season?" news-entry--seasonal":"");article.dataset.cat=p.category;article.dataset.date=p.date;
+  if(p.demo){var demoLabel=document.createElement("span");demoLabel.className="news-entry__demo-label";demoLabel.textContent="ДЕМО-СЦЕНАРИЙ · НЕ ОФИЦИАЛЬНАЯ НОВОСТЬ";article.appendChild(demoLabel);}
   var time=document.createElement("time");time.className="news-entry__date";time.dateTime=p.date;time.textContent=new Date(p.date+"T12:00:00").toLocaleDateString("ru-RU")+" · "+({news:"Новости",events:"Мероприятие",announcements:"Объявление"}[p.category]||"Новости");
   var h=document.createElement("h3"),source=safeHttpUrl(p.sourceUrl||"");
   if(source){var a=document.createElement("a");a.textContent=p.title||"Без заголовка";a.href=source;a.target="_blank";a.rel="noopener noreferrer";h.appendChild(a);}
@@ -39,6 +40,8 @@ Promise.all([
  fetch("assets/data/news.json").then(function(r){if(!r.ok)throw Error("static news unavailable");return r.json();}).catch(function(){return {posts:[]};}),
  fetch("assets/data/seasonal-news.json").then(function(r){if(!r.ok)throw Error("seasonal news unavailable");return r.json();}).catch(function(){return {posts:[]};})
 ]).then(function(data){mergePosts(data[0],data[1],data[2]);}).catch(function(){posts=[];render();});
+window.addEventListener("storage",function(e){if(e.key==="gym4-season-demo")render();});
+document.addEventListener("gym4:seasonchange",function(){render();});
 buttons.forEach(function(b){b.addEventListener("click",function(){active=b.dataset.filter;buttons.forEach(function(x){var on=x===b;x.classList.toggle("is-active",on);x.setAttribute("aria-pressed",String(on));});render();});});
 if(search)search.addEventListener("input",render);if(sort)sort.addEventListener("change",render);
 document.addEventListener("gym4:seasonchange",render);
