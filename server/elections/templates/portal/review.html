@@ -1,0 +1,20 @@
+{% extends "portal/base.html" %}
+{% block title %}Проверка материала{% endblock %}
+{% block content %}
+<section class="panel form-panel">
+  <p class="eyebrow">МОДЕРАЦИЯ · {{ submission.get_kind_display }}</p><h1>{{ submission.title }}</h1>
+  <p class="muted">Автор: {{ submission.author.username }} · Отправлено: {{ submission.submitted_at|date:"d.m.Y H:i" }}</p>
+  {% if submission.summary %}<h2>Краткое описание</h2><p>{{ submission.summary }}</p>{% endif %}
+  {% if submission.class_label %}<p><strong>Класс:</strong> {{ submission.class_label }}</p>{% endif %}
+  {% if submission.body %}<h2>Текст</h2><div class="content-text">{{ submission.body|linebreaksbr }}</div>{% endif %}
+  {% if submission.program %}<h2>Программа</h2><ul>{% for point in submission.program %}<li>{{ point }}</li>{% endfor %}</ul>{% endif %}
+  {% if submission.attachment %}<p>Файл загружен: {{ submission.attachment.name|cut:"submissions/" }}</p>{% endif %}
+  {% if submission.source_url %}<p><a href="{{ submission.source_url }}" target="_blank" rel="noopener noreferrer">Открыть источник</a></p>{% endif %}
+  <form method="post" class="stack-form">
+    {% csrf_token %}
+    <label for="moderator_note">Комментарий автору (при возврате — укажите, что исправить)</label>
+    <textarea id="moderator_note" name="moderator_note" rows="4" maxlength="1000"></textarea>
+    <div class="button-row"><button class="button primary" name="action" value="approve" type="submit">Одобрить и опубликовать</button><button class="button danger" name="action" value="reject" type="submit">Вернуть на доработку</button><a class="button secondary" href="{% url 'moderation-queue' %}">Назад</a></div>
+  </form>
+</section>
+{% endblock %}
