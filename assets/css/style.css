@@ -1579,3 +1579,65 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
 @media(max-width:760px){.election-candidate-grid{grid-template-columns:1fr}.election-candidate{padding:1rem}.election-demo-notice,.election-callout{padding:.95rem}}
 
 .election-materials__description{margin:.15rem 0 .65rem;color:#607487;font-size:.9rem;line-height:1.55}
+
+
+/* 2026 presentation polish: quiet seasonal layer, cross-page transitions and clearer navigation. */
+.seasonal-atmosphere{
+  position:fixed;inset:0;z-index:12;overflow:hidden;pointer-events:none;
+  contain:layout paint;opacity:.32;mix-blend-mode:soft-light;
+}
+.seasonal-atmosphere[hidden]{display:none!important}
+.seasonal-particle{
+  position:absolute;top:-12vh;display:block;line-height:1;color:#e8f7ff;
+  text-shadow:0 1px 10px rgba(255,255,255,.55);user-select:none;will-change:transform,opacity;
+  animation:seasonal-fall 20s linear infinite;
+}
+.seasonal-particle--petals{color:#f5c4d5;text-shadow:0 1px 9px rgba(245,196,213,.45)}
+.seasonal-particle--stars{color:#f3d99a;text-shadow:0 1px 9px rgba(243,217,154,.45)}
+.seasonal-particle--ribbons{color:#f0d5a1}
+.seasonal-particle--leaves{color:#c8a76d}
+.seasonal-particle--easter{color:#d8c4ec}
+@keyframes seasonal-fall{
+  0%{transform:translate3d(0,-8vh,0) rotate(0deg);opacity:0}
+  12%{opacity:.75}
+  82%{opacity:.65}
+  100%{transform:translate3d(var(--season-drift,20px),112vh,0) rotate(250deg);opacity:0}
+}
+.seasonal-toggle{
+  position:fixed;z-index:90;left:1rem;bottom:1rem;min-height:42px;padding:.55rem .85rem;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(17,43,62,.92);
+  color:#fff;font:600 .78rem/1.2 inherit;box-shadow:0 8px 24px rgba(10,30,45,.18);
+  cursor:pointer;backdrop-filter:blur(10px);transition:background .2s ease,transform .2s ease;
+}
+.seasonal-toggle:hover{background:#245878;transform:translateY(-2px)}
+.seasonal-toggle:focus-visible{outline:3px solid var(--focus,#c69a42);outline-offset:3px}
+.seasonal-toggle[hidden]{display:none!important}
+.site-nav a[aria-current="page"],.site-nav a.is-current{position:relative;color:#fff;font-weight:800}
+.site-nav a[aria-current="page"]::after,.site-nav a.is-current::after{
+  content:"";position:absolute;left:.9rem;right:.9rem;bottom:.35rem;height:2px;
+  border-radius:2px;background:var(--accent,#d1ad66)
+}
+.site-nav a:focus-visible,.footer-links a:focus-visible,.crumbs a:focus-visible{
+  outline:3px solid var(--focus,#c69a42);outline-offset:3px;border-radius:4px
+}
+:target{scroll-margin-top:6.5rem}
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:gym4-page-out .16s ease both}
+::view-transition-new(root){animation:gym4-page-in .24s ease both}
+@keyframes gym4-page-out{to{opacity:.72}}
+@keyframes gym4-page-in{from{opacity:.72}to{opacity:1}}
+@media(max-width:680px){
+  .seasonal-atmosphere{opacity:.2}
+  .seasonal-particle{font-size:.72rem!important}
+  .seasonal-toggle{left:.65rem;bottom:.65rem;min-height:40px;padding:.5rem .7rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .seasonal-atmosphere{display:none!important}
+  .seasonal-particle{animation:none!important}
+  .seasonal-toggle{transition:none!important}
+  ::view-transition-old(root),::view-transition-new(root){animation:none!important}
+  html{scroll-behavior:auto}
+}
+html[data-scheme="bw"] .seasonal-atmosphere,
+html[data-scheme="wb"] .seasonal-atmosphere,
+html[data-images="hide"] .seasonal-atmosphere{display:none!important}
