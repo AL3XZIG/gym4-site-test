@@ -647,6 +647,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
     });
   }
   function init() {
+    activeTheme = root.getAttribute("data-season-theme") || "default";
     paused = readPaused();
     createLayer();
     createToggle();
