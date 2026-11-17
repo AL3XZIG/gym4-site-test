@@ -19,6 +19,13 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
+    location = /admin/login/ {
+        limit_req zone=gym4_login burst=5 nodelay;
+        proxy_pass http://127.0.0.1:8000;
+        include /etc/nginx/proxy_params;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
     location ~ ^/(portal|admin|api|media|static)/ {
         proxy_pass http://127.0.0.1:8000;
         include /etc/nginx/proxy_params;
