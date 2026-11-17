@@ -270,8 +270,7 @@ if(!root.hasAttribute("data-season-theme")){root.setAttribute("data-season-theme
 (function(){
 "use strict";
 function initSeasonDemo(){
- var select=document.getElementById("seasonDemoSelect");if(!select)return;
- var key="gym4-season-demo",saved="auto";
+ var select=document.getElementById("seasonDemoSelect"),key="gym4-season-demo",saved="auto";
  try{saved=localStorage.getItem(key)||"auto";}catch(e){}
  function apply(value){
   var mode=value||"auto",theme=mode==="auto"?window.gym4ChooseSeasonTheme(new Date()):mode;
@@ -279,38 +278,18 @@ function initSeasonDemo(){
   document.documentElement.setAttribute("data-season-theme",theme);
   if(mode==="auto")document.documentElement.setAttribute("data-season-auto","true");
   else document.documentElement.removeAttribute("data-season-auto");
-  select.value=mode;
+  if(select)select.value=mode;
   try{localStorage.setItem(key,mode);}catch(e){}
   document.dispatchEvent(new CustomEvent("gym4:seasonchange",{detail:{value:mode,theme:theme}}));
  }
- if(!select.querySelector('option[value="auto"]')){
-  var autoOption=document.createElement("option");autoOption.value="auto";autoOption.textContent="Автоматически по календарю";select.insertBefore(autoOption,select.firstChild);
+ if(select){
+  var options=[["auto","Автоматически по календарю"],["default","Обычная тема"],["winter","Зима"],["spring","Весна"],["summer","Лето"],["autumn","Осень"],["new-year","Новый год"],["defender","23 февраля"],["women","8 марта"],["easter","Пасха"],["victory","9 мая"],["russia","День России"],["knowledge","1 сентября"],["teacher","День учителя"],["unity","День народного единства"],["constitution","День Конституции"]];
+  options.forEach(function(pair){if(!select.querySelector('option[value="'+pair[0]+'"]')){var o=document.createElement("option");o.value=pair[0];o.textContent=pair[1];select.appendChild(o);}});
+  select.addEventListener("change",function(){apply(select.value);});
  }
- if(!select.querySelector('option[value="winter"]')){
-  [["winter","Зима"],["spring","Весна"],["summer","Лето"],["autumn","Осень"]].forEach(function(pair){var o=document.createElement("option");o.value=pair[0];o.textContent=pair[1];select.appendChild(o);});
- }
- if(!select.querySelector('option[value="default"]')){var normal=document.createElement("option");normal.value="default";normal.textContent="Обычная тема";select.appendChild(normal);}
- if(!select.querySelector('option[value="new-year"]'))return;
- if(!select.querySelector('option[value="default"]'))return;
- if(!select.querySelector('option[value="auto"]'))return;
- if(!select.querySelector('option[value="autumn"]'))return;
- if(!select.querySelector('option[value="winter"]'))return;
- if(!select.querySelector('option[value="spring"]'))return;
- if(!select.querySelector('option[value="summer"]'))return;
- if(!select.querySelector('option[value="victory"]'))return;
- if(!select.querySelector('option[value="teacher"]'))return;
- if(!select.querySelector('option[value="constitution"]'))return;
- if(!select.querySelector('option[value="unity"]'))return;
- if(!select.querySelector('option[value="russia"]'))return;
- if(!select.querySelector('option[value="knowledge"]'))return;
- if(!select.querySelector('option[value="defender"]'))return;
- if(!select.querySelector('option[value="women"]'))return;
- if(!select.querySelector('option[value="easter"]'))return;
- if(!select.querySelector('option[value="default"]'))return;
  if(["auto","default","winter","spring","summer","autumn","new-year","defender","women","easter","victory","russia","knowledge","teacher","unity","constitution"].indexOf(saved)<0)saved="auto";
  apply(saved);
- select.addEventListener("change",function(){apply(select.value);});
- window.setInterval(function(){if(select.value==="auto")apply("auto");},60000);
+ window.setInterval(function(){if((!select||select.value==="auto")&&saved==="auto"){apply("auto");}},60000);
 }
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.dataset.mode=mode;b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-label",mode==="dark"?"Включить светлую тему":"Включить тёмную тему");b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
 function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var href="";try{var u=new URL(String(p.url||""));if(u.protocol==="https:"||u.protocol==="http:")href=u.href;}catch(e){}var el=document.createElement(href?"a":"article");el.className="friend-card";if(href){el.href=href;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
