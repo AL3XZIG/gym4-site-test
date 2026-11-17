@@ -12,7 +12,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 (function () {
   "use strict";
 
-  var pages = ["index.html", "history.html", "news.html", "parents.html", "students.html", "priem.html", "contacts.html", "sveden.html", "school-life.html"];
+  var pages = ["index.html", "history.html", "news.html", "parents.html", "students.html", "priem.html", "contacts.html", "sveden.html", "school-life.html", "election.html"];
   var entries = [
     { title: "Главная", description: "О гимназии, история, направления и новости.", href: "index.html", keywords: "школа гимназия" },
     { title: "История гимназии", description: "История школы № 46 и становление гимназии № 4.", href: "history.html", keywords: "история основание 1964 1997" },
@@ -22,7 +22,8 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
     { title: "Приём в гимназию", description: "Порядок зачисления, документы и ответы на вопросы.", href: "priem.html", keywords: "поступление зачисление первый класс" },
     { title: "Контакты", description: "Адрес, телефоны, электронная почта и как добраться.", href: "contacts.html", keywords: "адрес телефон почта" },
     { title: "Сведения об образовательной организации", description: "Документы, образование, руководство, питание и материальная база.", href: "sveden.html", keywords: "сведения документы образование устав" },
-    { title: "Школьная жизнь", description: "События, достижения, школьные проекты и внеурочная деятельность.", href: "school-life.html", keywords: "календарь мероприятия достижения кружки" }
+    { title: "Школьная жизнь", description: "События, достижения, школьные проекты и внеурочная деятельность.", href: "school-life.html", keywords: "календарь мероприятия достижения кружки" },
+    { title: "Выборы президента гимназии", description: "Кандидаты, программы, агитационные материалы и ученическое самоуправление.", href: "election.html", keywords: "выборы президент школьное самоуправление кандидат программа голосование" }
   ];
   var indexed = false;
   var searchDialog, searchInput, resultList, searchButton;
