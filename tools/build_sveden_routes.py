@@ -57,7 +57,7 @@ def nav(current):
     for number, route in enumerate(ROUTES):
         slug, label, section_id = route
         active = ' aria-current="page"' if slug == current else ""
-        items.append('<li><a href="../' + slug + '/"' + active + '><span>' +
+        items.append('<li><a href="../' + slug + '/index.html"' + active + '><span>' +
                      str(number + 1).zfill(2) + '</span>' + labels[number] + '</a></li>')
     return ('<aside class="page-aside"><div class="aside-panel"><span class="aside-caption">СВЕДЕНИЯ ОБ ОБРАЗОВАТЕЛЬНОЙ ОРГАНИЗАЦИИ</span>'
             '<nav aria-label="Подразделы сведений"><ul>' + ''.join(items) + '</ul></nav></div>'
@@ -76,7 +76,7 @@ def page(source, slug, title, section_id):
     head = re.sub(r"<title>.*?</title>", "<title>" + title + " — Сведения об образовательной организации</title>", head, flags=re.S)
     section = extract_section(source, section_id)
     for target_slug, _, target_id in ROUTES:
-        section = section.replace('href="#' + target_id + '"', 'href="../' + target_slug + '/"')
+        section = section.replace('href="#' + target_id + '"', 'href="../' + target_slug + '/index.html"')
     hero = ('<section class="inner-hero"><div class="wrap inner-hero__grid"><div>'
             '<nav class="crumbs" aria-label="Навигационная цепочка"><a href="../../index.html">Главная</a>'
             '<span aria-hidden="true"> / </span><a href="../../sveden.html">Сведения об образовательной организации</a>'
@@ -103,7 +103,7 @@ def index_page(source):
     head = re.sub(r"<title>.*?</title>", "<title>Сведения об образовательной организации — Гимназия № 4</title>", head, flags=re.S)
     cards = []
     for i, (slug, title, _) in enumerate(ROUTES, 1):
-        cards.append('<a class="feature-card" href="' + slug + '/"><span class="feature-kicker">Подраздел ' +
+        cards.append('<a class="feature-card" href="' + slug + '/index.html"><span class="feature-kicker">Подраздел ' +
                      str(i).zfill(2) + '</span><h2>' + title + '</h2><span>Открыть сведения →</span></a>')
     hero = ('<section class="inner-hero"><div class="wrap inner-hero__grid"><div>'
             '<nav class="crumbs" aria-label="Навигационная цепочка"><a href="../index.html">Главная</a>'
