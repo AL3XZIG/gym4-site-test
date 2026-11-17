@@ -3,6 +3,7 @@
 public/
 var/
 deploy/.env
+.env
 server/private_media/
 server/staticfiles/
 server/db.sqlite3
