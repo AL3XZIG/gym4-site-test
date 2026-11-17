@@ -74,6 +74,19 @@ class ElectionPortalTests(TestCase):
         self.assertFalse(organizer.is_superuser)
         self.assertFalse(organizer.has_perm("auth.delete_user"))
 
+    def test_scoped_organizer_cannot_edit_superuser_flags(self):
+        organizer = User.objects.create_user(username="organizer", password="A-long-test-password-123")
+        organizer.profile.role = UserProfile.Role.ORGANIZER
+        organizer.profile.save()
+        target = User.objects.create_user(username="candidate-target", password="A-long-test-password-123")
+        self.client.force_login(organizer)
+        response = self.client.get(reverse("admin:auth_user_change", args=[target.pk]))
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode("utf-8")
+        self.assertNotIn('name="is_superuser"', html)
+        self.assertNotIn('name="is_staff"', html)
+        self.assertNotIn('name="user_permissions"', html)
+
     def test_candidate_cannot_open_moderation_queue(self):
         user, candidate = self.make_candidate("candidate-a", "candidate-a")
         self.client.force_login(user)
