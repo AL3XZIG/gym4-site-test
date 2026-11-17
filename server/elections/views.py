@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 from .forms import SubmissionForm
 from .models import AuditEvent, CampaignSettings, Candidate, Submission, UserProfile
@@ -35,7 +36,10 @@ def portal_login(request):
     form = AuthenticationForm(request, data=request.POST or None)
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
-        return redirect(request.GET.get("next") or "portal-home")
+        redirect_to = request.POST.get("next") or request.GET.get("next", "")
+        if not url_has_allowed_host_and_scheme(redirect_to, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+            redirect_to = "portal-home"
+        return redirect(redirect_to)
     return render(request, "portal/login.html", {"form": form})
 
 @login_required
@@ -215,7 +219,6 @@ def public_news(request):
         })
     return JsonResponse({"posts": data})
 
-@login_required
 def public_media(request, submission_id):
     submission = get_object_or_404(Submission, pk=submission_id, status=Submission.Status.PUBLISHED)
     if not submission.attachment:
