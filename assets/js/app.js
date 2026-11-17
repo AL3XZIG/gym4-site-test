@@ -590,6 +590,27 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   }
   function render(theme) {
     activeTheme = theme || root.getAttribute("data-season-theme") || "default";
+    var cornerSets = {
+      "new-year":["❄","✦"], defender:["★","✦"], women:["✿","❀"], easter:["✿","◌"],
+      victory:["★","✦"], russia:["✦","✧"], knowledge:["✎","✦"], teacher:["❧","✦"],
+      unity:["✦","★"], constitution:["§","⚖"]
+    };
+    var cornerHost = document.querySelector(".seasonal-corners");
+    if (!cornerHost && document.body && !document.body.classList.contains("editor-body")) {
+      cornerHost = document.createElement("div");
+      cornerHost.className = "seasonal-corners";
+      cornerHost.setAttribute("aria-hidden", "true");
+      cornerHost.innerHTML = "<span></span><span></span>";
+      document.body.appendChild(cornerHost);
+    }
+    if (cornerHost) {
+      var cornerSet = cornerSets[activeTheme] || null;
+      cornerHost.hidden = !cornerSet;
+      if (cornerSet) {
+        cornerHost.children[0].textContent = cornerSet[0];
+        cornerHost.children[1].textContent = cornerSet[1];
+      }
+    }
     createLayer();
     createToggle();
     if (!layer) return;
