@@ -268,6 +268,28 @@
     loadPage(page.value);
   });
 
+  if (themeSelect) {
+    var savedTheme = "auto";
+    try { savedTheme = localStorage.getItem("gym4-season-demo") || "auto"; } catch (error) {}
+    if (themeSelect.querySelector('option[value="' + savedTheme + '"]')) themeSelect.value = savedTheme;
+    var applyThemeButton = $("applySeasonThemeBtn");
+    if (applyThemeButton) {
+      applyThemeButton.addEventListener("click", function () {
+        var value = themeSelect.value;
+        var theme = value === "auto" ? automaticTheme() : value;
+        try { localStorage.setItem("gym4-season-demo", value); } catch (error) {}
+        var doc = frame.contentDocument;
+        if (doc && doc.documentElement) {
+          doc.documentElement.setAttribute("data-season-theme", theme);
+          if (value === "auto") doc.documentElement.setAttribute("data-season-auto", "true");
+          else doc.documentElement.removeAttribute("data-season-auto");
+          doc.dispatchEvent(new doc.defaultView.CustomEvent("gym4:seasonchange", { detail: { value: value, theme: theme } }));
+        }
+        say("Тема применена: " + (themeSelect.options[themeSelect.selectedIndex].textContent || value) + " · откройте главную или новости для показа");
+      });
+    }
+  }
+
   $("editModeBtn").addEventListener("click", function () {
     editMode = !editMode;
     this.classList.toggle("is-active", editMode);
