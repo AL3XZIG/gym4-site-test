@@ -27,6 +27,24 @@ jobs:
           python-version: "3.x"
       - name: Check HTML, links and local assets
         run: python tools/check_site.py
+      - name: Install backend dependencies
+        run: python -m pip install -r server/requirements.txt
+      - name: Check Django backend and permissions
+        working-directory: server
+        env:
+          DJANGO_SECRET_KEY: ci-test-secret-not-for-production
+          DEBUG: "1"
+          DB_ENGINE: django.db.backends.sqlite3
+          DB_NAME: ":memory:"
+          ALLOWED_HOSTS: localhost,testserver
+        run: |
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+          python manage.py test elections
+      - name: Check deployment shell syntax
+        run: |
+          bash -n deploy/install.sh deploy/backup.sh deploy/update.sh deploy/build-public.sh
+          sh -n server/entrypoint.sh
       - name: Check JavaScript syntax
         run: |
           node --check assets/js/app.js
