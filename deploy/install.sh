@@ -54,6 +54,7 @@ else
 fi
 TMP_CONF="$(mktemp)"
 sed -e "s|__DOMAIN__|$DOMAIN|g" -e "s|__ROOT__|$ROOT/public|g" "$DEPLOY_DIR/nginx/gym4-site.conf.template" > "$TMP_CONF"
+SITE_LINK_CREATED=0
 SITE_BACKUP=""; LIMITS_BACKUP=""
 if [[ -f "$SITE_CONF" ]]; then SITE_BACKUP="$SITE_CONF.bak.$(date +%Y%m%d%H%M%S)"; cp -a "$SITE_CONF" "$SITE_BACKUP"; fi
 if [[ -f "$LIMITS_CONF" ]]; then LIMITS_BACKUP="$LIMITS_CONF.bak.$(date +%Y%m%d%H%M%S)"; cp -a "$LIMITS_CONF" "$LIMITS_BACKUP"; fi
@@ -62,6 +63,7 @@ if [[ ! -e "$SITE_LINK" ]]; then ln -s "$SITE_CONF" "$SITE_LINK"; fi
 install -m 644 "$DEPLOY_DIR/nginx/gym4-rate-limits.conf" "$LIMITS_CONF"
 if ! nginx -t; then
   echo "Nginx test failed; restoring the previous site configuration." >&2
+  if [[ "$SITE_LINK_CREATED" -eq 1 ]]; then rm -f "$SITE_LINK"; fi
   if [[ -n "$SITE_BACKUP" ]]; then cp -a "$SITE_BACKUP" "$SITE_CONF"; else rm -f "$SITE_CONF"; fi
   if [[ -n "$LIMITS_BACKUP" ]]; then cp -a "$LIMITS_BACKUP" "$LIMITS_CONF"; else rm -f "$LIMITS_CONF"; fi
   exit 1
