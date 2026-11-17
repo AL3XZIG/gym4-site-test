@@ -37,6 +37,12 @@ class SubmissionForm(forms.ModelForm):
             raise forms.ValidationError("Каждый пункт программы должен быть короче 240 символов.")
         return items
 
+    def clean_body(self):
+        value = self.cleaned_data.get("body", "")
+        if len(value) > 5000:
+            raise forms.ValidationError("Максимальный объём текста — 5 000 символов.")
+        return value
+
     def clean_source_url(self):
         value = self.cleaned_data.get("source_url", "").strip()
         if value and urlsplit(value).scheme not in ("http", "https"):
