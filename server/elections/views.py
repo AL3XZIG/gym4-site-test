@@ -107,6 +107,10 @@ def submission_edit(request, submission_id):
 @roles_required(UserProfile.Role.CANDIDATE)
 @require_POST
 def submission_submit(request, submission_id):
+    campaign = CampaignSettings.objects.first()
+    if not campaign or not campaign.campaign_open:
+        messages.warning(request, "Приём материалов пока закрыт организаторами.")
+        return redirect("portal-home")
     submission = get_object_or_404(
         Submission,
         pk=submission_id,
