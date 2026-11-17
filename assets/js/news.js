@@ -25,9 +25,15 @@ function render(){
  if(empty)empty.hidden=shown!==0;
 }
 function usePosts(data){posts=Array.isArray(data.posts)?data.posts:[];render()}
-fetch("/api/v1/public/news/").then(function(r){if(!r.ok)throw Error("live news unavailable");return r.json()}).then(usePosts).catch(function(){
- fetch("assets/data/news.json").then(function(r){if(!r.ok)throw Error("news");return r.json()}).then(usePosts).catch(function(){posts=[];render()});
-});
+function mergePosts(live,statik){
+ var merged=Array.isArray(live.posts)?live.posts.slice():[],ids=new Set(merged.map(function(p){return String(p.id)}));
+ (Array.isArray(statik.posts)?statik.posts:[]).forEach(function(p){if(!ids.has(String(p.id))){merged.push(p);ids.add(String(p.id))}});
+ posts=merged;render();
+}
+Promise.all([
+ fetch("/api/v1/public/news/").then(function(r){if(!r.ok)throw Error("live news unavailable");return r.json()}).catch(function(){return {posts:[]}}),
+ fetch("assets/data/news.json").then(function(r){if(!r.ok)throw Error("static news unavailable");return r.json()}).catch(function(){return {posts:[]}})
+]).then(function(data){mergePosts(data[0],data[1])}).catch(function(){posts=[];render()});
 buttons.forEach(function(b){b.addEventListener("click",function(){active=b.dataset.filter;buttons.forEach(function(x){var on=x===b;x.classList.toggle("is-active",on);x.setAttribute("aria-pressed",String(on))});render()})});
 if(search)search.addEventListener("input",render);if(sort)sort.addEventListener("change",render);
 })();
