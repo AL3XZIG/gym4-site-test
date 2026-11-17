@@ -66,6 +66,9 @@ class SubmissionForm(forms.ModelForm):
         cleaned = super().clean()
         kind = cleaned.get("kind")
         if kind == Submission.Kind.PROFILE:
+            uploaded = cleaned.get("attachment")
+            if uploaded and uploaded.name.lower().endswith(".pdf"):
+                self.add_error("attachment", "Для карточки кандидата можно загрузить только изображение.")
             if not cleaned.get("class_label"):
                 self.add_error("class_label", "Укажите класс или параллель.")
             if not cleaned.get("body"):
