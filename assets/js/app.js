@@ -673,3 +673,135 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
+
+
+/* Manual seasonal demo controls and page-wide seasonal presentation. */
+(function () {
+  "use strict";
+  var labels = {
+    "default": "Обычная тема", winter: "Зима", spring: "Весна", summer: "Лето", autumn: "Осень",
+    "new-year": "Новый год", defender: "23 февраля", women: "8 марта", easter: "Пасха",
+    victory: "9 мая", russia: "День России", knowledge: "1 сентября", teacher: "День учителя",
+    unity: "День народного единства", constitution: "День Конституции"
+  };
+  var seasonalGreetings = {
+    winter: { eyebrow: "ЗИМНЯЯ ГИМНАЗИЯ", title: "Время открытий даже в снежную пору", message: "Зимние каникулы, книжные проекты, научные эксперименты и подготовка к новым учебным достижениям.", art: "❄ ✦ ❄", ornaments: ["❄", "✧", "❅", "✦"], effect: "snow" },
+    spring: { eyebrow: "ВЕСНА В ГИМНАЗИИ", title: "Весна — время новых идей", message: "Школьные проекты, творческие мастерские, экологические инициативы и подготовка к весенним событиям.", art: "🌷 ✿ 🌱", ornaments: ["✿", "❀", "✧", "❋"], effect: "petals" },
+    summer: { eyebrow: "ЛЕТО И КАНИКУЛЫ", title: "Время открытий за пределами класса", message: "Летнее чтение, исследовательские задания, спортивные активности и яркие впечатления школьного сообщества.", art: "☀ ✦ 🌿", ornaments: ["☀", "✦", "❋", "✧"], effect: "stars" },
+    autumn: { eyebrow: "ОСЕНЬ В ГИМНАЗИИ", title: "Новый учебный год — новые возможности", message: "Встречи после каникул, День знаний, школьные проекты, олимпиады и первые достижения учебного года.", art: "🍂 📚 🍁", ornaments: ["🍂", "✧", "❧", "✦"], effect: "leaves" }
+  };
+  var root = document.documentElement;
+  var select, button, panel, panelSelect;
+  function currentSeason() { return root.getAttribute("data-season-theme") || "autumn"; }
+  function updateButton() {
+    if (button) button.textContent = "🎨 Сезон: " + (labels[currentSeason()] || "Оформление");
+  }
+  function renderSeasonGreeting(theme) {
+    var data = seasonalGreetings[theme], box = document.getElementById("holidayGreeting");
+    if (!box) return;
+    if (!data) return;
+    root.setAttribute("data-holiday-effect", data.effect);
+    box.hidden = false;
+    box.setAttribute("data-holiday", theme);
+    var eyebrow = document.getElementById("holidayEyebrow");
+    var title = document.getElementById("holidayTitle");
+    var message = document.getElementById("holidayMessage");
+    var art = document.getElementById("holidayArt");
+    var ornaments = document.getElementById("holidayOrnaments");
+    if (eyebrow) eyebrow.textContent = data.eyebrow;
+    if (title) title.textContent = data.title;
+    if (message) message.textContent = data.message;
+    if (art) art.textContent = data.art;
+    if (ornaments) {
+      ornaments.textContent = "";
+      data.ornaments.forEach(function (symbol, index) {
+        var item = document.createElement("span");
+        item.className = "holiday-greeting__ornament holiday-greeting__ornament--" + index;
+        item.textContent = symbol;
+        ornaments.appendChild(item);
+      });
+    }
+  }
+  function applySeasonDecor(theme) {
+    root.setAttribute("data-season-theme", theme);
+    root.removeAttribute("data-season-auto");
+    renderSeasonGreeting(theme);
+    updateButton();
+  }
+  function openPanel() {
+    if (!panel) return;
+    panel.hidden = false;
+    button.setAttribute("aria-expanded", "true");
+    panelSelect.focus();
+  }
+  function closePanel() {
+    if (!panel) return;
+    panel.hidden = true;
+    button.setAttribute("aria-expanded", "false");
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    select = document.getElementById("seasonDemoSelect");
+    if (!select) return;
+    Array.prototype.forEach.call(select.options, function (option) {
+      if (option.value === "auto") option.remove();
+    });
+    ["winter", "spring", "summer", "autumn"].forEach(function (value) {
+      if (!select.querySelector('option[value="' + value + '"]')) {
+        var option = document.createElement("option");
+        option.value = value;
+        option.textContent = labels[value];
+        select.insertBefore(option, select.options[1] || null);
+      }
+    });
+    var saved = "autumn";
+    try { saved = localStorage.getItem("gym4-season-demo") || "autumn"; } catch (error) {}
+    if (saved === "auto" || !labels[saved]) saved = "autumn";
+    select.value = saved;
+    if (select.value !== saved) saved = "autumn";
+    select.value = saved;
+    applySeasonDecor(saved);
+    select.addEventListener("change", function () {
+      applySeasonDecor(select.value);
+      document.dispatchEvent(new CustomEvent("gym4:seasonchange", { detail: { value: select.value, theme: select.value } }));
+    });
+
+    button = document.createElement("button");
+    button.type = "button";
+    button.className = "seasonal-toggle";
+    button.setAttribute("aria-expanded", "false");
+    button.setAttribute("aria-controls", "seasonDemoPopover");
+    button.setAttribute("aria-label", "Открыть ручной выбор сезонного оформления");
+    panel = document.createElement("div");
+    panel.className = "season-demo-popover";
+    panel.id = "seasonDemoPopover";
+    panel.hidden = true;
+    var label = document.createElement("label");
+    label.textContent = "Ручной выбор оформления";
+    label.htmlFor = "seasonDemoQuickSelect";
+    panelSelect = select.cloneNode(true);
+    panelSelect.id = "seasonDemoQuickSelect";
+    panelSelect.removeAttribute("aria-label");
+    panel.append(label, panelSelect);
+    document.body.append(button, panel);
+    panelSelect.value = select.value;
+    panelSelect.addEventListener("change", function () {
+      select.value = panelSelect.value;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    button.addEventListener("click", function () {
+      if (panel.hidden) openPanel(); else closePanel();
+    });
+    document.addEventListener("click", function (event) {
+      if (!panel.hidden && !panel.contains(event.target) && event.target !== button) closePanel();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !panel.hidden) { closePanel(); button.focus(); }
+    });
+    document.addEventListener("gym4:seasonchange", function (event) {
+      var value = event.detail && event.detail.theme || currentSeason();
+      panelSelect.value = value;
+      updateButton();
+    });
+    updateButton();
+  });
+})();
