@@ -591,9 +591,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   function render(theme) {
     activeTheme = theme || root.getAttribute("data-season-theme") || "default";
     var cornerSets = {
-      "new-year":["❄","✦"], defender:["★","✦"], women:["✿","❀"], easter:["✿","◌"],
-      victory:["★","✦"], russia:["✦","✧"], knowledge:["✎","✦"], teacher:["❧","✦"],
-      unity:["✦","★"], constitution:["§","⚖"]
+      winter:["❄","✦"], spring:["✿","❀"], summer:["☀","✧"], autumn:["🍂","❧"]
     };
     var cornerHost = document.querySelector(".seasonal-corners");
     if (!cornerHost && document.body && !document.body.classList.contains("editor-body")) {
@@ -750,6 +748,24 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
     renderSeasonGreeting(theme);
     updateButton();
   }
+  document.addEventListener("gym4:seasonchange", function (event) {
+    var theme = event.detail && event.detail.theme || currentSeason();
+    root.setAttribute("data-season-theme", theme);
+    renderSeasonGreeting(theme);
+    if (select) select.value = theme;
+    if (panelSelect) panelSelect.value = theme;
+    updateButton();
+  });
+  window.addEventListener("storage", function (event) {
+    if (event.key !== "gym4-season-demo" || !event.newValue) return;
+    var theme = event.newValue;
+    if (!labels[theme]) return;
+    root.setAttribute("data-season-theme", theme);
+    renderSeasonGreeting(theme);
+    if (select) select.value = theme;
+    if (panelSelect) panelSelect.value = theme;
+    updateButton();
+  });
   function openPanel() {
     if (!panel) return;
     panel.hidden = false;
