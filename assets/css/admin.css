@@ -87,3 +87,11 @@
  .review-dialog__foot{align-items:stretch;flex-direction:column;padding:1rem}
  .review-dialog__foot>div{display:grid;grid-template-columns:1fr 1fr}
 }
+
+/* Presentation shortcuts in the local demo editor. */
+.editor-presentation{margin-top:1.25rem;padding:1rem;background:#f8f5ee;border:1px solid #e8dcc4}
+.editor-presentation>p{margin:.45rem 0 .65rem;color:#657386;font-size:.72rem;line-height:1.5}
+.editor-presentation .editor-tools{margin-top:.5rem;gap:.25rem}
+.editor-presentation .editor-tool{display:block;text-decoration:none;background:#fff;border-color:#e5e8ec;color:#34465a}
+.editor-presentation .editor-tool:hover{background:#102b49;border-color:#102b49;color:#fff}
+.editor-presentation .editor-tool:focus-visible{outline:3px solid #c18a2d;outline-offset:2px}
