@@ -79,6 +79,31 @@ class ElectionPortalTests(TestCase):
         draft.refresh_from_db()
         self.assertEqual(draft.status, Submission.Status.DRAFT)
 
+    def test_moderator_dashboard_does_not_show_private_drafts(self):
+        moderator = User.objects.create_user(username="moderator", password="A-long-test-password-123")
+        moderator.profile.role = UserProfile.Role.MODERATOR
+        moderator.profile.save()
+        candidate_user, candidate = self.make_candidate("candidate-a", "candidate-a")
+        draft = self.make_profile(candidate, Submission.Status.DRAFT, "Private draft")
+        pending = self.make_profile(candidate, Submission.Status.PENDING, "Pending profile")
+        self.client.force_login(moderator)
+        response = self.client.get(reverse("portal-home"))
+        self.assertEqual(response.status_code, 200)
+        visible = list(response.context["submissions"])
+        self.assertNotIn(draft, visible)
+        self.assertIn(pending, visible)
+
+    def test_inactive_candidate_material_is_not_public(self):
+        user, candidate = self.make_candidate("candidate-a", "candidate-a")
+        profile = self.make_profile(candidate, Submission.Status.PUBLISHED)
+        candidate.is_active = False
+        candidate.save()
+        response = self.client.get(reverse("public-election"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["candidates"], [])
+        media_response = self.client.get(reverse("public-media", args=[profile.pk]))
+        self.assertEqual(media_response.status_code, 404)
+
     def test_unpublished_upload_is_not_publicly_accessible(self):
         user, candidate = self.make_candidate("candidate-a", "candidate-a")
         with tempfile.TemporaryDirectory() as media_dir, override_settings(MEDIA_ROOT=media_dir):
