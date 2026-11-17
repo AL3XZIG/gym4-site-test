@@ -96,8 +96,8 @@ class Submission(models.Model):
     class Meta:
         ordering = ("-created_at",)
         indexes = [
-            models.Index(fields=("status", "kind", "-published_at")),
-            models.Index(fields=("candidate", "status", "kind")),
+            models.Index(fields=("status", "kind", "-published_at"), name="elections_s_status_7c2a4b_idx"),
+            models.Index(fields=("candidate", "status", "kind"), name="elections_s_candida_51aa2e_idx"),
         ]
 
     def __str__(self):
