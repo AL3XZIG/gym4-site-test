@@ -289,7 +289,7 @@ function initSeasonDemo(){
  }
  if(["auto","default","winter","spring","summer","autumn","new-year","defender","women","easter","victory","russia","knowledge","teacher","unity","constitution"].indexOf(saved)<0)saved="auto";
  apply(saved);
- window.setInterval(function(){var mode="auto";try{mode=localStorage.getItem(key)||"auto";}catch(e){}if(mode==="auto")apply("auto");},60000);
+ window.setInterval(function(){var mode="auto";try{mode=localStorage.getItem(key)||"auto";}catch(e){}if(mode==="auto"&&document.documentElement.getAttribute("data-season-theme")!==window.gym4ChooseSeasonTheme(new Date()))apply("auto");},60000);
 }
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.dataset.mode=mode;b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-label",mode==="dark"?"Включить светлую тему":"Включить тёмную тему");b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
 function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var href="";try{var u=new URL(String(p.url||""));if(u.protocol==="https:"||u.protocol==="http:")href=u.href;}catch(e){}var el=document.createElement(href?"a":"article");el.className="friend-card";if(href){el.href=href;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
@@ -375,6 +375,10 @@ function initSchoolMark(){
  var w=0,h=0,dpr=1,particles=[],targets=[],shapeIndex=0,last=0,holdUntil=0,raf=0,visible=true;
  var sequences={
   "default":["4","book","atom","globe","pi","star","cap"],
+  winter:["4","snowflake","tree","gift","star"],
+  spring:["4","flower","butterfly","dove","book"],
+  summer:["4","globe","star","flower","book"],
+  autumn:["4","book","pencil","laurel","star"],
   "new-year":["4","snowflake","tree","gift","star"],
   "defender":["4","shield","star","laurel","dove"],
   "women":["4","flower","butterfly","heart","flower"],
@@ -860,8 +864,9 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
       if (event.key === "Escape" && !panel.hidden) { closePanel(); button.focus(); }
     });
     document.addEventListener("gym4:seasonchange", function (event) {
-      var value = event.detail && event.detail.theme || currentSeason();
+      var detail = event.detail || {}, value = detail.value || detail.theme || currentSeason();
       panelSelect.value = value;
+      if (select) select.value = value;
       updateButton();
     });
     updateButton();
