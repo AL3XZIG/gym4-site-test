@@ -1,0 +1,11 @@
+.git
+.github
+public/
+var/
+deploy/.env
+server/private_media/
+server/staticfiles/
+server/db.sqlite3
+**/__pycache__/
+**/*.py[cod]
+.venv/
