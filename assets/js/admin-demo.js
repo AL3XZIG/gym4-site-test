@@ -41,7 +41,10 @@
     if(today>=from&&today<=to)return "easter";
     if(m===4&&d>=1&&d<=10)return "victory";
     if((m===7&&d>=25)||(m===8&&d<=5))return "knowledge";
-    return "default";
+    if(m===11||m===0||m===1)return "winter";
+    if(m>=2&&m<=4)return "spring";
+    if(m>=5&&m<=7)return "summer";
+    return "autumn";
   }
 
   function say(message) {
