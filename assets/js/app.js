@@ -1,10 +1,10 @@
 (function(){
 "use strict";var root=document.documentElement,key="gym4-a11y";root.classList.add("js");
 function read(){try{return JSON.parse(localStorage.getItem(key))||{}}catch(e){return{}}}function write(v){try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}}
-var saved=read(),state={fs:["100","125","150","175","200"].indexOf(saved.fs)>=0?saved.fs:"100",scheme:["","bw","wb"].indexOf(saved.scheme)>=0?saved.scheme:"",spacing:["normal","wide"].indexOf(saved.spacing)>=0?saved.spacing:"normal",images:["show","hide"].indexOf(saved.images)>=0?saved.images:"show"};
-function apply(){root.style.fontSize=state.fs+"%";if(state.scheme)root.setAttribute("data-scheme",state.scheme);else root.removeAttribute("data-scheme");root.setAttribute("data-spacing",state.spacing);root.setAttribute("data-images",state.images);document.querySelectorAll("[data-fs],[data-scheme],[data-spacing],[data-images]").forEach(function(b){var k=["fs","scheme","spacing","images"].filter(function(x){return b.hasAttribute("data-"+x)})[0];if(k)b.setAttribute("aria-pressed",String((b.dataset[k]||"")===state[k]))})}apply();
+var saved=read(),state={fs:["100","125","150","175","200"].indexOf(saved.fs)>=0?saved.fs:"100",scheme:["","bw","wb"].indexOf(saved.scheme)>=0?saved.scheme:"",spacing:["normal","wide"].indexOf(saved.spacing)>=0?saved.spacing:"normal",images:["show","hide"].indexOf(saved.images)>=0?saved.images:"show",motion:["on","off"].indexOf(saved.motion)>=0?saved.motion:"on"};
+function apply(){root.style.fontSize=state.fs+"%";root.setAttribute("data-font-scale",state.fs);if(state.scheme)root.setAttribute("data-scheme",state.scheme);else root.removeAttribute("data-scheme");root.setAttribute("data-spacing",state.spacing);root.setAttribute("data-images",state.images);root.setAttribute("data-motion",state.motion);document.querySelectorAll("[data-fs],[data-scheme],[data-spacing],[data-images],[data-motion]").forEach(function(b){var k=["fs","scheme","spacing","images","motion"].filter(function(x){return b.hasAttribute("data-"+x)})[0];if(k)b.setAttribute("aria-pressed",String((b.dataset[k]||"")===state[k]))})}apply();
 function init(){var year=document.getElementById("year");if(year)year.textContent=new Date().getFullYear();var menu=document.getElementById("menuToggle"),nav=document.getElementById("siteNav"),a11y=document.getElementById("a11yToggle"),panel=document.getElementById("a11yPanel");function setMenu(v){if(!menu||!nav)return;nav.classList.toggle("open",v);menu.setAttribute("aria-expanded",String(v));menu.setAttribute("aria-label",v?"Закрыть меню":"Открыть меню") }function setPanel(v){if(!a11y||!panel)return;panel.hidden=!v;a11y.setAttribute("aria-expanded",String(v))}if(menu)menu.addEventListener("click",function(){setMenu(!nav.classList.contains("open"))});if(nav)nav.addEventListener("click",function(e){if(e.target.closest("a"))setMenu(false)});document.addEventListener("click",function(e){if(menu&&nav&&!menu.contains(e.target)&&!nav.contains(e.target))setMenu(false)});if(a11y)a11y.addEventListener("click",function(){setPanel(panel.hidden)});document.addEventListener("keydown",function(e){if(e.key==="Escape"){setMenu(false);setPanel(false)}});
-[["fs","[data-fs]"],["scheme","[data-scheme]"],["spacing","[data-spacing]"],["images","[data-images]"]].forEach(function(pair){document.querySelectorAll(pair[1]).forEach(function(b){b.addEventListener("click",function(){state[pair[0]]=b.dataset[pair[0]]||"";apply();write(state)})})});var reset=document.getElementById("a11yReset");if(reset)reset.addEventListener("click",function(){state={fs:"100",scheme:"",spacing:"normal",images:"show"};apply();write(state)});
+[["fs","[data-fs]"],["scheme","[data-scheme]"],["spacing","[data-spacing]"],["images","[data-images]"],["motion","[data-motion]"]].forEach(function(pair){document.querySelectorAll(pair[1]).forEach(function(b){b.addEventListener("click",function(){state[pair[0]]=b.dataset[pair[0]]||"";apply();write(state)})})});var reset=document.getElementById("a11yReset");if(reset)reset.addEventListener("click",function(){state={fs:"100",scheme:"",spacing:"normal",images:"show",motion:"on"};apply();write(state)});
 var aside=document.querySelector(".aside-panel");if(aside&&"IntersectionObserver"in window){var links=Array.prototype.slice.call(aside.querySelectorAll('a[href^="#"]')),sections=links.map(function(a){return document.getElementById(a.getAttribute("href").slice(1))}).filter(Boolean),observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)links.forEach(function(a){a.classList.toggle("is-active",a.hash==="#"+entry.target.id)})})},{rootMargin:"-20% 0px -68% 0px"});sections.forEach(function(s){observer.observe(s)})}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();})();
 
@@ -256,30 +256,40 @@ function chooseTheme(now){
  if(today>=from&&today<=to)return "easter";
  if(m===4&&d>=1&&d<=10)return "victory";
  if((m===7&&d>=25)||(m===8&&d<=5))return "knowledge";
- return "default";
+ if(m===11||m===0||m===1)return "winter";
+ if(m>=2&&m<=4)return "spring";
+ if(m>=5&&m<=7)return "summer";
+ return "autumn";
 }
 var root=document.documentElement;
 window.gym4ChooseSeasonTheme=chooseTheme;
-if(!root.hasAttribute("data-season-theme")){root.setAttribute("data-season-theme",chooseTheme(new Date()));root.setAttribute("data-season-auto","true");}
+if(!root.hasAttribute("data-season-theme")){root.setAttribute("data-season-theme","autumn");}
 })();
 
 /* Theme preference and partner directory */
 (function(){
 "use strict";
 function initSeasonDemo(){
- var select=document.getElementById("seasonDemoSelect");if(!select)return;
- var key="gym4-season-demo",saved="auto";
+ var select=document.getElementById("seasonDemoSelect"),key="gym4-season-demo",saved="auto";
  try{saved=localStorage.getItem(key)||"auto";}catch(e){}
  function apply(value){
-  var theme=value==="auto"?(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):"default"):value;
+  var mode=value||"auto",theme=mode==="auto"?window.gym4ChooseSeasonTheme(new Date()):mode;
+  if(!theme)theme="autumn";
   document.documentElement.setAttribute("data-season-theme",theme);
-  if(value==="auto")document.documentElement.setAttribute("data-season-auto","true");
+  if(mode==="auto")document.documentElement.setAttribute("data-season-auto","true");
   else document.documentElement.removeAttribute("data-season-auto");
-  select.value=value;
-  try{localStorage.setItem(key,value);}catch(e){}
-  document.dispatchEvent(new CustomEvent("gym4:seasonchange",{detail:{value:value,theme:theme}}));
+  if(select)select.value=mode;
+  try{localStorage.setItem(key,mode);}catch(e){}
+  document.dispatchEvent(new CustomEvent("gym4:seasonchange",{detail:{value:mode,theme:theme}}));
  }
- apply(saved);select.addEventListener("change",function(){apply(select.value);});
+ if(select){
+  var options=[["auto","Автоматически по календарю"],["default","Обычная тема"],["winter","Зима"],["spring","Весна"],["summer","Лето"],["autumn","Осень"],["new-year","Новый год"],["defender","23 февраля"],["women","8 марта"],["easter","Пасха"],["victory","9 мая"],["russia","День России"],["knowledge","1 сентября"],["teacher","День учителя"],["unity","День народного единства"],["constitution","День Конституции"]];
+  options.forEach(function(pair){if(!select.querySelector('option[value="'+pair[0]+'"]')){var o=document.createElement("option");o.value=pair[0];o.textContent=pair[1];select.appendChild(o);}});
+  select.addEventListener("change",function(){apply(select.value);});
+ }
+ if(["auto","default","winter","spring","summer","autumn","new-year","defender","women","easter","victory","russia","knowledge","teacher","unity","constitution"].indexOf(saved)<0)saved="auto";
+ apply(saved);
+ window.setInterval(function(){var mode="auto";try{mode=localStorage.getItem(key)||"auto";}catch(e){}if(mode==="auto"&&document.documentElement.getAttribute("data-season-theme")!==window.gym4ChooseSeasonTheme(new Date()))apply("auto");},60000);
 }
 function initTheme(){var host=document.querySelector(".header-tools");if(!host)return;var b=document.createElement("button");b.type="button";b.className="tool-btn theme-toggle";b.setAttribute("aria-label","Переключить цветовую тему");var mode="light";try{mode=localStorage.getItem("gym4-theme")||"light";}catch(e){}function apply(){document.documentElement.setAttribute("data-theme",mode);b.dataset.mode=mode;b.textContent=mode==="dark"?"Светлая тема":"Тёмная тема";b.setAttribute("aria-label",mode==="dark"?"Включить светлую тему":"Включить тёмную тему");b.setAttribute("aria-pressed",String(mode==="dark"));}b.addEventListener("click",function(){mode=mode==="dark"?"light":"dark";try{localStorage.setItem("gym4-theme",mode);}catch(e){}apply();});host.insertBefore(b,host.firstChild);apply();}
 function initPartners(){var list=document.getElementById("friendsList");if(!list)return;fetch("assets/data/partners.json").then(function(r){if(!r.ok)throw Error("partners");return r.json();}).then(function(d){if(!Array.isArray(d.partners)||!d.partners.length)return;list.textContent="";d.partners.forEach(function(p){if(!p.name)return;var href="";try{var u=new URL(String(p.url||""));if(u.protocol==="https:"||u.protocol==="http:")href=u.href;}catch(e){}var el=document.createElement(href?"a":"article");el.className="friend-card";if(href){el.href=href;el.target="_blank";el.rel="noopener noreferrer";}var mark=document.createElement("span"),name=document.createElement("strong"),desc=document.createElement("small");mark.className="friend-card__mark";mark.textContent=p.name.trim().charAt(0).toLocaleUpperCase("ru");name.textContent=p.name;desc.textContent=p.description||"Партнёр гимназии";el.append(mark,name,desc);list.appendChild(el);});}).catch(function(){});}
@@ -309,7 +319,7 @@ function orthodoxEaster(year){
 }
 function render(value){
  var root=document.getElementById("holidayGreeting");if(!root)return;
- var theme=value&&value!=="auto"&&value!=="default"?value:(window.gym4ChooseSeasonTheme?window.gym4ChooseSeasonTheme(new Date()):"default");
+ var theme=value&&value!=="default"?value:"default";
  var data=events[theme];
  if(!data){root.hidden=true;document.documentElement.removeAttribute("data-holiday-effect");return;}
  document.documentElement.setAttribute("data-holiday-effect",data.effect);
@@ -339,7 +349,7 @@ function render(value){
 document.addEventListener("DOMContentLoaded",function(){
  var select=document.getElementById("seasonDemoSelect");
  render(select?select.value:"auto");
- document.addEventListener("gym4:seasonchange",function(e){render(e.detail.value);});
+ document.addEventListener("gym4:seasonchange",function(e){render(e.detail.theme || e.detail.value);});
 });
 })();
 
@@ -365,6 +375,10 @@ function initSchoolMark(){
  var w=0,h=0,dpr=1,particles=[],targets=[],shapeIndex=0,last=0,holdUntil=0,raf=0,visible=true;
  var sequences={
   "default":["4","book","atom","globe","pi","star","cap"],
+  winter:["4","snowflake","tree","gift","star"],
+  spring:["4","flower","butterfly","dove","book"],
+  summer:["4","globe","star","flower","book"],
+  autumn:["4","book","pencil","laurel","star"],
   "new-year":["4","snowflake","tree","gift","star"],
   "defender":["4","shield","star","laurel","dove"],
   "women":["4","flower","butterfly","heart","flower"],
@@ -590,6 +604,28 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   }
   function render(theme) {
     activeTheme = theme || root.getAttribute("data-season-theme") || "default";
+    var cornerSets = {
+      winter:["❄","✦"], spring:["✿","❀"], summer:["☀","✧"], autumn:["🍂","❧"],
+      "new-year":["❄","✦"], defender:["★","✦"], women:["✿","❀"], easter:["✿","◌"],
+      victory:["★","✦"], russia:["✦","✧"], knowledge:["✎","✦"], teacher:["❧","✦"],
+      unity:["✦","★"], constitution:["§","⚖"]
+    };
+    var cornerHost = document.querySelector(".seasonal-corners");
+    if (!cornerHost && document.body && !document.body.classList.contains("editor-body")) {
+      cornerHost = document.createElement("div");
+      cornerHost.className = "seasonal-corners";
+      cornerHost.setAttribute("aria-hidden", "true");
+      cornerHost.innerHTML = "<span></span><span></span>";
+      document.body.appendChild(cornerHost);
+    }
+    if (cornerHost) {
+      var cornerSet = cornerSets[activeTheme] || null;
+      cornerHost.hidden = !cornerSet;
+      if (cornerSet) {
+        cornerHost.children[0].textContent = cornerSet[0];
+        cornerHost.children[1].textContent = cornerSet[1];
+      }
+    }
     createLayer();
     createToggle();
     if (!layer) return;
@@ -672,4 +708,167 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
+})();
+
+
+/* Manual seasonal demo controls and page-wide seasonal presentation. */
+(function () {
+  "use strict";
+  var labels = {
+    "default": "Обычная тема", winter: "Зима", spring: "Весна", summer: "Лето", autumn: "Осень",
+    "new-year": "Новый год", defender: "23 февраля", women: "8 марта", easter: "Пасха",
+    victory: "9 мая", russia: "День России", knowledge: "1 сентября", teacher: "День учителя",
+    unity: "День народного единства", constitution: "День Конституции"
+  };
+  var seasonalGreetings = {
+    winter: { eyebrow: "ЗИМНЯЯ ГИМНАЗИЯ", title: "Время открытий даже в снежную пору", message: "Зимние каникулы, книжные проекты, научные эксперименты и подготовка к новым учебным достижениям.", art: "❄ ✦ ❄", ornaments: ["❄", "✧", "❅", "✦"], effect: "snow" },
+    spring: { eyebrow: "ВЕСНА В ГИМНАЗИИ", title: "Весна — время новых идей", message: "Школьные проекты, творческие мастерские, экологические инициативы и подготовка к весенним событиям.", art: "🌷 ✿ 🌱", ornaments: ["✿", "❀", "✧", "❋"], effect: "petals" },
+    summer: { eyebrow: "ЛЕТО И КАНИКУЛЫ", title: "Время открытий за пределами класса", message: "Летнее чтение, исследовательские задания, спортивные активности и яркие впечатления школьного сообщества.", art: "☀ ✦ 🌿", ornaments: ["☀", "✦", "❋", "✧"], effect: "stars" },
+    autumn: { eyebrow: "ОСЕНЬ В ГИМНАЗИИ", title: "Новый учебный год — новые возможности", message: "Встречи после каникул, День знаний, школьные проекты, олимпиады и первые достижения учебного года.", art: "🍂 📚 🍁", ornaments: ["🍂", "✧", "❧", "✦"], effect: "leaves" }
+  };
+  var root = document.documentElement;
+  var select, button, panel, panelSelect;
+  function currentSeason() { return root.getAttribute("data-season-theme") || "autumn"; }
+  function updateButton() {
+    if (button) button.textContent = "🎨 Сезон: " + (labels[currentSeason()] || "Оформление");
+  }
+  function renderSeasonGreeting(theme) {
+    var data = seasonalGreetings[theme], box = document.getElementById("holidayGreeting");
+    if (!box) return;
+    if (!data) return;
+    root.setAttribute("data-holiday-effect", data.effect);
+    box.hidden = false;
+    box.setAttribute("data-holiday", theme);
+    var eyebrow = document.getElementById("holidayEyebrow");
+    var title = document.getElementById("holidayTitle");
+    var message = document.getElementById("holidayMessage");
+    var art = document.getElementById("holidayArt");
+    var ornaments = document.getElementById("holidayOrnaments");
+    if (eyebrow) eyebrow.textContent = data.eyebrow;
+    if (title) title.textContent = data.title;
+    if (message) message.textContent = data.message;
+    if (art) art.textContent = data.art;
+    if (ornaments) {
+      ornaments.textContent = "";
+      data.ornaments.forEach(function (symbol, index) {
+        var item = document.createElement("span");
+        item.className = "holiday-greeting__ornament holiday-greeting__ornament--" + index;
+        item.textContent = symbol;
+        ornaments.appendChild(item);
+      });
+    }
+  }
+  function applySeasonDecor(value) {
+    var theme = value === "auto" ? (window.gym4ChooseSeasonTheme ? window.gym4ChooseSeasonTheme(new Date()) : "autumn") : value;
+    if (!labels[theme]) theme = "autumn";
+    root.setAttribute("data-season-theme", theme);
+    if (value === "auto") root.setAttribute("data-season-auto", "true");
+    else root.removeAttribute("data-season-auto");
+    try { localStorage.setItem("gym4-season-demo", value); } catch (error) {}
+    renderSeasonGreeting(theme);
+    updateButton();
+  }
+  document.addEventListener("gym4:seasonchange", function (event) {
+    var theme = event.detail && event.detail.theme || currentSeason();
+    root.setAttribute("data-season-theme", theme);
+    renderSeasonGreeting(theme);
+    var mode = event.detail && event.detail.value || theme;
+    if (select) select.value = mode;
+    if (panelSelect) panelSelect.value = mode;
+    updateButton();
+  });
+  window.addEventListener("storage", function (event) {
+    if (event.key !== "gym4-season-demo" || !event.newValue) return;
+    var mode = event.newValue;
+    var theme = mode === "auto" ? (window.gym4ChooseSeasonTheme ? window.gym4ChooseSeasonTheme(new Date()) : "autumn") : mode;
+    if (!labels[theme]) return;
+    root.setAttribute("data-season-theme", theme);
+    if (mode === "auto") root.setAttribute("data-season-auto", "true"); else root.removeAttribute("data-season-auto");
+    renderSeasonGreeting(theme);
+    if (select) select.value = mode;
+    if (panelSelect) panelSelect.value = mode;
+    updateButton();
+  });
+  function openPanel() {
+    if (!panel) return;
+    panel.hidden = false;
+    button.setAttribute("aria-expanded", "true");
+    panelSelect.focus();
+  }
+  function closePanel() {
+    if (!panel) return;
+    panel.hidden = true;
+    button.setAttribute("aria-expanded", "false");
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    select = document.getElementById("seasonDemoSelect");
+    if (!select) {
+      select = document.createElement("select");
+      select.id = "seasonDemoSelect";
+      select.hidden = true;
+      select.setAttribute("aria-hidden", "true");
+      document.body.appendChild(select);
+    }
+    var allOptions = [["auto","Автоматически по календарю"]];
+    Object.keys(labels).forEach(function (value) { allOptions.push([value, labels[value]]); });
+    allOptions.forEach(function (pair) {
+      if (!select.querySelector('option[value="' + pair[0] + '"]')) {
+        var option = document.createElement("option");
+        option.value = pair[0];
+        option.textContent = pair[1];
+        select.appendChild(option);
+      }
+    });
+    var saved = "auto";
+    try { saved = localStorage.getItem("gym4-season-demo") || "auto"; } catch (error) {}
+    if (!labels[saved] && saved !== "auto") saved = "auto";
+    select.value = saved;
+    if (select.value !== saved) saved = "auto";
+    select.value = saved;
+    applySeasonDecor(saved);
+    select.addEventListener("change", function () {
+      applySeasonDecor(select.value);
+      document.dispatchEvent(new CustomEvent("gym4:seasonchange", {detail:{value:select.value,theme:root.getAttribute("data-season-theme")}}));
+    });
+
+    button = document.createElement("button");
+    button.type = "button";
+    button.className = "seasonal-toggle";
+    button.setAttribute("aria-expanded", "false");
+    button.setAttribute("aria-controls", "seasonDemoPopover");
+    button.setAttribute("aria-label", "Открыть ручной выбор сезонного оформления");
+    panel = document.createElement("div");
+    panel.className = "season-demo-popover";
+    panel.id = "seasonDemoPopover";
+    panel.hidden = true;
+    var label = document.createElement("label");
+    label.textContent = "Ручной выбор оформления";
+    label.htmlFor = "seasonDemoQuickSelect";
+    panelSelect = select.cloneNode(true);
+    panelSelect.id = "seasonDemoQuickSelect";
+    panelSelect.removeAttribute("aria-label");
+    panel.append(label, panelSelect);
+    document.body.append(button, panel);
+    panelSelect.value = select.value;
+    panelSelect.addEventListener("change", function () {
+      select.value = panelSelect.value;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    button.addEventListener("click", function () {
+      if (panel.hidden) openPanel(); else closePanel();
+    });
+    document.addEventListener("click", function (event) {
+      if (!panel.hidden && !panel.contains(event.target) && event.target !== button) closePanel();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !panel.hidden) { closePanel(); button.focus(); }
+    });
+    document.addEventListener("gym4:seasonchange", function (event) {
+      var detail = event.detail || {}, value = detail.value || detail.theme || currentSeason();
+      panelSelect.value = value;
+      if (select) select.value = value;
+      updateButton();
+    });
+    updateButton();
+  });
 })();

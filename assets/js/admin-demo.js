@@ -41,7 +41,10 @@
     if(today>=from&&today<=to)return "easter";
     if(m===4&&d>=1&&d<=10)return "victory";
     if((m===7&&d>=25)||(m===8&&d<=5))return "knowledge";
-    return "default";
+    if(m===11||m===0||m===1)return "winter";
+    if(m>=2&&m<=4)return "spring";
+    if(m>=5&&m<=7)return "summer";
+    return "autumn";
   }
 
   function say(message) {
@@ -267,6 +270,28 @@
   page.addEventListener("change", function () {
     loadPage(page.value);
   });
+
+  if (themeSelect) {
+    var savedTheme = "auto";
+    try { savedTheme = localStorage.getItem("gym4-season-demo") || "auto"; } catch (error) {}
+    if (themeSelect.querySelector('option[value="' + savedTheme + '"]')) themeSelect.value = savedTheme;
+    var applyThemeButton = $("applySeasonThemeBtn");
+    if (applyThemeButton) {
+      applyThemeButton.addEventListener("click", function () {
+        var value = themeSelect.value;
+        var theme = value === "auto" ? automaticTheme() : value;
+        try { localStorage.setItem("gym4-season-demo", value); } catch (error) {}
+        var doc = frame.contentDocument;
+        if (doc && doc.documentElement) {
+          doc.documentElement.setAttribute("data-season-theme", theme);
+          if (value === "auto") doc.documentElement.setAttribute("data-season-auto", "true");
+          else doc.documentElement.removeAttribute("data-season-auto");
+          doc.dispatchEvent(new doc.defaultView.CustomEvent("gym4:seasonchange", { detail: { value: value, theme: theme } }));
+        }
+        say("Тема применена: " + (themeSelect.options[themeSelect.selectedIndex].textContent || value) + " · откройте главную или новости для показа");
+      });
+    }
+  }
 
   $("editModeBtn").addEventListener("click", function () {
     editMode = !editMode;
