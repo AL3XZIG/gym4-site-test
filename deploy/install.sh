@@ -10,6 +10,8 @@ DEPLOY_DIR="$ROOT/deploy"
 SITE_CONF="/etc/nginx/sites-available/gym4-site"
 SITE_LINK="/etc/nginx/sites-enabled/gym4-site"
 LIMITS_CONF="/etc/nginx/conf.d/gym4-rate-limits.conf"
+BACKUP_SERVICE="/etc/systemd/system/gym4-site-backup.service"
+BACKUP_TIMER="/etc/systemd/system/gym4-site-backup.timer"
 if ! command -v apt-get >/dev/null 2>&1; then echo "This installer currently supports Debian/Ubuntu (apt)." >&2; exit 1; fi
 export DEBIAN_FRONTEND=noninteractive
 if ! command -v nginx >/dev/null 2>&1 || ! command -v openssl >/dev/null 2>&1; then apt-get update; apt-get install -y nginx openssl; fi
@@ -20,6 +22,12 @@ if [[ -e "$SITE_LINK" ]] && { [[ ! -L "$SITE_LINK" ]] || [[ "$(readlink -f "$SIT
 if [[ -e "$SITE_CONF" ]] && ! grep -q "Managed by gym4-site deploy/install.sh" "$SITE_CONF"; then echo "$SITE_CONF already exists and is not managed by this installer. No changes made." >&2; exit 1; fi
 if [[ -e "$SITE_CONF" ]] && grep -q "ssl_certificate " "$SITE_CONF"; then echo "HTTPS is already configured in Nginx. Use deploy/update.sh for code updates; do not rerun the installer." >&2; exit 1; fi
 if [[ -e "$LIMITS_CONF" ]] && ! grep -q "Managed by gym4-site deploy/install.sh" "$LIMITS_CONF"; then echo "$LIMITS_CONF already exists and is not managed by this installer. No changes made." >&2; exit 1; fi
+for unit in "$BACKUP_SERVICE" "$BACKUP_TIMER"; do
+  if [[ -e "$unit" ]] && ! grep -q "Managed by gym4-site deploy/install.sh" "$unit"; then
+    echo "$unit already exists and is not managed by this installer. No changes made." >&2
+    exit 1
+  fi
+done
 mkdir -p "$ROOT/var/media" "$ROOT/var/staticfiles"
 chown -R 10001:10001 "$ROOT/var/media" "$ROOT/var/staticfiles"
 chmod 750 "$ROOT/var/media" "$ROOT/var/staticfiles"
