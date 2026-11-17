@@ -1,3 +1,4 @@
+import copy
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -11,6 +12,16 @@ class UserProfileInline(admin.StackedInline):
 
 class GymUserAdmin(UserAdmin):
     inlines = (UserProfileInline,)
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = copy.deepcopy(super().get_fieldsets(request, obj))
+        if not request.user.is_superuser:
+            protected = {"is_staff", "is_superuser", "groups", "user_permissions"}
+            for _, options in fieldsets:
+                options["fields"] = tuple(
+                    field for field in options["fields"] if field not in protected
+                )
+        return fieldsets
 
 admin.site.unregister(User)
 admin.site.register(User, GymUserAdmin)
