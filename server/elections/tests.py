@@ -40,9 +40,20 @@ class ElectionPortalTests(TestCase):
         self.assertEqual(payload["candidates"], [])
 
         self.make_profile(candidate, Submission.Status.PUBLISHED, "Опубликованный кандидат")
+        Submission.objects.create(
+            candidate=candidate,
+            author=user,
+            kind=Submission.Kind.MATERIAL,
+            status=Submission.Status.PUBLISHED,
+            title="Программа в PDF",
+            summary="Подробное описание материала",
+            source_url="https://example.org/program.pdf",
+        )
         response = self.client.get(reverse("public-election"))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["candidates"][0]["name"], "Опубликованный кандидат")
+        public_candidate = response.json()["candidates"][0]
+        self.assertEqual(public_candidate["name"], "Опубликованный кандидат")
+        self.assertEqual(public_candidate["materials"][0]["description"], "Подробное описание материала")
 
     def test_candidate_cannot_edit_another_candidate_draft(self):
         user_a, candidate_a = self.make_candidate("candidate-a", "candidate-a")
