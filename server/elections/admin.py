@@ -24,6 +24,12 @@ class CandidateAdmin(admin.ModelAdmin):
 
 @admin.register(CampaignSettings)
 class CampaignSettingsAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return not CampaignSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     fieldsets = (
         ("Информация о кампании", {"fields": ("title", "intro", "rules")}),
         ("Сроки", {"fields": ("campaign_open", "starts_at", "ends_at")}),
