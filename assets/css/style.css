@@ -1545,3 +1545,35 @@ button,.button,.tool-btn,.menu-btn{min-height:44px}
   .header-tools{gap:.25rem}
   .header-tools .tool-btn,.header-tools .menu-btn{width:38px;min-width:38px;height:40px;min-height:40px}
 }
+
+
+/* Student election demo */
+.election-callout,.election-demo-notice{padding:1.1rem 1.25rem;border:1px solid #d8e3eb;border-left:4px solid #bd8b3b;border-radius:10px;background:#f4f7f9;color:#17334d}
+.election-callout strong,.election-demo-notice strong{display:block;margin-bottom:.35rem;color:#102b49}
+.election-callout p,.election-demo-notice p{margin:0;line-height:1.65}
+.election-candidate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.election-candidate{min-width:0;padding:1.2rem;border:1px solid #dce4ea;border-radius:12px;background:#fff;box-shadow:0 10px 28px rgba(16,43,73,.06)}
+.election-candidate__header{display:flex;align-items:center;gap:.85rem;margin-bottom:1rem}
+.election-candidate__mark{display:grid;place-items:center;flex:0 0 3rem;width:3rem;height:3rem;border-radius:9px;background:linear-gradient(145deg,#173d5b,#286789);color:#fff;font-weight:800;letter-spacing:.04em}
+.election-candidate__identity{display:grid;gap:.2rem;min-width:0}
+.election-candidate__kicker{color:#9a7134;font-size:.65rem;font-weight:800;letter-spacing:.14em}
+.election-candidate__identity h3{margin:0;color:#102b49;font-size:1.12rem;line-height:1.3;overflow-wrap:anywhere}
+.election-candidate__class{color:#687b8c;font-size:.8rem}
+.election-candidate__poster{display:block;width:100%;max-height:260px;object-fit:cover;margin:.8rem 0;border-radius:8px}
+.election-candidate__slogan{margin:.7rem 0;color:#173d5b;font-family:Georgia,"Times New Roman",serif;font-size:1.12rem;font-weight:700;line-height:1.4}
+.election-candidate__bio{color:#42576a;line-height:1.65}
+.election-candidate__subhead{margin:1rem 0 .45rem;color:#102b49;font-size:.88rem}
+.election-program{display:grid;gap:.45rem;margin:0;padding-left:1.2rem;color:#42576a;line-height:1.55}
+.election-materials{display:flex;flex-wrap:wrap;gap:.45rem 1rem;margin:1rem 0 0;padding:0;list-style:none}
+.election-materials a{display:inline-flex;align-items:center;min-height:40px;color:#1c5275;font-weight:700;text-underline-offset:.2em}
+.election-loading{grid-column:1/-1;padding:1rem;border:1px dashed #cbd7e0;border-radius:10px;color:#607487}
+.election-vote-form{margin-top:1rem;padding:1.2rem;border:1px solid #dce4ea;border-radius:12px;background:#fff}
+.election-vote-form fieldset{display:grid;gap:.75rem;margin:0 0 1rem;padding:0;border:0}
+.election-vote-form legend{margin-bottom:.65rem;color:#102b49;font-weight:800}
+.election-vote-options{display:grid;gap:.55rem}
+.election-vote-option{display:flex;align-items:center;gap:.7rem;min-height:48px;padding:.7rem .85rem;border:1px solid #dce4ea;border-radius:8px;color:#17334d;cursor:pointer}
+.election-vote-option:focus-within{border-color:#1c5275;background:#eef5f8}
+.election-vote-option input{width:1.1rem;height:1.1rem;accent-color:#1c5275}
+.election-vote-form button{margin-top:.25rem}
+.election-vote-status{margin:.85rem 0;color:#40576a;line-height:1.6}
+@media(max-width:760px){.election-candidate-grid{grid-template-columns:1fr}.election-candidate{padding:1rem}.election-demo-notice,.election-callout{padding:.95rem}}

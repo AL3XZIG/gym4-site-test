@@ -110,7 +110,7 @@
     clone.querySelectorAll("[contenteditable]").forEach(function (el) {
       el.removeAttribute("contenteditable");
     });
-    return "<!doctype html>\\n" + clone.outerHTML;
+    return "<!doctype html>\n" + clone.outerHTML;
   }
 
   function updateHistoryButtons() {
