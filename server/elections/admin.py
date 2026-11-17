@@ -34,8 +34,10 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_display = ("title", "kind", "candidate", "author", "status", "created_at", "published_at")
     list_filter = ("kind", "status", "category")
     search_fields = ("title", "summary", "body", "author__username", "candidate__public_id")
-    readonly_fields = ("author", "candidate", "kind", "title", "summary", "body", "class_label", "program", "category", "attachment", "source_url", "created_at", "updated_at", "submitted_at", "reviewed_by", "reviewed_at", "published_at")
+    readonly_fields = ("author", "candidate", "kind", "status", "title", "summary", "body", "class_label", "program", "category", "attachment", "source_url", "moderator_note", "created_at", "updated_at", "submitted_at", "reviewed_by", "reviewed_at", "published_at")
     def has_add_permission(self, request):
+        return False
+    def has_delete_permission(self, request, obj=None):
         return False
 
 @admin.register(AuditEvent)
@@ -45,4 +47,6 @@ class AuditEventAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
     def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
         return False
