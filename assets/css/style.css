@@ -1728,3 +1728,14 @@ html[data-motion="off"] *::before,
 html[data-motion="off"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 html[data-motion="off"] .seasonal-atmosphere,
 html[data-motion="off"] .seasonal-particle { display: none !important; }
+
+/* 200% text scaling: preserve a single-column, reflowing layout without page-level horizontal overflow. */
+html[data-font-scale="200"] body { overflow-wrap: anywhere; }
+html[data-font-scale="200"] .wrap { width: min(100% - 24px, var(--wrap)); }
+html[data-font-scale="200"] .layout.has-toc { grid-template-columns: minmax(0, 1fr); }
+html[data-font-scale="200"] .toc { position: static; }
+html[data-font-scale="200"] .table-wrap { max-width: 100%; overflow-x: auto; }
+html[data-font-scale="200"] .table-wrap table { width: 100%; min-width: 0; table-layout: fixed; }
+html[data-font-scale="200"] .table-wrap th, html[data-font-scale="200"] .table-wrap td { overflow-wrap: anywhere; word-break: normal; }
+html[data-font-scale="200"] .site-nav ul, html[data-font-scale="200"] .footer-grid, html[data-font-scale="200"] .feature-grid, html[data-font-scale="200"] .data-grid { min-width: 0; grid-template-columns: minmax(0, 1fr); }
+html[data-font-scale="200"] img, html[data-font-scale="200"] video, html[data-font-scale="200"] iframe { max-width: 100%; }
