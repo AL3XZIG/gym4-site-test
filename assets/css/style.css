@@ -1720,3 +1720,11 @@ html:not([data-season-theme]) body::after { content:""; }
 .editor-theme-apply{width:100%;margin-top:.55rem;justify-content:center}
 @media(max-width:700px){.seasonal-corners{inset:104px 0 auto;opacity:.52}.seasonal-corners span{width:30px;height:30px;font-size:1rem}.seasonal-corners span:first-child{left:7px}.seasonal-corners span:last-child{right:7px}}
 @media(prefers-reduced-motion:reduce){.seasonal-corners{transition:none}}
+
+
+/* Accessibility requirement: allow visitors to stop decorative motion and transitions. */
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html[data-motion="off"] .seasonal-atmosphere,
+html[data-motion="off"] .seasonal-particle { display: none !important; }
