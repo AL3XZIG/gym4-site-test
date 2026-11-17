@@ -515,3 +515,160 @@ function initSchoolMark(){
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSchoolMark);else initSchoolMark();
 })();
+
+
+/* Site-wide seasonal atmosphere, navigation polish and accessible motion controls. */
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var storageKey = "gym4-seasonal-effects";
+  var layer = null, toggle = null;
+  var activeTheme = root.getAttribute("data-season-theme") || "default";
+  var paused = false;
+  var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  var symbols = {
+    "new-year": { effect: "snow", items: ["❄", "❅", "✻", "✧"] },
+    defender: { effect: "stars", items: ["★", "✦", "✧", "✦"] },
+    women: { effect: "petals", items: ["✿", "❀", "✽", "❁"] },
+    easter: { effect: "easter", items: ["✿", "✧", "❀", "◌"] },
+    victory: { effect: "ribbons", items: ["✦", "❋", "✧", "★"] },
+    russia: { effect: "ribbons", items: ["✦", "✧", "★", "❋"] },
+    knowledge: { effect: "leaves", items: ["❧", "✿", "✦", "❦"] },
+    teacher: { effect: "leaves", items: ["❧", "❦", "✿", "✧"] },
+    unity: { effect: "stars", items: ["✦", "★", "✧", "✦"] },
+    constitution: { effect: "stars", items: ["§", "✦", "✧", "★"] }
+  };
+  function readPaused() {
+    try { return localStorage.getItem(storageKey) === "off"; }
+    catch (error) { return false; }
+  }
+  function writePaused(value) {
+    try { localStorage.setItem(storageKey, value ? "off" : "on"); }
+    catch (error) { /* Decorative preference is optional. */ }
+  }
+  function createLayer() {
+    if (layer || !document.body || document.body.classList.contains("editor-body")) return;
+    layer = document.createElement("div");
+    layer.className = "seasonal-atmosphere";
+    layer.setAttribute("aria-hidden", "true");
+    layer.setAttribute("data-seasonal-atmosphere", "");
+    document.body.insertBefore(layer, document.body.firstChild);
+  }
+  function createToggle() {
+    if (toggle || !document.body || document.body.classList.contains("editor-body")) return;
+    toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "seasonal-toggle";
+    toggle.setAttribute("aria-pressed", "true");
+    toggle.setAttribute("aria-label", "Отключить праздничные эффекты");
+    toggle.addEventListener("click", function () {
+      paused = !paused;
+      writePaused(paused);
+      applyState();
+    });
+    document.body.appendChild(toggle);
+  }
+  function applyState() {
+    var hasSeason = !!symbols[activeTheme];
+    if (layer) {
+      layer.hidden = !hasSeason || paused || (reducedMotion && reducedMotion.matches);
+      layer.setAttribute("data-effect", hasSeason ? symbols[activeTheme].effect : "none");
+    }
+    if (toggle) {
+      toggle.hidden = !hasSeason;
+      toggle.textContent = paused ? "Эффекты: выкл." : "Эффекты: вкл.";
+      toggle.setAttribute("aria-pressed", String(!paused));
+      toggle.setAttribute("aria-label", paused ? "Включить праздничные эффекты" : "Отключить праздничные эффекты");
+      if (reducedMotion && reducedMotion.matches) {
+        toggle.textContent = "Анимация отключена";
+        toggle.setAttribute("aria-label", "Анимация отключена настройками устройства");
+        toggle.disabled = true;
+      } else {
+        toggle.disabled = false;
+      }
+    }
+  }
+  function render(theme) {
+    activeTheme = theme || root.getAttribute("data-season-theme") || "default";
+    createLayer();
+    createToggle();
+    if (!layer) return;
+    layer.textContent = "";
+    var config = symbols[activeTheme];
+    if (config) {
+      for (var i = 0; i < 14; i += 1) {
+        var particle = document.createElement("span");
+        particle.className = "seasonal-particle seasonal-particle--" + config.effect;
+        particle.textContent = config.items[i % config.items.length];
+        particle.style.left = ((i * 37 + 9) % 100) + "%";
+        particle.style.animationDelay = (-((i * 7) % 19)) + "s";
+        particle.style.animationDuration = (17 + (i % 7) * 2) + "s";
+        particle.style.fontSize = (0.65 + (i % 4) * 0.18) + "rem";
+        particle.style.setProperty("--season-drift", ((i % 2 ? 1 : -1) * (12 + (i % 5) * 8)) + "px");
+        layer.appendChild(particle);
+      }
+    }
+    applyState();
+  }
+  function initNavigation() {
+    var current = window.location.pathname.split("/").pop() || "index.html";
+    var navLinks = document.querySelectorAll(".site-nav a[href]");
+    Array.prototype.forEach.call(navLinks, function (link) {
+      var href = link.getAttribute("href") || "";
+      if (/^(https?:|mailto:|tel:|#|\/)/i.test(href)) return;
+      var target = href.split("#")[0].split("?")[0] || "index.html";
+      if (target === current) {
+        link.setAttribute("aria-current", "page");
+        link.classList.add("is-current");
+      } else {
+        link.removeAttribute("aria-current");
+        link.classList.remove("is-current");
+      }
+    });
+    var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection && connection.saveData) return;
+    var prefetched = {};
+    function prefetch(link) {
+      var href = link.getAttribute("href") || "";
+      if (!href || href.charAt(0) === "#" || link.target || link.hasAttribute("download")) return;
+      var url;
+      try { url = new URL(href, window.location.href); } catch (error) { return; }
+      if (url.origin !== window.location.origin || !/\.html?$/i.test(url.pathname) || url.href === window.location.href || prefetched[url.href]) return;
+      prefetched[url.href] = true;
+      var hint = document.createElement("link");
+      hint.rel = "prefetch";
+      hint.href = url.href;
+      hint.as = "document";
+      document.head.appendChild(hint);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll(".site-nav a[href], .footer-links a[href], .crumbs a[href]"), function (link) {
+      link.addEventListener("pointerenter", function () { prefetch(link); }, { once: true, passive: true });
+      link.addEventListener("focus", function () { prefetch(link); }, { once: true });
+    });
+  }
+  function init() {
+    paused = readPaused();
+    createLayer();
+    createToggle();
+    render(activeTheme);
+    initNavigation();
+    if (reducedMotion && reducedMotion.addEventListener) reducedMotion.addEventListener("change", applyState);
+    document.addEventListener("gym4:seasonchange", function (event) {
+      var detail = event.detail || {};
+      render(detail.theme || root.getAttribute("data-season-theme") || "default");
+    });
+    window.addEventListener("storage", function (event) {
+      if (event.key === "gym4-season-demo") {
+        var next = event.newValue === "auto" ? (window.gym4ChooseSeasonTheme ? window.gym4ChooseSeasonTheme(new Date()) : "default") : (event.newValue || "default");
+        root.setAttribute("data-season-theme", next);
+        render(next);
+      }
+      if (event.key === storageKey) {
+        paused = event.newValue === "off";
+        applyState();
+      }
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
