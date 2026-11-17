@@ -1703,3 +1703,20 @@ html:not([data-season-theme]) body::after { content:""; }
 @media(prefers-reduced-motion:reduce) {
   body::before, body::after { text-shadow:none; }
 }
+
+
+/* Seasonal presentation corners: decorative only, never interactive. */
+.seasonal-corners{position:fixed;inset:112px 0 auto;z-index:4;height:0;pointer-events:none;overflow:visible;opacity:.72;transition:opacity .25s ease}
+.seasonal-corners[hidden]{display:none}
+.seasonal-corners span{position:absolute;top:0;display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(183,145,81,.22);border-radius:50%;background:rgba(255,255,255,.76);box-shadow:0 8px 24px rgba(31,43,56,.07);color:var(--accent,#a77a3d);font-family:Georgia,serif;font-size:1.35rem;line-height:1}
+.seasonal-corners span:first-child{left:18px;transform:rotate(-12deg)}
+.seasonal-corners span:last-child{right:18px;transform:rotate(12deg)}
+[data-season-theme="new-year"] .seasonal-corners span{color:#4c8caa;border-color:rgba(76,140,170,.3)}
+[data-season-theme="women"] .seasonal-corners span,[data-season-theme="easter"] .seasonal-corners span{color:#b66c91;border-color:rgba(182,108,145,.28)}
+[data-season-theme="victory"] .seasonal-corners span,[data-season-theme="defender"] .seasonal-corners span{color:#a66d39}
+[data-season-theme="knowledge"] .seasonal-corners span,[data-season-theme="teacher"] .seasonal-corners span{color:#688b65}
+.news-entry--demo{border-color:rgba(181,139,72,.35);background:linear-gradient(135deg,rgba(250,246,237,.82),rgba(255,255,255,.96))}
+.news-entry__demo-label{display:inline-flex;align-items:center;margin:0 0 .65rem;padding:.32rem .55rem;border:1px solid rgba(181,139,72,.35);border-radius:999px;color:#86612e;background:rgba(245,232,207,.55);font-size:.62rem;font-weight:800;letter-spacing:.09em;line-height:1.35}
+.editor-theme-apply{width:100%;margin-top:.55rem;justify-content:center}
+@media(max-width:700px){.seasonal-corners{inset:104px 0 auto;opacity:.52}.seasonal-corners span{width:30px;height:30px;font-size:1rem}.seasonal-corners span:first-child{left:7px}.seasonal-corners span:last-child{right:7px}}
+@media(prefers-reduced-motion:reduce){.seasonal-corners{transition:none}}
