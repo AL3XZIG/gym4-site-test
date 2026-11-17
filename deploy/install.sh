@@ -18,6 +18,7 @@ if ! docker compose version >/dev/null 2>&1; then apt-get update; apt-get instal
 if ! docker compose version >/dev/null 2>&1; then echo "Docker Compose v2 is required. Install the Docker Compose plugin and rerun." >&2; exit 1; fi
 if [[ -e "$SITE_LINK" ]] && { [[ ! -L "$SITE_LINK" ]] || [[ "$(readlink -f "$SITE_LINK")" != "$SITE_CONF" ]]; }; then echo "$SITE_LINK already exists and points elsewhere. Refusing to replace it." >&2; exit 1; fi
 if [[ -e "$SITE_CONF" ]] && ! grep -q "Managed by gym4-site deploy/install.sh" "$SITE_CONF"; then echo "$SITE_CONF already exists and is not managed by this installer. No changes made." >&2; exit 1; fi
+if [[ -e "$SITE_CONF" ]] && grep -q "ssl_certificate " "$SITE_CONF"; then echo "HTTPS is already configured in Nginx. Use deploy/update.sh for code updates; do not rerun the installer." >&2; exit 1; fi
 if [[ -e "$LIMITS_CONF" ]] && ! grep -q "Managed by gym4-site deploy/install.sh" "$LIMITS_CONF"; then echo "$LIMITS_CONF already exists and is not managed by this installer. No changes made." >&2; exit 1; fi
 mkdir -p "$ROOT/var/media" "$ROOT/var/staticfiles"
 chown -R 10001:10001 "$ROOT/var/media" "$ROOT/var/staticfiles"
