@@ -33,6 +33,7 @@ jobs:
           node --check assets/js/news.js
           node --check assets/js/news-editor.js
           node --check assets/js/school-life.js
+          node --check assets/js/election.js
           node --check assets/js/admin-demo.js
           node --check assets/js/content-review.js
 
@@ -51,7 +52,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p _site
-          for page in index.html 404.html history.html sveden.html parents.html students.html news.html news-editor.html priem.html contacts.html school-life.html admin.html; do
+          for page in index.html 404.html history.html sveden.html parents.html students.html news.html news-editor.html priem.html contacts.html school-life.html election.html admin.html; do
             test -f "$page"
             cp "$page" _site/
           done
