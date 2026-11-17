@@ -10,5 +10,5 @@ cp .env "$BACKUP_DIR/environment-$STAMP"
 chmod 600 "$BACKUP_DIR/environment-$STAMP"
 docker compose --env-file .env -f docker-compose.yml exec -T db sh -c 'pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB"' | gzip > "$BACKUP_DIR/database-$STAMP.sql.gz"
 docker compose --env-file .env -f docker-compose.yml exec -T web tar -czf - -C /app/private_media . > "$BACKUP_DIR/media-$STAMP.tar.gz"
-find "$BACKUP_DIR" -type f -mtime +14 -delete
+find "$BACKUP_DIR" -type f \( -name 'environment-*' -o -name 'database-*.sql.gz' -o -name 'media-*.tar.gz' \) -mtime +14 -delete
 echo "Backup created in $BACKUP_DIR"
