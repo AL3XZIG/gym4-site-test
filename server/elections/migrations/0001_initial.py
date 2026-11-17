@@ -1,5 +1,6 @@
 import django.core.validators
 import django.db.models.deletion
+import elections.models
 from django.conf import settings
 from django.db import migrations, models
 
@@ -52,7 +53,7 @@ class Migration(migrations.Migration):
                 ("class_label", models.CharField(blank=True, max_length=40)),
                 ("program", models.JSONField(blank=True, default=list)),
                 ("category", models.CharField(choices=[("news", "Новости"), ("events", "Мероприятия"), ("announcements", "Объявления")], default="news", max_length=16)),
-                ("attachment", models.FileField(blank=True, upload_to="submissions/%Y/%m/", validators=[django.core.validators.FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp", "pdf"])])),
+                ("attachment", models.FileField(blank=True, upload_to=elections.models.submission_upload_path, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp", "pdf"])])),
                 ("source_url", models.URLField(blank=True, max_length=500)),
                 ("moderator_note", models.CharField(blank=True, max_length=1000)),
                 ("reviewed_at", models.DateTimeField(blank=True, null=True)),
