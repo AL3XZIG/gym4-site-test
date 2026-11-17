@@ -91,8 +91,29 @@
     }
     if (live) {
       voteForm.hidden = true;
-      voteStatus.textContent = "Публикация материалов работает. Электронное голосование пока отключено и не принимает бюллетени.";
+      voteStatus.textContent = "Публикация материалов работает. Электронное голосование пока не запущено.";
       if (portalLink) portalLink.hidden = false;
+      var campaign = data.campaign || {};
+      var aboutLead = document.querySelector("#about .section-lead");
+      if (aboutLead && text(campaign.intro).trim()) aboutLead.textContent = campaign.intro;
+      var callout = document.querySelector(".election-callout");
+      if (callout) {
+        var calloutTitle = callout.querySelector("strong");
+        var calloutText = callout.querySelector("p");
+        if (calloutTitle) calloutTitle.textContent = "Информация о кампании";
+        if (calloutText) calloutText.textContent = text(campaign.intro).trim() || "Здесь публикуются карточки и материалы, одобренные организаторами выборов.";
+      }
+      var pageIntro = document.querySelector(".page-intro p");
+      if (pageIntro) pageIntro.textContent = "Информация о кандидатах и ходе кампании публикуется на равных условиях. На странице размещаются только материалы, одобренные организаторами.";
+      var voteNotice = document.querySelector(".election-demo-notice");
+      if (voteNotice) {
+        var noticeTitle = voteNotice.querySelector("strong");
+        var noticeText = voteNotice.querySelector("p");
+        if (noticeTitle) noticeTitle.textContent = "Электронное голосование не запущено";
+        if (noticeText) noticeText.textContent = "Сейчас сервер публикует только материалы кампании. Официальный бюллетень появится после утверждения правил и отдельной технической проверки.";
+      }
+      var rulesNote = document.querySelector("#rules .source-note");
+      if (rulesNote) rulesNote.textContent = text(campaign.rules).trim() || "Официальный регламент выборов пока не опубликован организаторами.";
       return;
     }
     if (!data || data.mode !== "demo" || data.demoOnly !== true) {
