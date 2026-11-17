@@ -171,7 +171,7 @@ def _candidate_payload(candidate):
         "slogan": profile.summary,
         "bio": profile.body,
         "program": profile.program or [],
-        "poster": f"/media/submissions/{profile.pk}/" if profile.attachment else "",
+        "poster": f"/media/submissions/{profile.pk}/" if profile.attachment and profile.attachment.name.lower().endswith((".jpg", ".jpeg", ".png", ".webp")) else "",
         "materials": [
             {"title": item.title, "url": f"/media/submissions/{item.pk}/" if item.attachment else item.source_url}
             for item in materials
@@ -212,7 +212,7 @@ def public_news(request):
             "date": (item.published_at or item.created_at).date().isoformat(),
             "category": item.category,
             "sourceName": "Кампания выборов",
-            "sourceUrl": item.source_url,
+            "sourceUrl": item.source_url or (f"/media/submissions/{item.pk}/" if item.attachment and item.attachment.name.lower().endswith(".pdf") else ""),
             "excerpt": item.summary,
             "body": item.body,
             "imageUrl": f"/media/submissions/{item.pk}/" if item.attachment and item.attachment.name.lower().endswith((".jpg", ".jpeg", ".png", ".webp")) else "",
