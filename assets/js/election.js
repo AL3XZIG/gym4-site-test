@@ -10,7 +10,7 @@
   function text(value) { return typeof value === "string" ? value : ""; }
   function safeAssetPath(value) {
     var path = text(value).trim();
-    return /^assets\\/[A-Za-z0-9_./-]+$/.test(path) && !path.split("/").some(function (part) { return part === ".."; });
+    return /^assets\/[A-Za-z0-9_./-]+$/.test(path) && !path.split("/").some(function (part) { return part === ".."; });
   }
   function safeMaterialUrl(value) {
     var url = text(value).trim();
