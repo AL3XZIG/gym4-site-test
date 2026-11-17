@@ -185,7 +185,7 @@ def _candidate_payload(candidate):
         "program": profile.program or [],
         "poster": f"/media/submissions/{profile.pk}/" if profile.attachment and profile.attachment.name.lower().endswith((".jpg", ".jpeg", ".png", ".webp")) else "",
         "materials": [
-            {"title": item.title, "url": f"/media/submissions/{item.pk}/" if item.attachment else item.source_url}
+            {"title": item.title, "url": f"/media/submissions/{item.pk}/" if item.attachment else item.source_url, "description": item.summary or item.body}
             for item in materials
         ],
     }
