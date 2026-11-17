@@ -1,0 +1,11 @@
+# Local deployment secrets and persistent VPS data
+deploy/.env
+var/
+public/
+server/private_media/
+server/staticfiles/
+server/db.sqlite3
+__pycache__/
+*.py[cod]
+.venv/
+.env
