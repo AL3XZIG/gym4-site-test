@@ -24,9 +24,37 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.12"
       - name: Check HTML, links and local assets
         run: python tools/check_site.py
+      - name: Install backend dependencies
+        run: python -m pip install -r server/requirements.txt
+      - name: Check Django backend and permissions
+        working-directory: server
+        env:
+          DJANGO_SECRET_KEY: ci-test-secret-not-for-production
+          DEBUG: "1"
+          DB_ENGINE: django.db.backends.sqlite3
+          DB_NAME: ":memory:"
+          ALLOWED_HOSTS: localhost,testserver
+        run: |
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+          python manage.py test elections
+      - name: Build and audit VPS public copy
+        run: |
+          bash deploy/build-public.sh
+          test ! -e public/admin.html
+          test ! -e public/news-editor.html
+          test ! -e public/assets/js/admin-demo.js
+          test ! -e public/assets/js/news-editor.js
+          python -c 'import json; d=json.load(open("public/assets/data/election.json")); assert d["candidates"] == [] and d["votingEnabled"] is False'
+          python -c 'import json; d=json.load(open("public/assets/data/news.json")); assert d["posts"] == []'
+          ! grep -R -E 'href="admin.html"|href="news-editor.html"' public --include='*.html'
+      - name: Check deployment shell syntax
+        run: |
+          bash -n deploy/install.sh deploy/backup.sh deploy/update.sh deploy/build-public.sh
+          sh -n server/entrypoint.sh
       - name: Check JavaScript syntax
         run: |
           node --check assets/js/app.js

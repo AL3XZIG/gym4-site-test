@@ -1,0 +1,49 @@
+{% extends "portal/base.html" %}
+{% block title %}Личный кабинет{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><p class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</p><h1>Панель управления</h1><p class="muted">Ваша роль: {% if role == "candidate" %}кандидат{% elif role == "moderator" %}модератор{% else %}организатор{% endif %}.</p></div>
+  <a class="button secondary" href="/election.html">Публичная страница →</a>
+</div>
+{% if role == "candidate" %}
+  {% if candidate %}
+  <section class="panel">
+    <h2>Материалы вашей кампании</h2>
+    <p class="muted">Вы можете создавать карточку кандидата, новости и агитационные материалы. Всё сначала попадает в черновики; публикация возможна только после проверки организатором.</p>
+    <a class="button primary" href="{% url 'submission-create' %}">＋ Создать материал</a>
+  </section>
+  {% else %}
+  <section class="notice warning"><strong>Учётная запись ещё не привязана к кандидату.</strong><p>Попросите организатора назначить вам карточку в системе. До этого загрузка и публикация недоступны.</p></section>
+  {% endif %}
+{% else %}
+  <section class="panel">
+    <h2>Рабочая область организаторов</h2>
+    <p class="muted">Проверяйте поступившие материалы и управляйте участниками через административную панель.</p>
+    <div class="button-row"><a class="button primary" href="{% url 'moderation-queue' %}">Очередь модерации ({{ queue|length }})</a><a class="button secondary" href="/admin/">Управление учётными записями →</a></div>
+  </section>
+{% endif %}
+<section class="panel">
+  <div class="section-heading"><h2>{% if role == "candidate" %}Ваши материалы{% else %}Последние материалы{% endif %}</h2>{% if role != "candidate" %}<a href="{% url 'moderation-queue' %}">Открыть очередь →</a>{% endif %}</div>
+  {% if submissions %}
+  <div class="submission-list">
+    {% for item in submissions %}
+    <article class="submission-row">
+      <div class="submission-main">
+        <span class="pill status-{{ item.status }}">{{ item.get_status_display }}</span>
+        <h3>{{ item.title }}</h3>
+        <p class="muted">{{ item.get_kind_display }} · {{ item.created_at|date:"d.m.Y H:i" }}{% if role != "candidate" %} · {{ item.author.username }}{% endif %}</p>
+        {% if item.moderator_note %}<p class="review-note"><strong>Комментарий модератора:</strong> {{ item.moderator_note }}</p>{% endif %}
+      </div>
+      {% if role == "candidate" and item.status == "draft" or role == "candidate" and item.status == "rejected" %}
+      <div class="row-actions"><a href="{% url 'submission-edit' item.pk %}">Изменить</a><form method="post" action="{% url 'submission-submit' item.pk %}">{% csrf_token %}<button class="link-button" type="submit">Отправить на проверку</button></form></div>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}<p class="muted">Материалов пока нет.</p>{% endif %}
+</section>
+<section class="notice">
+  <strong>Важно о голосовании</strong>
+  <p>Этот кабинет управляет только кандидатскими материалами и новостями. Он не открывает электронное голосование и не собирает голоса. Бюллетень будет отдельным модулем после утверждения правил и процедуры.</p>
+</section>
+{% endblock %}

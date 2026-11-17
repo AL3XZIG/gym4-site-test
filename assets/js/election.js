@@ -5,6 +5,7 @@
   var voteForm = document.getElementById("electionVoteForm");
   var voteOptions = document.getElementById("electionVoteOptions");
   var voteStatus = document.getElementById("electionVoteStatus");
+  var portalLink = document.getElementById("electionPortalLink");
   if (!candidateHost || !voteForm || !voteOptions || !voteStatus) return;
 
   function text(value) { return typeof value === "string" ? value : ""; }
@@ -17,7 +18,7 @@
     if (!url) return false;
     if (safeAssetPath(url)) return true;
     try {
-      var parsed = new URL(url);
+      var parsed = new URL(url, window.location.href);
       return parsed.protocol === "https:" || parsed.protocol === "http:";
     } catch (error) { return false; }
   }
@@ -44,21 +45,21 @@
     });
     if (list.children.length) host.appendChild(list);
   }
-  function renderCandidate(candidate, index) {
+  function renderCandidate(candidate, index, live) {
     var card = make("article", "election-candidate");
     var header = make("div", "election-candidate__header");
     var mark = make("span", "election-candidate__mark", String(index + 1).padStart(2, "0"));
     mark.setAttribute("aria-hidden", "true");
     var identity = make("div", "election-candidate__identity");
-    identity.appendChild(make("span", "election-candidate__kicker", "ДЕМО-ПРИМЕР"));
+    identity.appendChild(make("span", "election-candidate__kicker", live ? "КАНДИДАТ" : "ДЕМО-ПРИМЕР"));
     identity.appendChild(make("h3", "", text(candidate.name)));
     if (text(candidate.class).trim()) identity.appendChild(make("span", "election-candidate__class", text(candidate.class)));
     header.append(mark, identity);
     card.appendChild(header);
-    if (safeAssetPath(candidate.poster)) {
+    if (safeMaterialUrl(candidate.poster)) {
       var poster = make("img", "election-candidate__poster");
       poster.src = candidate.poster;
-      poster.alt = "Демонстрационный агитационный плакат: " + text(candidate.name);
+      poster.alt = (live ? "Агитационный плакат: " : "Демонстрационный плакат: ") + text(candidate.name);
       poster.loading = "lazy";
       poster.decoding = "async";
       card.appendChild(poster);
@@ -76,20 +77,49 @@
     addMaterials(card, candidate.materials);
     return card;
   }
-  function render(data) {
-    if (!data || data.mode !== "demo" || data.demoOnly !== true) {
-      candidateHost.textContent = "Демонстрационный режим не настроен.";
-      voteStatus.textContent = "Настоящее электронное голосование не подключено.";
-      return;
-    }
+  function render(data, live) {
     var candidates = Array.isArray(data.candidates) ? data.candidates.filter(function (candidate) {
       return candidate && typeof candidate.id === "string" && candidate.id && text(candidate.name).trim();
     }) : [];
     candidateHost.textContent = "";
     if (!candidates.length) {
-      candidateHost.appendChild(make("p", "election-loading", "Список кандидатов пока не опубликован."));
+      candidateHost.appendChild(make("p", "election-loading", live ? "Организаторы пока не опубликовали карточки кандидатов." : "Демонстрационные карточки не найдены."));
     } else {
-      candidates.forEach(function (candidate, index) { candidateHost.appendChild(renderCandidate(candidate, index)); });
+      candidates.forEach(function (candidate, index) {
+        candidateHost.appendChild(renderCandidate(candidate, index, live));
+      });
+    }
+    if (live) {
+      voteForm.hidden = true;
+      voteStatus.textContent = "Публикация материалов работает. Электронное голосование пока не запущено.";
+      if (portalLink) portalLink.hidden = false;
+      var campaign = data.campaign || {};
+      var aboutLead = document.querySelector("#about .section-lead");
+      if (aboutLead) aboutLead.textContent = text(campaign.intro).trim() || "Информация о сроках кампании, встречах и правилах публикуется организаторами после утверждения.";
+      var callout = document.querySelector(".election-callout");
+      if (callout) {
+        var calloutTitle = callout.querySelector("strong");
+        var calloutText = callout.querySelector("p");
+        if (calloutTitle) calloutTitle.textContent = "Информация о кампании";
+        if (calloutText) calloutText.textContent = text(campaign.intro).trim() || "Здесь публикуются карточки и материалы, одобренные организаторами выборов.";
+      }
+      var pageIntro = document.querySelector(".page-intro p");
+      if (pageIntro) pageIntro.textContent = "Информация о кандидатах и ходе кампании публикуется на равных условиях. На странице размещаются только материалы, одобренные организаторами.";
+      var voteNotice = document.querySelector(".election-demo-notice");
+      if (voteNotice) {
+        var noticeTitle = voteNotice.querySelector("strong");
+        var noticeText = voteNotice.querySelector("p");
+        if (noticeTitle) noticeTitle.textContent = "Электронное голосование не запущено";
+        if (noticeText) noticeText.textContent = "Сейчас сервер публикует только материалы кампании. Официальный бюллетень появится после утверждения правил и отдельной технической проверки.";
+      }
+      var rulesNote = document.querySelector("#rules .source-note");
+      if (rulesNote) rulesNote.textContent = text(campaign.rules).trim() || "Официальный регламент выборов пока не опубликован организаторами.";
+      return;
+    }
+    if (!data || data.mode !== "demo" || data.demoOnly !== true) {
+      voteForm.hidden = true;
+      voteStatus.textContent = "Демонстрационный режим не настроен. Настоящее голосование не подключено.";
+      return;
     }
     if (!data.votingEnabled || !candidates.length) {
       voteStatus.textContent = "Демонстрационное голосование сейчас не открыто.";
@@ -135,11 +165,21 @@
       }
     });
   }
-  fetch("assets/data/election.json").then(function (response) {
-    if (!response.ok) throw new Error("Не удалось загрузить данные выборов.");
+  fetch("/api/v1/public/election/").then(function (response) {
+    if (!response.ok) throw new Error("Live API unavailable");
     return response.json();
-  }).then(render).catch(function () {
-    candidateHost.textContent = "Не удалось загрузить демонстрационные данные. Проверьте assets/data/election.json.";
-    voteStatus.textContent = "Голосование недоступно: данные не загружены.";
+  }).then(function (data) {
+    if (!data || data.mode !== "live" || data.demoOnly !== false) throw new Error("Not a live election API");
+    render(data, true);
+  }).catch(function () {
+    fetch("assets/data/election.json").then(function (response) {
+      if (!response.ok) throw new Error("Не удалось загрузить демонстрационные данные.");
+      return response.json();
+    }).then(function (data) {
+      render(data, false);
+    }).catch(function () {
+      candidateHost.textContent = "Не удалось загрузить карточки. Проверьте подключение к данным выборов.";
+      voteStatus.textContent = "Голосование недоступно: данные не загружены.";
+    });
   });
 })();

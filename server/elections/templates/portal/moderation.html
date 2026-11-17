@@ -1,0 +1,17 @@
+{% extends "portal/base.html" %}
+{% block title %}Модерация{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">ОРГАНИЗАТОРЫ</p><h1>Очередь модерации</h1><p class="muted">Материалы не становятся публичными до явного решения модератора.</p></div><a class="button secondary" href="{% url 'portal-home' %}">← В кабинет</a></div>
+<section class="panel">
+  {% if queue %}
+  <div class="submission-list">
+    {% for item in queue %}
+    <article class="submission-row">
+      <div class="submission-main"><span class="pill status-pending">На проверке</span><h2>{{ item.title }}</h2><p class="muted">{{ item.get_kind_display }} · {{ item.author.username }} · {{ item.submitted_at|date:"d.m.Y H:i" }}</p><p>{{ item.summary }}</p></div>
+      <a class="button primary" href="{% url 'submission-review' item.pk %}">Проверить</a>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}<p class="muted">Новых материалов на проверке нет.</p>{% endif %}
+</section>
+{% endblock %}
