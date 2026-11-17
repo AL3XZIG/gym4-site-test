@@ -95,7 +95,7 @@
       if (portalLink) portalLink.hidden = false;
       var campaign = data.campaign || {};
       var aboutLead = document.querySelector("#about .section-lead");
-      if (aboutLead && text(campaign.intro).trim()) aboutLead.textContent = campaign.intro;
+      if (aboutLead) aboutLead.textContent = text(campaign.intro).trim() || "Информация о сроках кампании, встречах и правилах публикуется организаторами после утверждения.";
       var callout = document.querySelector(".election-callout");
       if (callout) {
         var calloutTitle = callout.querySelector("strong");
