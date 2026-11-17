@@ -51,6 +51,8 @@ def portal_home(request):
         submissions = Submission.objects.filter(author=request.user)
         if candidate is None:
             submissions = submissions.none()
+    elif role == UserProfile.Role.MODERATOR:
+        submissions = Submission.objects.filter(status__in=(Submission.Status.PENDING, Submission.Status.PUBLISHED))
     else:
         submissions = Submission.objects.all()
     queue = Submission.objects.filter(status=Submission.Status.PENDING) if role in (UserProfile.Role.ORGANIZER, UserProfile.Role.MODERATOR) else Submission.objects.none()
@@ -81,6 +83,9 @@ def submission_create(request):
 
 @roles_required(UserProfile.Role.CANDIDATE)
 def submission_edit(request, submission_id):
+    if not Candidate.objects.filter(user=request.user, is_active=True).exists():
+        messages.error(request, "Доступ кандидата отключён организатором.")
+        return redirect("portal-home")
     submission = get_object_or_404(
         Submission,
         pk=submission_id,
@@ -107,6 +112,9 @@ def submission_edit(request, submission_id):
 @roles_required(UserProfile.Role.CANDIDATE)
 @require_POST
 def submission_submit(request, submission_id):
+    if not Candidate.objects.filter(user=request.user, is_active=True).exists():
+        messages.error(request, "Доступ кандидата отключён организатором.")
+        return redirect("portal-home")
     campaign = CampaignSettings.objects.first()
     if not campaign or not campaign.campaign_open:
         messages.warning(request, "Приём материалов пока закрыт организаторами.")
@@ -206,7 +214,8 @@ def public_election(request):
 
 def public_news(request):
     posts = Submission.objects.filter(
-        kind=Submission.Kind.NEWS, status=Submission.Status.PUBLISHED
+        kind=Submission.Kind.NEWS, status=Submission.Status.PUBLISHED,
+        candidate__is_active=True, candidate__user__is_active=True
     ).select_related("author", "candidate").order_by("-published_at")[:100]
     data = []
     for item in posts:
@@ -224,7 +233,13 @@ def public_news(request):
     return JsonResponse({"posts": data})
 
 def public_media(request, submission_id):
-    submission = get_object_or_404(Submission, pk=submission_id, status=Submission.Status.PUBLISHED)
+    submission = get_object_or_404(
+        Submission,
+        pk=submission_id,
+        status=Submission.Status.PUBLISHED,
+        candidate__is_active=True,
+        candidate__user__is_active=True,
+    )
     if not submission.attachment:
         raise Http404
     name = submission.attachment.name.lower()
