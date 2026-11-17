@@ -41,15 +41,15 @@ CORE_MICRODATA = {
     "eduAccred", "eduOp", "eduName", "eduLevel", "eduProf",
     "eduForm", "learningTerm", "eduPrac", "eduPred", "opMain",
     "educationPlan", "educationShedule", "educationRpd", "methodology", "accreditationDocLink", "eduFedDoc",
-    "teachingStaff", "purposeFacil", "purposeSport", "ovz",
+    "teachingStaff", "purposeFacil", "purposeFacilOvz", "purposeSport", "ovz",
     "hostelInfo", "interInfo", "hostelNum", "interNum",
     "hostelNumOvz", "interNumOvz", "objName", "objAddress", "objOvz",
-    "meals", "health", "grant", "support", "paidEdu", "paidDog",
+    "meals", "health", "grant", "support", "paidEdu", "paidDog", "comNet", "erList", "techOvz", "hostelInterOvz",
     "finPlanDocLink", "vacant", "numberBFVacant", "numberBRVacant",
     "numberBMVacant", "numberPVacant",
 }
 KNOWN_PENDING_MICRODATA = {
-    "languageEl", "eduPred", "educationRpd", "methodology", "paidSt",
+    "languageEl", "eduPred", "educationRpd", "methodology", "paidSt", "purposeCab", "purposePrac", "purposeLibr", "comNetOvz", "erListOvz",
     "finBFVolume", "finBRVolume", "finBMVolume", "finPVolume",
     "volume", "internationalDog",
 }
