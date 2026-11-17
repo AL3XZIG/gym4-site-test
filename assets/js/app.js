@@ -725,6 +725,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   function applySeasonDecor(theme) {
     root.setAttribute("data-season-theme", theme);
     root.removeAttribute("data-season-auto");
+    try { localStorage.setItem("gym4-season-demo", theme); } catch (error) {}
     renderSeasonGreeting(theme);
     updateButton();
   }
@@ -762,7 +763,6 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
     applySeasonDecor(saved);
     select.addEventListener("change", function () {
       applySeasonDecor(select.value);
-      document.dispatchEvent(new CustomEvent("gym4:seasonchange", { detail: { value: select.value, theme: select.value } }));
     });
 
     button = document.createElement("button");
