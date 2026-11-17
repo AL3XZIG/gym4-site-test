@@ -768,18 +768,21 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
     var theme = event.detail && event.detail.theme || currentSeason();
     root.setAttribute("data-season-theme", theme);
     renderSeasonGreeting(theme);
-    if (select) select.value = theme;
-    if (panelSelect) panelSelect.value = theme;
+    var mode = event.detail && event.detail.value || theme;
+    if (select) select.value = mode;
+    if (panelSelect) panelSelect.value = mode;
     updateButton();
   });
   window.addEventListener("storage", function (event) {
     if (event.key !== "gym4-season-demo" || !event.newValue) return;
-    var theme = event.newValue;
+    var mode = event.newValue;
+    var theme = mode === "auto" ? (window.gym4ChooseSeasonTheme ? window.gym4ChooseSeasonTheme(new Date()) : "autumn") : mode;
     if (!labels[theme]) return;
     root.setAttribute("data-season-theme", theme);
+    if (mode === "auto") root.setAttribute("data-season-auto", "true"); else root.removeAttribute("data-season-auto");
     renderSeasonGreeting(theme);
-    if (select) select.value = theme;
-    if (panelSelect) panelSelect.value = theme;
+    if (select) select.value = mode;
+    if (panelSelect) panelSelect.value = mode;
     updateButton();
   });
   function openPanel() {
@@ -795,27 +798,34 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   }
   document.addEventListener("DOMContentLoaded", function () {
     select = document.getElementById("seasonDemoSelect");
-    if (!select) return;
-    ["winter", "spring", "summer", "autumn"].forEach(function (value) {
-      if (!select.querySelector('option[value="' + value + '"]')) {
+    if (!select) {
+      select = document.createElement("select");
+      select.id = "seasonDemoSelect";
+      select.hidden = true;
+      select.setAttribute("aria-hidden", "true");
+      document.body.appendChild(select);
+    }
+    var allOptions = [["auto","Автоматически по календарю"]];
+    Object.keys(labels).forEach(function (value) { allOptions.push([value, labels[value]]); });
+    allOptions.forEach(function (pair) {
+      if (!select.querySelector('option[value="' + pair[0] + '"]')) {
         var option = document.createElement("option");
-        option.value = value;
-        option.textContent = labels[value];
-        select.insertBefore(option, select.options[1] || null);
+        option.value = pair[0];
+        option.textContent = pair[1];
+        select.appendChild(option);
       }
     });
     var saved = "auto";
     try { saved = localStorage.getItem("gym4-season-demo") || "auto"; } catch (error) {}
     if (!labels[saved] && saved !== "auto") saved = "auto";
     select.value = saved;
-    if (select.value !== saved) saved = "autumn";
+    if (select.value !== saved) saved = "auto";
     select.value = saved;
     applySeasonDecor(saved);
     select.addEventListener("change", function () {
       applySeasonDecor(select.value);
       document.dispatchEvent(new CustomEvent("gym4:seasonchange", {detail:{value:select.value,theme:root.getAttribute("data-season-theme")}}));
     });
-    window.setInterval(function(){if(select.value==="auto")applySeasonDecor("auto");},60000);
 
     button = document.createElement("button");
     button.type = "button";
