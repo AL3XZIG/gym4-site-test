@@ -18,7 +18,7 @@ REQUIRED = PUBLISHED_HTML + [
     "assets/css/style.css", "assets/js/app.js", "assets/img/favicon.svg",
     "assets/js/news.js", "assets/js/news-editor.js", "assets/js/school-life.js",
     "assets/js/admin-demo.js", "assets/js/content-review.js",
-    "assets/data/news.json", "assets/data/partners.json",
+    "assets/data/news.json", "assets/data/seasonal-news.json", "assets/data/partners.json",
     "assets/data/school-life.json", "assets/data/election.json", "assets/js/election.js", "robots.txt", ".nojekyll",
 ]
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F]")
@@ -221,6 +221,39 @@ else:
                 err(label, "imageUrl должен быть HTTPS или локальным путём")
             elif not parsed_image.scheme and not (ROOT / image.lstrip("/")).is_file():
                 err(label, f"локальное изображение не найдено: {image}")
+
+
+seasonal_news = load_json("assets/data/seasonal-news.json")
+if seasonal_news.get("demoOnly") is not True:
+    err("assets/data/seasonal-news.json", "сезонные публикации должны быть явно помечены demoOnly=true")
+if not isinstance(seasonal_news.get("posts"), list):
+    err("assets/data/seasonal-news.json", "ожидается массив posts")
+else:
+    seasonal_ids = set()
+    seasons_seen = set()
+    for index, post in enumerate(seasonal_news["posts"], 1):
+        label = f"assets/data/seasonal-news.json: posts[{index}]"
+        if not isinstance(post, dict) or not str(post.get("title", "")).strip():
+            err(label, "нет заголовка")
+            continue
+        post_id = str(post.get("id", "")).strip()
+        if not post_id or post_id in seasonal_ids:
+            err(label, "пустой или повторяющийся id")
+        seasonal_ids.add(post_id)
+        if post.get("season") not in ("winter", "spring", "summer", "autumn"):
+            err(label, "season должен быть winter, spring, summer или autumn")
+        else:
+            seasons_seen.add(post["season"])
+        if post.get("category") not in ("news", "events", "announcements"):
+            err(label, "неизвестная категория")
+        try:
+            dt.date.fromisoformat(post.get("date", ""))
+        except (TypeError, ValueError):
+            err(label, "некорректная дата YYYY-MM-DD")
+        if "демонстрацион" not in str(post.get("excerpt", "")).lower():
+            err(label, "сезонная новость должна быть явно обозначена как демонстрационная")
+    if seasons_seen != {"winter", "spring", "summer", "autumn"}:
+        err("assets/data/seasonal-news.json", "нужны публикации для всех четырёх сезонов")
 
 partners = load_json("assets/data/partners.json")
 if not isinstance(partners.get("partners"), list):
