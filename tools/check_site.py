@@ -271,6 +271,16 @@ else:
             elif not parsed_url.scheme and (not material_url.startswith("assets/") or ".." in material_url.split("/")):
                 err(label, f"локальный материал должен находиться внутри assets/: {material_url}")
 
+# Regression checks for the shared seasonal experience and navigation layer.
+app_source = (ROOT / "assets" / "js" / "app.js").read_text(encoding="utf-8")
+css_source = (ROOT / "assets" / "css" / "style.css").read_text(encoding="utf-8")
+for marker in ("seasonal-atmosphere", "seasonal-toggle", "prefers-reduced-motion", "gym4:seasonchange", "aria-current", 'hint.rel = "prefetch"'):
+    if marker not in app_source:
+        err("assets/js/app.js", f"нет обязательной функции интерфейса: {marker}")
+for marker in ("@view-transition", "seasonal-particle", "prefers-reduced-motion"):
+    if marker not in css_source:
+        err("assets/css/style.css", f"нет стиля сезонного интерфейса: {marker}")
+
 if errors:
     print("Найдены проблемы:")
     for error in errors:
