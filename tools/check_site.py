@@ -152,6 +152,9 @@ for page_name, parser in parsed.items():
         if url.scheme:
             err(page_name, f"неподдерживаемая схема URL в {tag}[{key}]: {reference}")
             continue
+        if url.path.startswith(("/portal/", "/api/")):
+            # These routes exist only on the optional VPS backend, not on GitHub Pages.
+            continue
         target_name = page_name if not url.path else unquote(url.path).lstrip("/")
         target = (ROOT / target_name).resolve()
         try:
