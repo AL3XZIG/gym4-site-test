@@ -1,5 +1,6 @@
 import uuid
 from django.conf import settings
+from django.contrib.auth.models import Group, Permission
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
@@ -17,6 +18,32 @@ class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
     role = models.CharField(max_length=16, choices=Role.choices, default=Role.CANDIDATE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        group, _ = Group.objects.get_or_create(name="Election organizers")
+        if self.role == self.Role.ORGANIZER:
+            allowed = (
+                "add_user", "change_user", "view_user",
+                "add_userprofile", "change_userprofile", "view_userprofile",
+                "add_candidate", "change_candidate", "view_candidate",
+                "add_campaignsettings", "change_campaignsettings", "view_campaignsettings",
+                "view_submission", "view_auditevent",
+            )
+            permissions = Permission.objects.filter(
+                content_type__app_label__in=("auth", "elections"),
+                codename__in=allowed,
+            )
+            group.permissions.set(permissions)
+            self.user.groups.add(group)
+            if not self.user.is_staff:
+                self.user.is_staff = True
+                self.user.save(update_fields=("is_staff",))
+        else:
+            self.user.groups.remove(group)
+            if self.user.is_staff and not self.user.is_superuser:
+                self.user.is_staff = False
+                self.user.save(update_fields=("is_staff",))
 
     def __str__(self):
         return f"{self.user.username}: {self.get_role_display()}"
