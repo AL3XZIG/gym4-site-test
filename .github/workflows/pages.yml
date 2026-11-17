@@ -41,6 +41,16 @@ jobs:
           python manage.py check
           python manage.py makemigrations --check --dry-run
           python manage.py test elections
+      - name: Build and audit VPS public copy
+        run: |
+          bash deploy/build-public.sh
+          test ! -e public/admin.html
+          test ! -e public/news-editor.html
+          test ! -e public/assets/js/admin-demo.js
+          test ! -e public/assets/js/news-editor.js
+          python -c 'import json; d=json.load(open("public/assets/data/election.json")); assert d["candidates"] == [] and d["votingEnabled"] is False'
+          python -c 'import json; d=json.load(open("public/assets/data/news.json")); assert d["posts"] == []'
+          ! grep -R -E 'href="admin.html"|href="news-editor.html"' public --include='*.html'
       - name: Check deployment shell syntax
         run: |
           bash -n deploy/install.sh deploy/backup.sh deploy/update.sh deploy/build-public.sh
