@@ -3,12 +3,14 @@ set -Eeuo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PUBLIC="$ROOT/public"
 mkdir -p "$PUBLIC"
+python3 "$ROOT/tools/build_sveden_routes.py"
 find "$PUBLIC" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
 for page in index.html 404.html history.html sveden.html parents.html students.html news.html priem.html contacts.html school-life.html election.html; do
   test -f "$ROOT/$page"
   cp "$ROOT/$page" "$PUBLIC/$page"
 done
 cp -a "$ROOT/assets" "$PUBLIC/assets"
+cp -a "$ROOT/sveden" "$PUBLIC/sveden"
 rm -f "$PUBLIC/assets/js/admin-demo.js" "$PUBLIC/assets/js/news-editor.js" "$PUBLIC/assets/js/content-review.js" "$PUBLIC/assets/css/admin.css"
 cp "$ROOT/robots.txt" "$PUBLIC/robots.txt"
 # Production pages must not expose demo editors, demo labels, or demo election ballots.
@@ -18,7 +20,7 @@ import re
 import sys
 
 public = Path(sys.argv[1])
-for page in public.glob("*.html"):
+for page in public.rglob("*.html"):
     html = page.read_text(encoding="utf-8")
     html = re.sub(r'<div class="demo-strip"[^>]*>.*?</div>', "", html, flags=re.S)
     html = re.sub(r'<a\b[^>]*href="admin\.html"[^>]*>.*?</a>', "", html, flags=re.S)

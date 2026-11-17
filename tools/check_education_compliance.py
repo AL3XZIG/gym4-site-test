@@ -9,6 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "sveden.html"
+ROUTES_DIR = ROOT / "sveden"
 APP_JS = ROOT / "assets" / "js" / "app.js"
 CSS = ROOT / "assets" / "css" / "style.css"
 PUBLIC_PAGES = [
@@ -184,6 +185,46 @@ if not CSS.is_file() or 'html[data-motion="off"]' not in CSS.read_text(encoding=
 # A placeholder is not a valid email address and must not be exposed as email microdata.
 if 'itemprop="email">Требуется подтвердить' in source:
     errors.append("Плейсхолдер ошибочно размечен как itemprop=email")
+
+
+# Validate all separately addressable Sveden pages generated from the single source.
+ROUTE_MAP = {
+    "common": ("common", "Основные сведения"),
+    "struct": ("structure", "Структура и органы управления образовательной организацией"),
+    "document": ("documents", "Документы"),
+    "education": ("education", "Образование"),
+    "eduStandarts": ("standards", "Образовательные стандарты и требования"),
+    "managers": ("management", "Руководство"),
+    "employees": ("teachers", "Педагогический состав"),
+    "objects": ("facilities", "Материально-техническое обеспечение и оснащённость образовательного процесса. Доступная среда"),
+    "paid_edu": ("paid", "Платные образовательные услуги"),
+    "budget": ("finance", "Финансово-хозяйственная деятельность"),
+    "vacant": ("vacancies", "Вакантные места для приёма (перевода) обучающихся"),
+    "grants": ("grants", "Стипендии и меры поддержки обучающихся"),
+    "inter": ("international", "Международное сотрудничество"),
+    "catering": ("food", "Организация питания в образовательной организации"),
+}
+if not (ROUTES_DIR / "index.html").is_file():
+    errors.append("Нет индексной страницы /sveden/")
+for slug, (section_id, expected_title) in ROUTE_MAP.items():
+    route = ROUTES_DIR / slug / "index.html"
+    if not route.is_file():
+        errors.append(f"Нет страницы /sveden/{slug}/")
+        continue
+    route_source = route.read_text(encoding="utf-8")
+    route_parser = AuditParser()
+    route_parser.feed(route_source)
+    if section_id not in route_parser.section_ids:
+        errors.append(f"/sveden/{slug}/: отсутствует секция #{section_id}")
+    if route_parser.headings.get(section_id) != expected_title:
+        errors.append(f"/sveden/{slug}/: заголовок подраздела не совпадает")
+    if 'itemprop="copy"' not in route_source:
+        errors.append(f"/sveden/{slug}/: отсутствует itemprop=copy")
+    if 'aria-label="Подразделы сведений"' not in route_source:
+        errors.append(f"/sveden/{slug}/: отсутствует общая навигация")
+    for required in ('data-fs="200"', 'data-motion="off"', 'name="viewport"', '<title>'):
+        if required not in route_source:
+            errors.append(f"/sveden/{slug}/: отсутствует {required}")
 
 if errors:
     print("FAIL: структурная/доступностная проверка демо-сайта")
