@@ -10,9 +10,43 @@ for page in index.html 404.html history.html sveden.html parents.html students.h
 done
 cp -a "$ROOT/assets" "$PUBLIC/assets"
 cp "$ROOT/robots.txt" "$PUBLIC/robots.txt"
-# Remove links to browser-only demo editors from the VPS production copy.
-find "$PUBLIC" -maxdepth 1 -type f -name "*.html" -exec sed -i \
-  -e 's|<p class="footer-tech"><a href="admin.html">Техническая часть · тестовая админ-панель</a></p>||g' \
-  -e 's|<a class="button button--secondary" href="news-editor.html">Редактор новостей ↗</a>||g' {} +
+# Production pages must not expose demo editors, demo labels, or demo election ballots.
+python3 - "$PUBLIC" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+public = Path(sys.argv[1])
+for page in public.glob("*.html"):
+    html = page.read_text(encoding="utf-8")
+    html = re.sub(r'<div class="demo-strip"[^>]*>.*?</div>', "", html, flags=re.S)
+    html = re.sub(r'<a\b[^>]*href="admin\.html"[^>]*>.*?</a>', "", html, flags=re.S)
+    html = re.sub(r'<a\b[^>]*href="news-editor\.html"[^>]*>.*?</a>', "", html, flags=re.S)
+    html = html.replace("Демонстрационная версия сайта.", "Информация на сайте требует актуализации ответственными сотрудниками.")
+    html = html.replace("Демонстрационная версия сайта. Содержание и документы требуют согласования.", "Информация и документы требуют актуализации ответственными сотрудниками.")
+    html = html.replace("Демонстрационная версия сайта. Сведения не являются официальными и не внесены.", "Информация на сайте требует актуализации ответственными сотрудниками.")
+    html = html.replace("Демонстрационная версия. Исторические сведения собраны по официальным материалам гимназии и требуют итогового согласования.", "Исторические сведения требуют актуализации ответственными сотрудниками.")
+    html = html.replace("Демо не принимает и не сохраняет обращения.", "Порядок обращений указан в разделе «Контакты».")
+    html = html.replace("Настройки доступности хранятся в браузере посетителя. Сайт не отправляет формы и не собирает данные через эту демонстрационную версию.", "Настройки доступности хранятся в браузере посетителя.")
+    html = html.replace("Демонстрационная версия. Расписание и события требуют подтверждения администрацией.", "Расписание и события публикуются после подтверждения администрацией.")
+    html = html.replace("Кандидаты, программы и демонстрация голосования", "Кандидаты, программы и ход кампании")
+    html = html.replace("Демонстрационный раздел", "Информация о кампании")
+    html = html.replace("Сейчас на странице показан пример оформления. Указанные кандидаты и их программы условные и не относятся к реальным участникам выборов.", "Здесь публикуются карточки и материалы, одобренные организаторами выборов.")
+    html = html.replace("В демоверсии показаны условные профили; на сервере отображаются только одобренные материалы.", "На странице размещаются только материалы, одобренные организаторами.")
+    html = html.replace("Только демонстрация — не официальный бюллетень", "Электронное голосование не запущено")
+    html = html.replace("Тестовый выбор сохраняется локально в этом браузере. Он не отправляется организаторам, не учитывается в итогах и не подтверждает личность избирателя.", "Сейчас сервер публикует только материалы кампании. Официальный бюллетень появится после утверждения правил и отдельной технической проверки.")
+    html = html.replace("Тестирование интерфейса", "Голосование")
+    html = html.replace("Демонстрационный режим голосования.", "Информация о кампании и кандидатах.")
+    html = html.replace("</head>", '<style>.demo-strip,.footer-season{display:none!important}</style></head>')
+    page.write_text(html, encoding="utf-8")
+
+data_dir = public / "assets" / "data"
+data_dir.mkdir(parents=True, exist_ok=True)
+(data_dir / "election.json").write_text(
+    '{"mode":"demo","demoOnly":true,"votingEnabled":false,"candidates":[]}\n',
+    encoding="utf-8",
+)
+(data_dir / "news.json").write_text('{"posts":[]}\n', encoding="utf-8")
+PY
 touch "$PUBLIC/.nojekyll"
-echo "Static public site built in $PUBLIC (demo editors and source files excluded)."
+echo "Static VPS site built in $PUBLIC; demo editors, demo ballots and sample data are excluded."
