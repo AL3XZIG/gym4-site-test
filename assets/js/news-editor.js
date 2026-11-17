@@ -15,7 +15,7 @@
     return id;
   }
   function validDate(value) {
-    if (typeof value !== "string" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
     var date = new Date(value + "T00:00:00Z");
     return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
   }
@@ -26,8 +26,8 @@
   }
   function safeImagePath(value) {
     if (!value) return true;
-    if (/^https:\\/\\//i.test(value)) return safeHttpUrl(value);
-    return /^\\/?assets\\/[a-z0-9_./-]+$/i.test(value) && !value.split("/").some(function (part) { return part === ".."; });
+    if (/^https:\/\//i.test(value)) return safeHttpUrl(value);
+    return /^\/?assets\/[a-z0-9_./-]+$/i.test(value) && !value.split("/").some(function (part) { return part === ".."; });
   }
   function validPost(post) {
     return post && typeof post === "object" &&
