@@ -95,3 +95,10 @@ v4 не публикуется, если остаётся хотя бы один
 - backup без проверенного restore;
 - красивый макет без тестирования на телефоне;
 - заполненный раздел без подтверждения владельцем информации.
+
+
+## 7. Implemented automated browser smoke layer
+
+The repository now includes tools/browser_qa.mjs and .github/workflows/browser-qa.yml. The suite opens all declared demo routes in Chromium at 320, 360, 390, 768, 1280, 1440 and 1920 CSS pixels; checks document structure, JavaScript exceptions and horizontal overflow; exercises mobile navigation and accessibility settings; and runs axe-core WCAG 2.1 A/AA checks. Critical axe findings fail the workflow; serious and moderate findings are reported for remediation.
+
+This is a first browser gate, not full E2E coverage. It does not test CMS publication, reviewer permissions, media authorization, Firefox/WebKit, real devices, assistive technology, legal content accuracy or production backup restoration.
