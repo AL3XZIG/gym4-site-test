@@ -69,6 +69,7 @@ restart_web() {
 }
 trap 'restart_web; cleanup' EXIT
 
+docker compose --env-file .env -f docker-compose.yml exec -T db sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" "$POSTGRES_DB" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"'
 gunzip -c "$DB_BACKUP" | docker compose --env-file .env -f docker-compose.yml exec -T db sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" "$POSTGRES_DB"'
 OLD_MEDIA="$ROOT/var/media.pre-restore-$STAMP"
 if [[ -e "$OLD_MEDIA" ]]; then
