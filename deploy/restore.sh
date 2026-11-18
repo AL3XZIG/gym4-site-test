@@ -47,6 +47,11 @@ if [[ "$confirmation" != "RESTORE-$STAMP" ]]; then
   exit 1
 fi
 
+OLD_MEDIA="$ROOT/var/media.pre-restore-$STAMP"
+if [[ -e "$OLD_MEDIA" ]]; then
+  echo "Refusing to overwrite existing recovery directory: $OLD_MEDIA" >&2
+  exit 1
+fi
 bash "$DEPLOY_DIR/backup.sh"
 TEMP_DIR="$(mktemp -d "$ROOT/var/restore.XXXXXX")"
 MEDIA_STAGE="$TEMP_DIR/media"
@@ -54,28 +59,29 @@ mkdir -p "$MEDIA_STAGE"
 cleanup() {
   rm -rf "$TEMP_DIR"
 }
-trap cleanup EXIT
+web_stopped=0
+on_exit() {
+  local status=$?
+  if [[ "$status" -ne 0 && -d "$OLD_MEDIA" && ! -e "$ROOT/var/media" ]]; then
+    mv "$OLD_MEDIA" "$ROOT/var/media" || true
+  fi
+  if [[ "$web_stopped" == "1" ]]; then
+    docker compose --env-file "$ENV_FILE" -f "$DEPLOY_DIR/docker-compose.yml" up -d web || true
+  fi
+  cleanup
+  exit "$status"
+}
+trap on_exit EXIT
 
 tar --no-same-owner --no-same-permissions -xzf "$MEDIA_BACKUP" -C "$MEDIA_STAGE"
 mkdir -p "$ROOT/var/media"
 
 cd "$DEPLOY_DIR"
-docker compose --env-file .env -f docker-compose.yml stop web
 web_stopped=1
-restart_web() {
-  if [[ "${web_stopped:-0}" == "1" ]]; then
-    docker compose --env-file .env -f docker-compose.yml up -d web || true
-  fi
-}
-trap 'restart_web; cleanup' EXIT
+docker compose --env-file .env -f docker-compose.yml stop web
 
 docker compose --env-file .env -f docker-compose.yml exec -T db sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" "$POSTGRES_DB" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"'
 gunzip -c "$DB_BACKUP" | docker compose --env-file .env -f docker-compose.yml exec -T db sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" "$POSTGRES_DB"'
-OLD_MEDIA="$ROOT/var/media.pre-restore-$STAMP"
-if [[ -e "$OLD_MEDIA" ]]; then
-  echo "Refusing to overwrite existing recovery directory: $OLD_MEDIA" >&2
-  exit 1
-fi
 mv "$ROOT/var/media" "$OLD_MEDIA"
 mv "$MEDIA_STAGE" "$ROOT/var/media"
 chown -R 10001:10001 "$ROOT/var/media"
