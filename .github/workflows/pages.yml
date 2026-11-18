@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, v4-release-work]
   workflow_dispatch:
 
 permissions:
@@ -59,7 +59,7 @@ jobs:
           ! grep -R -E 'href="admin.html"|href="news-editor.html"' public --include='*.html'
       - name: Check deployment shell syntax
         run: |
-          bash -n deploy/install.sh deploy/backup.sh deploy/update.sh deploy/build-public.sh
+          bash -n deploy/install.sh deploy/backup.sh deploy/restore.sh deploy/update.sh deploy/build-public.sh
           sh -n server/entrypoint.sh
       - name: Check JavaScript syntax
         run: |
