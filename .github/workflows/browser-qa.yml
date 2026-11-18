@@ -1,0 +1,34 @@
+name: Browser QA
+
+on:
+  pull_request:
+    branches: [main, v4-release-work]
+  push:
+    branches: [pre-release-qa-hardening]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    name: Chromium smoke and accessibility audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser test dependencies
+        run: npm install --no-save --no-package-lock playwright @axe-core/playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run browser QA
+        run: node tools/browser_qa.mjs
