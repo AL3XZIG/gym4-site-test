@@ -62,7 +62,11 @@ cleanup() {
 web_stopped=0
 on_exit() {
   local status=$?
-  if [[ "$status" -ne 0 && -d "$OLD_MEDIA" && ! -e "$ROOT/var/media" ]]; then
+  if [[ "$status" -ne 0 && -d "$OLD_MEDIA" ]]; then
+    docker compose --env-file "$ENV_FILE" -f "$DEPLOY_DIR/docker-compose.yml" stop web || true
+    if [[ -e "$ROOT/var/media" ]]; then
+      mv "$ROOT/var/media" "$ROOT/var/media.failed-$STAMP-$$" || true
+    fi
     mv "$OLD_MEDIA" "$ROOT/var/media" || true
   fi
   if [[ "$web_stopped" == "1" ]]; then
@@ -87,7 +91,7 @@ mv "$MEDIA_STAGE" "$ROOT/var/media"
 chown -R 10001:10001 "$ROOT/var/media"
 chmod 750 "$ROOT/var/media"
 docker compose --env-file .env -f docker-compose.yml up -d web
-web_stopped=0
 docker compose --env-file .env -f docker-compose.yml exec -T web python manage.py check
+web_stopped=0
 echo "Restore completed. Previous media retained at: $OLD_MEDIA"
 echo "Run a public-site smoke check and inspect service logs before declaring recovery complete."
