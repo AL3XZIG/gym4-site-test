@@ -62,7 +62,7 @@ else
   if ! grep -q '^DJANGO_SECRET_KEY=.' "$ENV_FILE" || ! grep -q '^POSTGRES_PASSWORD=.' "$ENV_FILE"; then echo "$ENV_FILE exists but required secrets are missing; refusing to overwrite it." >&2; exit 1; fi
   sed -i "s|^ALLOWED_HOSTS=.*|ALLOWED_HOSTS=$DOMAIN|" "$ENV_FILE"
   sed -i "s|^CSRF_TRUSTED_ORIGINS=.*|CSRF_TRUSTED_ORIGINS=https://$DOMAIN|" "$ENV_FILE"
-  if ! grep -q '^SECURE_SSL_REDIRECT=' "$ENV_FILE"; then printf 'SECURE_SSL_REDIRECT=0\\n' >> "$ENV_FILE"; fi
+  if ! grep -q '^SECURE_SSL_REDIRECT=' "$ENV_FILE"; then printf '%s\n' 'SECURE_SSL_REDIRECT=0' >> "$ENV_FILE"; fi
 fi
 TMP_CONF="$(mktemp)"
 sed -e "s|__DOMAIN__|$DOMAIN|g" -e "s|__ROOT__|$ROOT/public|g" "$DEPLOY_DIR/nginx/gym4-site.conf.template" > "$TMP_CONF"
