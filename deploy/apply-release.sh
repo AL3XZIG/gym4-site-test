@@ -65,7 +65,7 @@ with tarfile.open(archive, "r:gz") as bundle:
     bundle.extractall(destination, filter="data")
 PY
 
-for required in server/Dockerfile server/manage.py deploy/docker-compose.yml deploy/build-public.sh; do
+for required in server/Dockerfile server/manage.py deploy/docker-compose.yml deploy/build-public.sh repo.bundle; do
   if [[ ! -f "$STAGE/$required" ]]; then
     echo "Release bundle is incomplete: missing $required" >&2
     exit 1
@@ -113,6 +113,7 @@ rsync -a --delete \
   --exclude='/deploy/.env' \
   --exclude='/var/' \
   --exclude='/public/' \
+  --exclude='/repo.bundle' \
   "$STAGE/" "$ROOT/"
 
 bash "$DEPLOY_DIR/build-public.sh"
@@ -150,6 +151,8 @@ if [[ "$SUCCESS" -ne 1 ]]; then
   false
 fi
 
+git -C "$ROOT" fetch "$STAGE/repo.bundle" HEAD
+git -C "$ROOT" reset --hard FETCH_HEAD
 trap - ERR
 echo "Release successfully deployed."
 echo "Manifest: $ROOT/RELEASE-MANIFEST.txt"
