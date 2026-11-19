@@ -58,8 +58,12 @@ jobs:
           bash -n deploy/install.sh deploy/backup.sh deploy/update.sh deploy/build-public.sh deploy/package-release.sh deploy/apply-release.sh
           sh -n server/entrypoint.sh
           bash deploy/package-release.sh /tmp/gym4-release-test
-          sha256sum --check /tmp/gym4-release-test/*.sha256
-          tar -tzf /tmp/gym4-release-test/*.tar.gz | grep -Fq 'RELEASE-MANIFEST.txt'
+          (
+            cd /tmp/gym4-release-test
+            sha256sum --check ./*.sha256
+            tar -tzf ./*.tar.gz > /tmp/gym4-release-contents.txt
+          )
+          grep -Fq 'RELEASE-MANIFEST.txt' /tmp/gym4-release-contents.txt
       - name: Check JavaScript syntax
         run: |
           node --check assets/js/app.js
