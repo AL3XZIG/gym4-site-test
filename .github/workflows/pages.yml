@@ -88,13 +88,15 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Prepare static site
         run: |
+          bash deploy/build-public.sh
           mkdir -p _site
-          for page in index.html 404.html history.html sveden.html parents.html students.html news.html news-editor.html priem.html contacts.html school-life.html election.html admin.html; do
-            test -f "$page"
-            cp "$page" _site/
-          done
-          cp -R assets _site/assets
-          cp robots.txt _site/robots.txt
+          cp -a public/. _site/
+          test ! -e _site/admin.html
+          test ! -e _site/news-editor.html
+          test ! -e _site/assets/js/admin-demo.js
+          test ! -e _site/assets/js/news-editor.js
+          test ! -e _site/assets/js/content-review.js
+          ! grep -R -E 'href="admin.html"|href="news-editor.html"' _site --include='*.html'
           touch _site/.nojekyll
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
