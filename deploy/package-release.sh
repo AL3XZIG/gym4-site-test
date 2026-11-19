@@ -22,6 +22,7 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 git -C "$ROOT" archive --format=tar HEAD | tar -xf - -C "$TMP"
+git -C "$ROOT" bundle create "$TMP/repo.bundle" HEAD
 cat > "$TMP/RELEASE-MANIFEST.txt" <<EOF
 Gym4 release bundle
 Commit: $COMMIT
