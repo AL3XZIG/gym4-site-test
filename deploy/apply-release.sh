@@ -20,6 +20,7 @@ STAGE="$(mktemp -d)"
 SOURCE_BACKUP="$BACKUP_DIR/source-$STAMP.tar.gz"
 BUNDLE="$(readlink -f "$BUNDLE")"
 SUCCESS=0
+HEALTH_OK=0
 
 cleanup() { rm -rf "$STAGE"; }
 trap cleanup EXIT
@@ -140,12 +141,12 @@ docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python m
 for attempt in $(seq 1 30); do
   if curl --fail --silent --output /dev/null http://127.0.0.1/ && \
      curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8000/portal/login/ | grep -Eq '^(200|301|302)$'; then
-    SUCCESS=1
+    HEALTH_OK=1
     break
   fi
   sleep 2
 done
-if [[ "$SUCCESS" -ne 1 ]]; then
+if [[ "$HEALTH_OK" -ne 1 ]]; then
   docker compose --env-file "$ENV_FILE" -f docker-compose.yml logs --tail=100 web >&2 || true
   echo "Post-deployment health check failed." >&2
   false
@@ -153,6 +154,7 @@ fi
 
 git -C "$ROOT" fetch "$STAGE/repo.bundle" HEAD
 git -C "$ROOT" reset --hard FETCH_HEAD
+SUCCESS=1
 trap - ERR
 echo "Release successfully deployed."
 echo "Manifest: $ROOT/RELEASE-MANIFEST.txt"
