@@ -142,3 +142,30 @@ class AuditEvent(models.Model):
 
     def __str__(self):
         return f"{self.action} · {self.created_at:%Y-%m-%d %H:%M}"
+
+
+class ElectionControlState(models.Model):
+    """Singleton storage for operator-entered aggregate tally and display mode."""
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    data = models.JSONField(default=dict, blank=True)
+    published = models.BooleanField(default=False)
+    published_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        verbose_name = "Состояние панели выборов"
+        verbose_name_plural = "Состояние панели выборов"
+
+    @classmethod
+    def load(cls, lock=False):
+        queryset = cls.objects.select_for_update() if lock else cls.objects
+        state, _ = queryset.get_or_create(pk=1, defaults={"data": {"mode": "live", "votes": {}, "manual_percentages": {}}})
+        return state
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValueError("ElectionControlState is a singleton and cannot be deleted.")

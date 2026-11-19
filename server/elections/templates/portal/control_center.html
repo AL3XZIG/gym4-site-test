@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Election Control Center · Gym4</title><link rel="stylesheet" href="{% static 'control-center.css' %}"></head>
+<body>
+<header class="top"><a class="brand" href="/portal/">GYM4 <span>· ELECTION CONTROL</span></a><div class="top-right"><span>Вход: {{ request.user.username }}</span><a href="/portal/logout/">Выйти</a></div></header>
+<main class="shell">
+  <section class="heading"><div><p class="eyebrow">ОПЕРАТОРСКАЯ ПАНЕЛЬ</p><h1>Центр управления выборами</h1><p>Мониторинг, корректировки, публикации и техническое состояние.</p></div><div class="status"><i></i> Панель защищена · Owner</div></section>
+  {% if messages %}<div class="messages">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+  <section class="metrics">
+    <article><span>Всего голосов</span><strong>{{ total }}</strong><small>Сумма текущих значений</small></article>
+    <article><span>Кандидатов</span><strong>{{ candidates|length }}</strong><small>Активные профили</small></article>
+    <article><span>Режим</span><strong>{% if state.data.mode == "simulation" %}SIMULATION{% else %}LIVE{% endif %}</strong><small>{% if state.data.mode == "simulation" %}Демонстрационные данные{% else %}Фактический подсчёт{% endif %}</small></article>
+    <article><span>Публикация</span><strong>{% if state.published %}Опубликовано{% else %}Черновик{% endif %}</strong><small>{% if state.published_at %}{{ state.published_at|date:"d.m.Y H:i" }}{% else %}Не опубликовано{% endif %}</small></article>
+  </section>
+  <section class="grid">
+    <div class="panel wide"><div class="panel-head"><div><p class="eyebrow">LIVE MONITOR</p><h2>Распределение голосов</h2></div><span class="pill">Обновлено {{ state.updated_at|date:"H:i:s" }}</span></div>
+      {% for candidate in candidates %}<div class="candidate"><div class="candidate-line"><div><b>{{ candidate.name }}</b><small>{{ candidate.public_id }}</small></div><strong>{{ candidate.votes }} <small>голосов</small></strong></div><div class="track"><span style="width:{% if total %}{{ candidate.display_percent }}{% else %}0{% endif %}%"></span></div><div class="percent">{{ candidate.display_percent }}% отображается{% if state.data.mode == "simulation" and candidate.percent != None %} · ручное значение симуляции{% else %} · рассчитано из голосов{% endif %}</div></div>{% empty %}<p>Нет активных кандидатов. Сначала добавьте и опубликуйте профили.</p>{% endfor %}
+    </div>
+    <aside class="panel"><p class="eyebrow">SYSTEM HEALTH</p><h2>Состояние системы</h2><div id="health" class="health">Проверка…</div><p class="muted">Проверяется доступность приложения и базы данных. Это не заменяет резервное копирование.</p><button class="button secondary" id="refreshHealth" type="button">Проверить снова</button></aside>
+  </section>
+  <section class="panel"><div class="panel-head"><div><p class="eyebrow">OPERATOR TOOLS</p><h2>Управление подсчётом</h2></div></div>
+    <div class="mode-switch">
+      <form method="post" action="{% url 'election-control-action' %}">{% csrf_token %}<input type="hidden" name="action" value="set_mode"><input type="hidden" name="mode" value="live"><button class="button {% if state.data.mode != 'simulation' %}primary{% else %}secondary{% endif %}">Фактический подсчёт</button></form>
+      <form method="post" action="{% url 'election-control-action' %}">{% csrf_token %}<input type="hidden" name="action" value="set_mode"><input type="hidden" name="mode" value="simulation"><button class="button {% if state.data.mode == 'simulation' %}primary{% else %}secondary{% endif %}">Симуляция</button></form>
+    </div>
+    <p class="notice">В режиме LIVE допускаются только исправления ошибок с обязательным указанием причины. Проценты вычисляются из голосов. В SIMULATION можно задавать демонстрационные значения и проценты вручную; они не должны выдаваться за фактический результат.</p>
+    <div class="candidate-edit-list">{% for candidate in candidates %}<form class="edit-row" method="post" action="{% url 'election-control-action' %}">{% csrf_token %}<input type="hidden" name="action" value="save_votes"><input type="hidden" name="candidate_id" value="{{ candidate.id }}"><div><b>{{ candidate.name }}</b><small>{{ candidate.public_id }}</small></div><label>Голоса<input type="number" name="votes" min="0" max="1000000" value="{{ candidate.votes }}" required></label><label class="reason">Причина / комментарий<input type="text" name="reason" maxlength="500" placeholder="Например: восстановление после сбоя"></label><button class="button primary">Сохранить</button></form>{% endfor %}</div>
+    {% if state.data.mode == "simulation" %}<form method="post" action="{% url 'election-control-action' %}" class="percent-form">{% csrf_token %}<input type="hidden" name="action" value="save_percentages"><h3>Ручные проценты · только симуляция</h3><div class="percent-grid">{% for candidate in candidates %}<label>{{ candidate.name }}<input type="number" name="percent_{{ candidate.id }}" min="0" max="100" step="0.1" value="{{ candidate.percent|default_if_none:'' }}" placeholder="Автоматически"></label>{% endfor %}</div><button class="button primary">Сохранить проценты симуляции</button></form>{% endif %}
+  </section>
+  <section class="grid">
+    <div class="panel"><p class="eyebrow">PUBLICATION</p><h2>Новости Gym4</h2><p class="muted">Публикация создаёт новостную запись в серверном API кампании. В режиме симуляции заголовок явно помечается демонстрационным.</p><div class="actions"><form method="post" action="{% url 'election-control-action' %}">{% csrf_token %}<input type="hidden" name="action" value="publish"><button class="button primary">Опубликовать сводку</button></form><form method="post" action="{% url 'election-control-action' %}">{% csrf_token %}<input type="hidden" name="action" value="unpublish"><button class="button secondary">Снять отметку публикации</button></form></div></div>
+    <div class="panel"><p class="eyebrow">AUDIT TRAIL</p><h2>Последние операции</h2><div class="events">{% for event in events %}<div><b>{{ event.get_action_display|default:event.action }}</b><small>{{ event.actor.username|default:"Система" }} · {{ event.created_at|date:"d.m.Y H:i:s" }}</small></div>{% empty %}<p class="muted">Операций пока нет.</p>{% endfor %}</div></div>
+  </section>
+  <footer>GYM4 · Election Control Center · Доступ только для учётной записи суперпользователя.</footer>
+</main>
+<script>
+async function checkHealth(){const el=document.getElementById('health');el.textContent='Проверка…';try{const r=await fetch("{% url 'election-control-health' %}",{credentials:'same-origin'});if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();el.innerHTML='<b class="'+(d.status==='ok'?'good':'bad')+'">'+(d.status==='ok'?'Система работает':'Есть проблема')+'</b><span>База данных: '+(d.database==='ok'?'доступна':'ошибка')+'</span><span>Режим: '+d.mode+'</span><span>Проверено: '+new Date(d.checked_at).toLocaleTimeString('ru-RU')+'</span>';}catch(e){el.textContent='Не удалось проверить: '+e.message;}}
+document.getElementById('refreshHealth').addEventListener('click',checkHealth);checkHealth();
+</script></body></html>

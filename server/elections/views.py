@@ -1,4 +1,5 @@
 import mimetypes
+from django.db.models import Q
 from functools import wraps
 from django.contrib import messages
 from django.contrib.auth import login
@@ -215,7 +216,8 @@ def public_election(request):
 def public_news(request):
     posts = Submission.objects.filter(
         kind=Submission.Kind.NEWS, status=Submission.Status.PUBLISHED,
-        candidate__is_active=True, candidate__user__is_active=True
+    ).filter(
+        Q(candidate__isnull=True) | Q(candidate__is_active=True, candidate__user__is_active=True)
     ).select_related("author", "candidate").order_by("-published_at")[:100]
     data = []
     for item in posts:

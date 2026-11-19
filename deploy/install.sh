@@ -54,6 +54,7 @@ CSRF_TRUSTED_ORIGINS=https://$DOMAIN
 POSTGRES_DB=gym4_elections
 POSTGRES_USER=gym4
 POSTGRES_PASSWORD=$DB_PASSWORD
+SECURE_SSL_REDIRECT=0
 EOF
   chmod 600 "$ENV_FILE"
 else
@@ -61,6 +62,7 @@ else
   if ! grep -q '^DJANGO_SECRET_KEY=.' "$ENV_FILE" || ! grep -q '^POSTGRES_PASSWORD=.' "$ENV_FILE"; then echo "$ENV_FILE exists but required secrets are missing; refusing to overwrite it." >&2; exit 1; fi
   sed -i "s|^ALLOWED_HOSTS=.*|ALLOWED_HOSTS=$DOMAIN|" "$ENV_FILE"
   sed -i "s|^CSRF_TRUSTED_ORIGINS=.*|CSRF_TRUSTED_ORIGINS=https://$DOMAIN|" "$ENV_FILE"
+  if ! grep -q '^SECURE_SSL_REDIRECT=' "$ENV_FILE"; then printf '%s\n' 'SECURE_SSL_REDIRECT=0' >> "$ENV_FILE"; fi
 fi
 TMP_CONF="$(mktemp)"
 sed -e "s|__DOMAIN__|$DOMAIN|g" -e "s|__ROOT__|$ROOT/public|g" "$DEPLOY_DIR/nginx/gym4-site.conf.template" > "$TMP_CONF"
@@ -96,10 +98,23 @@ if [[ "${ENABLE_TLS:-0}" == "1" ]]; then
   if [[ -z "${CERTBOT_EMAIL:-}" ]]; then echo "Set CERTBOT_EMAIL when ENABLE_TLS=1." >&2; exit 1; fi
   apt-get install -y certbot python3-certbot-nginx
   certbot --nginx --redirect -d "$DOMAIN" --non-interactive --agree-tos -m "$CERTBOT_EMAIL"
+  sed -i 's/^SECURE_SSL_REDIRECT=.*/SECURE_SSL_REDIRECT=1/' "$ENV_FILE"
+  docker compose --env-file "$ENV_FILE" -f docker-compose.yml up -d --force-recreate web
+  TLS_READY=0
+  for attempt in $(seq 1 30); do
+    if docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python manage.py check >/dev/null 2>&1; then TLS_READY=1; break; fi
+    sleep 2
+  done
+  if [[ "$TLS_READY" -ne 1 ]]; then echo "Application did not become ready after enabling HTTPS." >&2; exit 1; fi
 fi
 echo "Create the first organizer account (Django superuser)."
 docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec web python manage.py createsuperuser
-echo "Deployment prepared: http://$DOMAIN"
-if [[ "${ENABLE_TLS:-0}" != "1" ]]; then echo "After DNS points to this VPS, run: apt-get install -y certbot python3-certbot-nginx && certbot --nginx --redirect -d $DOMAIN"; fi
+if [[ "${ENABLE_TLS:-0}" == "1" ]]; then
+  echo "Deployment prepared: https://$DOMAIN"
+else
+  echo "Deployment prepared: http://$DOMAIN (HTTPS is not configured yet)."
+  echo "After obtaining a certificate, set SECURE_SSL_REDIRECT=1 in $ENV_FILE and recreate the web service."
+  echo "Install Certbot with: apt-get install -y certbot python3-certbot-nginx && certbot --nginx --redirect -d $DOMAIN"
+fi
 echo "Do not issue candidate passwords until HTTPS is working."
 echo "The existing Nginx default site was not removed or modified."

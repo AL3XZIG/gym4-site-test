@@ -2,6 +2,7 @@
 deploy/.env
 var/
 public/
+releases/
 server/private_media/
 server/staticfiles/
 server/db.sqlite3
@@ -9,3 +10,4 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
+RELEASE-MANIFEST.txt
