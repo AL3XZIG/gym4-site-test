@@ -51,66 +51,13 @@ jobs:
           python -c 'import json; d=json.load(open("public/assets/data/election.json")); assert d["candidates"] == [] and d["votingEnabled"] is False'
           python -c 'import json; d=json.load(open("public/assets/data/news.json")); assert d["posts"] == []'
           ! grep -R -E 'href="admin.html"|href="news-editor.html"' public --include='*.html'
-      - name: Check deployment shell syntax
+      - name: Check deployment shell syntax and release archive
         run: |
           bash -n deploy/install.sh deploy/backup.sh deploy/update.sh deploy/build-public.sh deploy/package-release.sh deploy/apply-release.sh
           sh -n server/entrypoint.sh
           bash deploy/package-release.sh /tmp/gym4-release-test
           sha256sum --check /tmp/gym4-release-test/*.sha256
-          tar -tzf /tmp/gym4-release-test/*.tar.gz | grep -q '^./RELEASE-MANIFEST.txt
-      - name: Check JavaScript syntax
-        run: |
-          node --check assets/js/app.js
-          node --check assets/js/news.js
-          node --check assets/js/news-editor.js
-          node --check assets/js/school-life.js
-          node --check assets/js/election.js
-          node --check assets/js/admin-demo.js
-          node --check assets/js/content-review.js
-
-  build:
-    name: Build Pages artifact
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: check
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Prepare static site
-        run: |
-          mkdir -p _site
-          for page in index.html 404.html history.html sveden.html parents.html students.html news.html news-editor.html priem.html contacts.html school-life.html election.html admin.html; do
-            test -f "$page"
-            cp "$page" _site/
-          done
-          cp -R assets _site/assets
-          cp robots.txt _site/robots.txt
-          touch _site/.nojekyll
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-  deploy:
-    name: Deploy to GitHub Pages
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
-
+          tar -tzf /tmp/gym4-release-test/*.tar.gz | grep -Fq 'RELEASE-MANIFEST.txt'
       - name: Check JavaScript syntax
         run: |
           node --check assets/js/app.js
