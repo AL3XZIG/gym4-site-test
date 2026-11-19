@@ -1,4 +1,5 @@
 from copy import deepcopy
+from html import escape
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -110,7 +111,7 @@ def control_action(request):
             name = profile.title if profile else candidate.public_id
             votes = int(data["votes"].get(str(candidate.pk), 0))
             percent = data["manual_percentages"].get(str(candidate.pk)) if data.get("mode") == "simulation" else (round(votes * 100 / total_votes, 1) if total_votes else 0)
-            rows.append(f"<li>{name}: {votes} голосов ({percent}%)</li>")
+            rows.append(f"<li>{escape(name)}: {votes} голосов ({percent}%)</li>")
         body = "<p>Опубликовано из панели управления выборами.</p><ol>" + "".join(rows) + "</ol>"
         Submission.objects.create(
             author=request.user, kind=Submission.Kind.NEWS,
