@@ -4,11 +4,52 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from .models import CampaignSettings, Candidate, Submission, UserProfile
+from .models import AuditEvent, CampaignSettings, Candidate, ElectionControlState, Submission, UserProfile
 
 User = get_user_model()
 
 class ElectionPortalTests(TestCase):
+    def test_control_publish_is_idempotent_and_unpublish_withdraws_public_summary(self):
+        operator = User.objects.create_superuser(
+            username="operator",
+            email="operator@example.test",
+            password="A-long-test-password-123",
+        )
+        self.client.force_login(operator)
+        action_url = reverse("election-control-action")
+
+        first = self.client.post(action_url, {"action": "publish"})
+        self.assertEqual(first.status_code, 302)
+        state = ElectionControlState.load()
+        published_id = state.data["published_submission_id"]
+        post = Submission.objects.get(pk=published_id)
+        self.assertEqual(post.status, Submission.Status.PUBLISHED)
+        self.assertEqual(len(self.client.get(reverse("public-news")).json()["posts"]), 1)
+
+        self.client.post(action_url, {"action": "publish"})
+        self.assertEqual(
+            Submission.objects.filter(kind=Submission.Kind.NEWS, status=Submission.Status.PUBLISHED).count(),
+            1,
+        )
+
+        self.client.post(action_url, {"action": "unpublish", "reason": "Отозвано оператором"})
+        state.refresh_from_db()
+        post.refresh_from_db()
+        self.assertFalse(state.published)
+        self.assertEqual(post.status, Submission.Status.DRAFT)
+        self.assertIsNone(post.published_at)
+        self.assertEqual(self.client.get(reverse("public-news")).json()["posts"], [])
+
+        self.client.post(action_url, {"action": "publish"})
+        post.refresh_from_db()
+        self.assertEqual(post.status, Submission.Status.PUBLISHED)
+        self.assertEqual(post.pk, ElectionControlState.load().data["published_submission_id"])
+        self.assertEqual(
+            Submission.objects.filter(kind=Submission.Kind.NEWS, status=Submission.Status.PUBLISHED).count(),
+            1,
+        )
+
+
     def make_candidate(self, username, public_id):
         user = User.objects.create_user(username=username, password="A-long-test-password-123")
         user.profile.role = UserProfile.Role.CANDIDATE
