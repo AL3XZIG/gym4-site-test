@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from .models import AuditEvent, CampaignSettings, Candidate, ElectionControlState, Submission, UserProfile
+from .models import CampaignSettings, Candidate, ElectionControlState, Submission, UserProfile
 
 User = get_user_model()
 
