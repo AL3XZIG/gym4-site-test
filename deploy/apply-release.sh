@@ -84,14 +84,6 @@ tar -czf "$SOURCE_BACKUP" -C "$ROOT" \
   --exclude=.git --exclude=deploy/.env --exclude=var --exclude=public .
 chmod 600 "$SOURCE_BACKUP"
 
-echo "Applying release files..."
-rsync -a --delete \
-  --exclude='/.git/' \
-  --exclude='/deploy/.env' \
-  --exclude='/var/' \
-  --exclude='/public/' \
-  "$STAGE/" "$ROOT/"
-
 rollback() {
   local status=$?
   if [[ "$SUCCESS" -eq 0 ]]; then
@@ -115,11 +107,31 @@ rollback() {
 }
 trap rollback ERR
 
+echo "Applying release files..."
+rsync -a --delete \
+  --exclude='/.git/' \
+  --exclude='/deploy/.env' \
+  --exclude='/var/' \
+  --exclude='/public/' \
+  "$STAGE/" "$ROOT/"
+
 bash "$DEPLOY_DIR/build-public.sh"
 cd "$DEPLOY_DIR"
 docker compose --env-file "$ENV_FILE" -f docker-compose.yml config -q
 docker compose --env-file "$ENV_FILE" -f docker-compose.yml up -d --build
-docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python manage.py check
+APP_READY=0
+for attempt in $(seq 1 30); do
+  if docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python manage.py check >/dev/null 2>&1; then
+    APP_READY=1
+    break
+  fi
+  sleep 2
+done
+if [[ "$APP_READY" -ne 1 ]]; then
+  docker compose --env-file "$ENV_FILE" -f docker-compose.yml logs --tail=100 web >&2 || true
+  echo "Django did not become ready." >&2
+  false
+fi
 docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python manage.py migrate --check
 docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python manage.py showmigrations --plan
 
