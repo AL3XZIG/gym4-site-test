@@ -61,9 +61,9 @@ with tarfile.open(archive, "r:gz") as bundle:
         target = (destination / member.name).resolve()
         if target != destination and destination not in target.parents:
             raise SystemExit(f"Unsafe path in release archive: {member.name}")
-        if member.issym() or member.islnk() or member.isdev():
-            raise SystemExit(f"Unsupported link/device in release archive: {member.name}")
-    bundle.extractall(destination, filter="data")
+        if not (member.isfile() or member.isdir()):
+            raise SystemExit(f"Unsupported special file in release archive: {member.name}")
+    bundle.extractall(destination, members=members)
 PY
 
 for required in server/Dockerfile server/manage.py deploy/docker-compose.yml deploy/build-public.sh repo.bundle; do
@@ -98,6 +98,9 @@ rollback() {
         --exclude='/var/' \
         --exclude='/public/' \
         "$STAGE/rollback/" "$ROOT/"
+      if ! bash "$DEPLOY_DIR/build-public.sh"; then
+        echo "Warning: could not regenerate the public site from restored sources." >&2
+      fi
       if [[ -f "$DEPLOY_DIR/.env" ]]; then
         (cd "$DEPLOY_DIR" && docker compose --env-file .env -f docker-compose.yml up -d --build) || true
       fi
@@ -137,10 +140,22 @@ fi
 docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python manage.py migrate --check
 docker compose --env-file "$ENV_FILE" -f docker-compose.yml exec -T web python manage.py showmigrations --plan
 
-# A local HTTP check verifies that Nginx still serves the site and Django login responds.
+# Check the configured virtual host and Django login with the real Host header.
+HEALTH_HOST="$(awk -F= '$1 == "ALLOWED_HOSTS" { split($2, hosts, ","); print hosts[1]; exit }' "$ENV_FILE")"
+HEALTH_REDIRECT="$(awk -F= '$1 == "SECURE_SSL_REDIRECT" { print $2; exit }' "$ENV_FILE")"
+if [[ -z "$HEALTH_HOST" ]]; then
+  echo "ALLOWED_HOSTS is empty; cannot perform the deployment health check." >&2
+  false
+fi
+PROXY_PROTO=http
+if [[ "$HEALTH_REDIRECT" != "0" ]]; then PROXY_PROTO=https; fi
 for attempt in $(seq 1 30); do
-  if curl --fail --silent --output /dev/null http://127.0.0.1/ && \
-     curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8000/portal/login/ | grep -Eq '^(200|301|302)$'; then
+  ROOT_STATUS="$(curl --silent --output /dev/null --write-out '%{http_code}' -H "Host: $HEALTH_HOST" http://127.0.0.1/ || true)"
+  if [[ "$ROOT_STATUS" =~ ^(200|301|302)$ ]] && \
+     curl --fail --silent --show-error --output /dev/null \
+       -H "Host: $HEALTH_HOST" \
+       -H "X-Forwarded-Proto: $PROXY_PROTO" \
+       http://127.0.0.1:8000/portal/login/; then
     HEALTH_OK=1
     break
   fi
