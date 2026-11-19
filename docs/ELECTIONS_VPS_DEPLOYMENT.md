@@ -52,6 +52,13 @@ sudo bash deploy/install.sh elections.example.org
 ~~~bash
 sudo apt-get install -y certbot python3-certbot-nginx
 sudo certbot --nginx --redirect -d elections.example.org
+
+После успешной установки сертификата включите HTTPS-перенаправление Django и перезапустите web-контейнер:
+
+```bash
+sudo sed -i 's/^SECURE_SSL_REDIRECT=.*/SECURE_SSL_REDIRECT=1/' deploy/.env
+cd deploy && sudo docker compose --env-file .env -f docker-compose.yml up -d --force-recreate web
+```
 ~~~
 
 Проверьте https://elections.example.org/portal/login/. Только после успешной проверки HTTPS выдавайте кандидатам логины и временные пароли. Не пересылайте пароли в общие чаты.
