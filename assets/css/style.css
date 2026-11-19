@@ -1665,3 +1665,5 @@ html[data-images="hide"] .seasonal-atmosphere{display:none!important}
 .review-card__body p{margin:.85rem 0 .3rem;color:var(--text,#34495a);line-height:1.65}
 .review-card__body a{margin-top:.2rem}
 @media(max-width:760px){.review-source-grid{grid-template-columns:1fr}.review-source{min-height:0}}
+
+.route-panel--links{grid-template-columns:1fr}
