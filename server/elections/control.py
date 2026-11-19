@@ -37,6 +37,8 @@ def control_center(request):
     total = sum(item["votes"] for item in candidate_rows)
     for item in candidate_rows:
         item["calculated_percent"] = round(item["votes"] * 100 / total, 1) if total else 0
+        manual = item["percent"]
+        item["display_percent"] = manual if state.data.get("mode") == "simulation" and manual is not None else item["calculated_percent"]
     events = AuditEvent.objects.filter(action__startswith="control_").select_related("actor")[:30]
     return render(request, "portal/control_center.html", {
         "state": state, "candidates": candidate_rows, "total": total,
