@@ -104,7 +104,6 @@ def control_action(request):
         state.published = True
         state.published_at = timezone.now()
         event_action, event_details = "control_results_published", {"mode": data.get("mode", "live")}
-        campaign = CampaignSettings.objects.first()
         title = "Предварительные результаты выборов" if data.get("mode") == "live" else "Демонстрационные результаты выборов"
         rows = []
         total_votes = sum(int(value) for value in data["votes"].values())
@@ -115,18 +114,36 @@ def control_action(request):
             percent = data["manual_percentages"].get(str(candidate.pk)) if data.get("mode") == "simulation" else (round(votes * 100 / total_votes, 1) if total_votes else 0)
             rows.append(f"<li>{escape(name)}: {votes} голосов ({percent}%)</li>")
         body = "<p>Опубликовано из панели управления выборами.</p><ol>" + "".join(rows) + "</ol>"
-        Submission.objects.create(
-            author=request.user, kind=Submission.Kind.NEWS,
-            status=Submission.Status.PUBLISHED, title=title,
-            summary="Промежуточная статистика голосования.",
-            body=body, category=Submission.Category.NEWS,
-            published_at=timezone.now(),
-        )
-        if campaign:
-            AuditEvent.objects.create(actor=request.user, action="control_news_created", details={"title": title})
+        published_post = Submission.objects.filter(
+            pk=data.get("published_submission_id"),
+            kind=Submission.Kind.NEWS,
+        ).first() if data.get("published_submission_id") else None
+        if published_post is None:
+            published_post = Submission(author=request.user, kind=Submission.Kind.NEWS)
+        published_post.status = Submission.Status.PUBLISHED
+        published_post.title = title
+        published_post.summary = "Промежуточная статистика голосования."
+        published_post.body = body
+        published_post.category = Submission.Category.NEWS
+        published_post.published_at = timezone.now()
+        published_post.save()
+        data["published_submission_id"] = published_post.pk
+        event_details["submission_id"] = published_post.pk
     elif action == "unpublish":
+        published_id = data.get("published_submission_id")
+        if published_id:
+            published_post = Submission.objects.filter(
+                pk=published_id, kind=Submission.Kind.NEWS,
+                status=Submission.Status.PUBLISHED,
+            ).first()
+            if published_post:
+                published_post.status = Submission.Status.DRAFT
+                published_post.published_at = None
+                published_post.save(update_fields=("status", "published_at", "updated_at"))
         state.published = False
-        event_action, event_details = "control_results_unpublished", {"reason": reason}
+        event_action, event_details = "control_results_unpublished", {
+            "reason": reason, "submission_id": published_id,
+        }
     else:
         messages.error(request, "Неизвестная операция.")
         return redirect("election-control")
