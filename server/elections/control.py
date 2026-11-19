@@ -129,6 +129,7 @@ def control_action(request):
         return redirect("election-control")
 
     state.data = data
+    state.updated_by = request.user
     state.save()
     AuditEvent.objects.create(actor=request.user, action=event_action, details=event_details)
     messages.success(request, "Изменения сохранены.")
