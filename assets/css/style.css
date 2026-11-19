@@ -1643,3 +1643,25 @@ main{position:relative;z-index:2}
 html[data-scheme="bw"] .seasonal-atmosphere,
 html[data-scheme="wb"] .seasonal-atmosphere,
 html[data-images="hide"] .seasonal-atmosphere{display:none!important}
+
+/* Expandable third-party review cards */
+.review-source-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin:1.4rem 0 .65rem}
+.review-source{display:flex;flex-direction:column;align-items:flex-start;gap:.35rem;min-width:0;padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface,#fff)}
+.review-source>span,.review-card__meta{color:var(--muted);font-size:.76rem;font-weight:750;letter-spacing:.02em}
+.review-source strong{color:var(--navy);font-size:1.3rem;line-height:1.25}
+.review-source small{color:var(--muted);font-size:.8rem;line-height:1.5}
+.review-source a,.review-card__body a{display:inline-flex;align-items:center;min-height:40px;margin-top:auto;color:var(--link,#1c5275);font-size:.84rem;font-weight:750;text-underline-offset:.2em}
+.review-snapshot-note{color:var(--muted);font-size:.78rem;line-height:1.5}
+.review-list{display:grid;gap:.7rem;margin:1.2rem 0}
+.review-card{overflow:hidden;border:1px solid var(--line);border-radius:11px;background:var(--surface,#fff)}
+.review-card summary{display:grid;gap:.3rem;padding:1rem 1.1rem;cursor:pointer;list-style:none}
+.review-card summary::-webkit-details-marker{display:none}
+.review-card summary:focus-visible{outline:3px solid var(--focus,#c69a42);outline-offset:-3px}
+.review-card summary strong{color:var(--navy);font-size:1rem}
+.review-card__toggle{color:var(--link,#1c5275);font-size:.8rem;font-weight:750}
+.review-card__toggle:after{content:" ＋"}
+.review-card[open] .review-card__toggle:after{content:" −"}
+.review-card__body{padding:0 1.1rem 1rem;border-top:1px solid var(--line)}
+.review-card__body p{margin:.85rem 0 .3rem;color:var(--text,#34495a);line-height:1.65}
+.review-card__body a{margin-top:.2rem}
+@media(max-width:760px){.review-source-grid{grid-template-columns:1fr}.review-source{min-height:0}}
